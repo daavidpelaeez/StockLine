@@ -1,0 +1,198 @@
+﻿<Window x:Class="WpfApp1.EnviosPendientesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Envíos Pendientes"
+        Height="900"
+        Width="1500"
+        Background="#F9F9F9"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#3B82F6" Offset="0.0"/>
+                        <GradientStop Color="#2563EB" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="60"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#222222" Opacity="0.15" BlurRadius="12" ShadowDepth="4"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- Hover: levantamiento + gradiente más claro -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#5AA0F8" Offset="0.0"/>
+                                <GradientStop Color="#3B82F6" Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="#222222" Opacity="0.25" BlurRadius="14" ShadowDepth="6"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform Y="-2"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <!-- Presionado: efecto hundido -->
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#1D4ED8" Offset="0.0"/>
+                                <GradientStop Color="#2563EB" Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="#222222" Opacity="0.10" BlurRadius="8" ShadowDepth="2"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform Y="1"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+
+
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+
+        <!-- MENÚ LATERAL -->
+        <Grid Grid.Column="0" Background="White" Margin="20">
+
+            <StackPanel VerticalAlignment="Top">
+
+                <!-- Título -->
+                <TextBlock Text="Envíos" FontSize="28" FontWeight="Bold" Margin="0,0,0,30"/>
+
+                <!-- Botón Volver al Inicio -->
+                <Button Content="← Inicio" Style="{StaticResource MenuButtonStyle}" Click="VolverAlInicio_Click"/>
+                <!-- Botón Finalizados -->
+                <Button Content="Finalizados" Style="{StaticResource MenuButtonStyle}" Click="VerFinalizados_Click" Margin="0,10,0,0"/>
+
+                <!-- Botón Últimos 10 envíos -->
+                <Button Content="Últimos 10 envíos" Style="{StaticResource MenuButtonStyle}" Click="VerUltimosDiez_Click" Margin="0,10,0,0"/>
+
+                <!-- Botón Por Ayuntamiento -->
+                <Button Content="Por Ayuntamiento" Style="{StaticResource MenuButtonStyle}" Click="VerPorAyuntamiento_Click" Margin="0,10,0,0"/>
+
+            </StackPanel>
+        </Grid>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <Grid Grid.Column="1" Margin="30,20,30,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título principal -->
+            <TextBlock Text="Envíos Pendientes"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       Foreground="#222"
+                       Margin="0,0,0,20"/>
+
+            <!-- DataGrid -->
+            <DataGrid x:Name="EnviosGrid"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      RowHeight="48"
+                      FontSize="16"
+                      AlternatingRowBackground="#F4F4F4"
+                      GridLinesVisibility="None"
+                      SelectionMode="Single"
+                      Background="White"
+                      BorderBrush="#E0E0E0"
+                      BorderThickness="1"
+                      HeadersVisibility="Column"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="0,0,0,20">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                    <DataGridTextColumn Header="Ayuntamiento" Binding="{Binding Ayuntamiento.Nombre}" Width="*"/>
+                    <DataGridTextColumn Header="Producto" Binding="{Binding Producto.Nombre}" Width="*"/>
+                    <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
+                    <DataGridTextColumn Header="Fecha Envío" Binding="{Binding FechaEnvio}" Width="180"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="120"/>
+                </DataGrid.Columns>
+
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Editar" Click="EditarEnvio_Click"/>
+                        <MenuItem Header="Finalizar" Click="FinalizarEnvio_Click"/>
+                        <MenuItem Header="Borrar" Click="BorrarEnvio_Click"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+
+            <!-- Botón Añadir Envío -->
+            <Button Content="Añadir Envío"
+                    Grid.Row="2"
+                    Width="160"
+                    Height="48"
+                    Background="#34C759"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Right"
+                    Cursor="Hand"
+                    Click="AñadirEnvio_Click">
+                <Button.Effect>
+                    <DropShadowEffect Color="Gray" Opacity="0.2" BlurRadius="6"/>
+                </Button.Effect>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
