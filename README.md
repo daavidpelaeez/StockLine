@@ -1,9 +1,9 @@
 # 🚀 Stock Line
 
-![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/stock-line?style=flat-square) 
-![GitHub contributors](https://img.shields.io/github/contributors/daavidpelaeez/stock-line?style=flat-square)
-![GitHub language](https://img.shields.io/github/languages/top/daavidpelaeez/stock-line?style=flat-square)
-![License](https://img.shields.io/github/license/daavidpelaeez/stock-line?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/StockLine?style=flat-square) 
+![GitHub contributors](https://img.shields.io/github/contributors/daavidpelaeez/StockLine?style=flat-square)
+![GitHub language](https://img.shields.io/github/languages/top/daavidpelaeez/StockLine?style=flat-square)
+![License](https://img.shields.io/github/license/daavidpelaeez/StockLine?style=flat-square)
 
 ---
 
