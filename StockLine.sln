@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockLine25", "WpfApp1\StockLine25.csproj", "{EA3636E1-D9FE-4394-852A-6E98F0168117}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockLine25", "StockLine\StockLine25.csproj", "{EA3636E1-D9FE-4394-852A-6E98F0168117}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

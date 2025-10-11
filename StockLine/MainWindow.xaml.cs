@@ -60,7 +60,6 @@ namespace WpfApp1
             if (loginExitoso)
             {
                 MessageBox.Show("Login correcto");
-                // Pasamos el nombre a HomeWindow
                 HomeWindow hw = new HomeWindow(nombre);
                 hw.Show();
                 this.Close();
