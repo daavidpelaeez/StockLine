@@ -1,9 +1,9 @@
 # 🚀 Stock Line
 
-![GitHub repo size](https://img.shields.io/github/repo-size/tuusuario/stock-line?style=flat-square) 
-![GitHub contributors](https://img.shields.io/github/contributors/tuusuario/stock-line?style=flat-square)
-![GitHub language](https://img.shields.io/github/languages/top/tuusuario/stock-line?style=flat-square)
-![License](https://img.shields.io/github/license/tuusuario/stock-line?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/stock-line?style=flat-square) 
+![GitHub contributors](https://img.shields.io/github/contributors/daavidpelaeez/stock-line?style=flat-square)
+![GitHub language](https://img.shields.io/github/languages/top/daavidpelaeez/stock-line?style=flat-square)
+![License](https://img.shields.io/github/license/daavidpelaeez/stock-line?style=flat-square)
 
 ---
 
@@ -57,4 +57,4 @@ El proyecto busca **eliminar duplicaciones, pérdida de datos y falta de trazabi
 
 ### Escritorio
 ```bash
-git clone https://github.com/tuusuario/stock-line.git
+git clone https://github.com/daavidpelaeez/stock-line.git
