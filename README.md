@@ -4,8 +4,9 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/daavidpelaeez/StockLine?style=flat-square)
 ![GitHub language](https://img.shields.io/github/languages/top/daavidpelaeez/StockLine?style=flat-square)
 ![License](https://img.shields.io/github/license/daavidpelaeez/StockLine?style=flat-square)
-
+<img width="500" height="500" alt="stockline " src="https://github.com/user-attachments/assets/d5e1e441-41fc-4093-bb31-4fe3c914e7f3" />
 ---
+
 
 ## 👤 Autor
 **David Pelaez**  
