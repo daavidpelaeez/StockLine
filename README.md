@@ -1,6 +1,7 @@
 # 🚀 Stock Line
 
-<img width="500" height="500" alt="stockline " src="https://github.com/user-attachments/assets/d5e1e441-41fc-4093-bb31-4fe3c914e7f3" />  ![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/StockLine?style=flat-square)
+<img width="1063" height="1063" alt="stockline   (1)" src="https://github.com/user-attachments/assets/e42b75d8-f6dd-4fa0-a645-efbd8aa6a07b" /> ![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/StockLine?style=flat-square)
+
 ---
 
 
