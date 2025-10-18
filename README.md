@@ -1,4 +1,3 @@
-# 🚀 Stock Line
 
 <img width="1063" height="1063" alt="stockline   (1)" src="https://github.com/user-attachments/assets/e42b75d8-f6dd-4fa0-a645-efbd8aa6a07b" /> ![GitHub repo size](https://img.shields.io/github/repo-size/daavidpelaeez/StockLine?style=flat-square)
 
