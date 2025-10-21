@@ -27,6 +27,8 @@ namespace WpfApp1
 
         public MainWindow()
         {
+            EnviosPendientesWindow enviosPendientes = new EnviosPendientesWindow();
+            enviosPendientes.ShowDialog();
             InitializeComponent();
             ApplyTheme("ThemeLight.xaml");
         }
@@ -52,22 +54,24 @@ namespace WpfApp1
 
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            string nombre = txtUser.Text;
-            string password = txtPassword.Password;
+            //string nombre = txtUser.Text;
+            //string password = txtPassword.Password;
 
-            bool loginExitoso = await _personaService.LoginAsync(nombre, password);
+            //bool loginExitoso = await _personaService.LoginAsync(nombre, password);
 
-            if (loginExitoso)
-            {
-                MessageBox.Show("Login correcto");
-                HomeWindow hw = new HomeWindow(nombre);
-                hw.Show();
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Usuario o contraseña incorrectos", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            //if (loginExitoso)
+            //{
+            //    MessageBox.Show("Login correcto");
+            //    HomeWindow hw = new HomeWindow(nombre);
+            //    hw.Show();
+            //    this.Close();
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Usuario o contraseña incorrectos", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //}
+
+            
         }
 
         private void ForgotPassword_Click(object sender, MouseButtonEventArgs e)
