@@ -12,24 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfApp1
+namespace WpfApp1.Views
 {
     /// <summary>
-    /// Lógica de interacción para AddEnvioPendiente.xaml
+    /// Interaction logic for AddEditAyuntamientos.xaml
     /// </summary>
-    public partial class AddEnvioPendiente : Window
+    public partial class AddEditAyuntamientos : Window
     {
-        public AddEnvioPendiente()
+        public AddEditAyuntamientos()
         {
             InitializeComponent();
         }
 
-        private void Guardar_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void Cancelar_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
 
         }

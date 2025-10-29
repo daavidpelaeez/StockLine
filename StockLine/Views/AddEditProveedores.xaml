@@ -1,0 +1,67 @@
+﻿<Window x:Class="WpfApp1.Views.AddEditProveedores"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1.Views"
+        mc:Ignorable="d"
+        Title="AddEditProveedores" Height="450" Width="800">
+    <Grid>
+        <!-- Fondo semi-transparente -->
+        <Border Background="#80000000"/>
+
+        <!-- Tarjeta central -->
+        <Border Width="450" Height="300" Background="White" CornerRadius="12" Padding="20"
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Effect="{DynamicResource DropShadowEffect}">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Título con icono -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="🖊️" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="txtTitulo" Text=" Proveedor" FontSize="20" FontWeight="Bold" Foreground="#333333" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Campos -->
+                <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                    <StackPanel Orientation="Vertical" Margin="0,5">
+                        <TextBlock Text="Nombre:" FontSize="14" FontWeight="SemiBold" Foreground="#555555"/>
+                        <TextBox x:Name="txtNombre" Height="30" Padding="5" FontSize="14"
+                                 BorderBrush="#CCCCCC" BorderThickness="1" Background="White"
+                                 />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Margin="0,5">
+                        <TextBlock Text="Contacto:" FontSize="14" FontWeight="SemiBold" Foreground="#555555"/>
+                        <TextBox x:Name="txtContacto" Height="30" Padding="5" FontSize="14"
+                                 BorderBrush="#CCCCCC" BorderThickness="1" Background="White"
+                                 />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Separador -->
+                <Rectangle Grid.Row="2" Height="1" Fill="#E0E0E0" Margin="0,10"/>
+
+                <!-- Botones -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                    <Button x:Name="btnCancelar" Content="Cancelar" Width="100" Height="35" Background="#E74C3C" Foreground="White" FontWeight="Bold" 
+                             />
+                    <Button x:Name="btnGuardar" Content="Guardar" Width="100" Height="35" Background="#007ACC" Foreground="White" FontWeight="Bold" 
+                             Margin="10,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+
+    <!-- Drop shadow recurso -->
+    <Window.Resources>
+        <DropShadowEffect x:Key="DropShadowEffect" BlurRadius="12" ShadowDepth="4" Opacity="0.3"/>
+    </Window.Resources>
+</Window>

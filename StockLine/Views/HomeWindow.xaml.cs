@@ -11,8 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfApp1.Views;
 
-namespace WpfApp1
+namespace WpfApp1.Views
 {
     /// <summary>
     /// Lógica de interacción para HomeWindow.xaml
@@ -44,6 +45,12 @@ namespace WpfApp1
             MainWindow m1 = new MainWindow();
             m1.Show();
             this.Close();
+        }
+
+        private void btnAyuntamientos_Click(object sender, RoutedEventArgs e)
+        {
+            AyuntamientosWindow ayuntamientosWindow = new AyuntamientosWindow();
+            ayuntamientosWindow.ShowDialog(); 
         }
     }
 }

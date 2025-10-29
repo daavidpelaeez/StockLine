@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.DTOs;
 using WpfApp1.Services;
+using WpfApp1.Views;
 
 namespace WpfApp1
 {
@@ -27,8 +29,10 @@ namespace WpfApp1
 
         public MainWindow()
         {
-            EnviosPendientesWindow enviosPendientes = new EnviosPendientesWindow();
-            enviosPendientes.ShowDialog();
+            //EnviosPendientesWindow enviosPendientes = new EnviosPendientesWindow();
+            //enviosPendientes.ShowDialog();
+            //StockWindow sw = new StockWindow();
+            //sw.Show();
             InitializeComponent();
             ApplyTheme("ThemeLight.xaml");
         }
@@ -54,29 +58,32 @@ namespace WpfApp1
 
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            //string nombre = txtUser.Text;
-            //string password = txtPassword.Password;
+            string email = txtUser.Text;
+            string password = txtPassword.Password;
 
-            //bool loginExitoso = await _personaService.LoginAsync(nombre, password);
+            // Llamamos al servicio y obtenemos UsuarioDTO
+            UsuarioDTO usuario = await _personaService.LoginAsync(email, password);
 
-            //if (loginExitoso)
-            //{
-            //    MessageBox.Show("Login correcto");
-            //    HomeWindow hw = new HomeWindow(nombre);
-            //    hw.Show();
-            //    this.Close();
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Usuario o contraseña incorrectos", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //}
+            if (usuario != null)
+            {
+                MessageBox.Show($"Login correcto. Bienvenido {usuario.Nombre} {usuario.Apellidos}");
 
-            
+                
+                HomeWindow hw = new HomeWindow(usuario.Nombre);
+                hw.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Usuario o contraseña incorrectos", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void ForgotPassword_Click(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show("Función de recuperación de contraseña aún no implementada.");
         }
+
+       
     }
 }
