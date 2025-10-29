@@ -14,10 +14,9 @@ namespace WpfApp1.Services
     {
         private static readonly HttpClient client = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:5200/") // Cambiar según tu API
+            BaseAddress = new Uri("http://localhost:5200/") 
         };
 
-        // LOGIN - devuelve UsuarioDTO si OK, null si falla
         public async Task<UsuarioDTO> LoginAsync(string email, string password)
         {
             var loginData = new { Email = email, Password = password };
@@ -35,7 +34,6 @@ namespace WpfApp1.Services
             return result.User;
         }
 
-        // CREATE
         public async Task<bool> CreateAsync(UsuarioDTO usuario)
         {
             var json = JsonConvert.SerializeObject(usuario);
@@ -45,7 +43,6 @@ namespace WpfApp1.Services
             return response.IsSuccessStatusCode;
         }
 
-        // UPDATE
         public async Task<bool> UpdateAsync(UsuarioDTO usuario)
         {
             var json = JsonConvert.SerializeObject(usuario);
@@ -55,14 +52,12 @@ namespace WpfApp1.Services
             return response.IsSuccessStatusCode;
         }
 
-        // DELETE
         public async Task<bool> DeleteAsync(int id)
         {
             var response = await client.DeleteAsync($"api/usuarios/{id}");
             return response.IsSuccessStatusCode;
         }
 
-        // GET ALL
         public async Task<List<UsuarioDTO>> GetAllAsync()
         {
             var response = await client.GetAsync("api/usuarios");

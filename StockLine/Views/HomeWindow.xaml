@@ -41,7 +41,7 @@
     </Window.Resources>
 
     <!-- GRID PRINCIPAL -->
-    <Grid>
+    <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <!-- Barra lateral -->
@@ -50,7 +50,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- BARRA LATERAL -->
-        <StackPanel Grid.Column="0" Background="White" Margin="20">
+        <StackPanel Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" Margin="20">
             <TextBlock Text="Stockline" FontSize="26" FontWeight="Bold" Margin="0,0,0,20"/>
             <Button Content="Inicio" Margin="0,5" BorderBrush="Black" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
             <Button Content="Usuarios" Margin="0,5" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
@@ -73,21 +73,21 @@
             </Grid.RowDefinitions>
 
             <!-- HEADER -->
-            <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,20">
+            <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,15,0,20">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock FontSize="22" FontWeight="SemiBold">
+                    <TextBlock FontSize="24" FontWeight="Bold">
                         <Run Text="Bienvenido, "/>
                         <Run Text="{Binding NombreUsuario}"/>
                     </TextBlock>
-                    <TextBlock Text="Resumen de tu aplicación" FontSize="14" Foreground="Gray"/>
+                    <TextBlock Text="Resumen de tu aplicación" FontSize="14" Foreground="Black" FontWeight="Bold"/>
                 </StackPanel>
                 <Button Content="⚙" DockPanel.Dock="Right" Width="40" Height="40" Background="Transparent" FontSize="20"/>
             </DockPanel>
 
             <!-- Fondo general de sección de estadísticas -->
-            <Grid Grid.Row="1" Background="White" Margin="20">
+            <Grid Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" Margin="0,20,10,20">
                 <!-- gris muy suave de fondo -->
-                <UniformGrid Columns="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <UniformGrid Columns="3">
 
                     <!-- Tarjeta 1 -->
                     <Border CornerRadius="15" Padding="20" Margin="10"
@@ -148,15 +148,30 @@
 
 
             <!-- PANEL DE STOCK -->
-            <Border Grid.Row="2" Background="White" CornerRadius="10" Padding="20">
+            <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="20" Margin="0,168,0,27" Grid.RowSpan="2" BorderBrush="Black">
                 <Border.Effect>
                     <DropShadowEffect Color="Gray" Opacity="0.1" BlurRadius="8" ShadowDepth="2"/>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="Productos en stock" FontWeight="Bold" FontSize="18" Margin="0,0,0,10"/>
+                    <!-- Encabezado con icono a la derecha -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <!-- Toma todo el espacio disponible -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Icono se ajusta a su tamaño -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Título -->
+                        <TextBlock Text="Productos en stock" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+
+                        <!-- Icono filtrar a la derecha -->
+                        <Image Grid.Column="1" Source="/Assets/Icons/filtrar.png" Width="24" Height="24" Margin="5,0,0,0" Cursor="Hand"
+                         VerticalAlignment="Center" MouseLeftButtonUp="Filtrar_Click"/>
+                    </Grid>
 
                     <!-- Mini panel con productos -->
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel x:Name="panelProductos" Orientation="Vertical">
 
                         <!-- Producto 1 -->
                         <Border Background="#F8F8F8" CornerRadius="8" Padding="10" Margin="0,0,0,10">

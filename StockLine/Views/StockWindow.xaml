@@ -114,7 +114,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="18">
+    <Grid  Background="{DynamicResource AccentLight}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <!-- header -->
@@ -128,9 +128,9 @@
 
         <!-- HEADER -->
         <DockPanel Grid.Row="0" Margin="0,0,0,12" LastChildFill="False">
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="Stock" FontSize="22" FontWeight="SemiBold"/>
-                <TextBlock Text="Control de inventario — revisa niveles, ubica y ajusta stock" Foreground="{StaticResource Muted}" FontSize="12"/>
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBlock Text="Stock" FontSize="22" FontWeight="Bold"/>
+                <TextBlock Text="Control de inventario — revisa niveles, ubica y ajusta stock" Foreground="Black" FontSize="12"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,0,0">
@@ -140,22 +140,22 @@
         </DockPanel>
 
         <!-- KPI Cards -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
-            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,0,14">
+            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10" BorderBrush="Black">
                 <StackPanel>
                     <TextBlock Text="Total productos" Foreground="Black" FontSize="12" FontWeight="Bold"/>
                     <TextBlock x:Name="txtTotalProductos" Text="{Binding TotalProductos}" FontSize="24" FontWeight="SemiBold" Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
 
-            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10">
+            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10" BorderBrush="Black">
                 <StackPanel>
                     <TextBlock Text="Sin stock / crítico" Foreground="{DynamicResource {x:Static SystemColors.DesktopBrushKey}}" FontSize="12" FontWeight="Bold"/>
                     <TextBlock x:Name="txtCriticos" Text="{Binding Criticos}" FontSize="24" FontWeight="SemiBold" Margin="0,6,0,0" Foreground="{StaticResource Accent}"/>
                 </StackPanel>
             </Border>
 
-            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10">
+            <Border Style="{StaticResource Card}" Width="220" Height="86" Margin="10" BorderBrush="Black">
                 <StackPanel>
                     <TextBlock Text="Unidades totales" Foreground="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}" FontSize="12" FontWeight="Bold"/>
                     <TextBlock x:Name="txtUnidades" Text="{Binding Unidades}" FontSize="24" FontWeight="SemiBold" Margin="0,6,0,0"/>
@@ -165,17 +165,17 @@
 
 
         <!-- MAIN: filters + grid -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Background="{DynamicResource AccentLight}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- Filters row -->
-            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="8,0,0,10">
 
-                <Border Background="{StaticResource CardBg}" BorderBrush="{StaticResource BorderLight}" BorderThickness="1" CornerRadius="8" Padding="8" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                <Border Background="{DynamicResource AccentLight}" BorderBrush="{StaticResource BorderLight}" BorderThickness="1" CornerRadius="8" Margin="10" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" Margin="8">
                         <TextBlock Text="Categoria" VerticalAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}" Margin="0,0,6,0" FontWeight="Bold"/>
                         <ComboBox x:Name="cbCategoria"
                           Width="160" Height="28"
@@ -186,35 +186,50 @@
                 </Border>
 
                 <CheckBox x:Name="chkSoloCriticos" Content="Solo críticos" VerticalAlignment="Center" Margin="8,6,0,0" Foreground="#FF1D1818" FontWeight="Bold"/>
-                <Button Content="Limpiar filtros" Width="140" Style="{StaticResource GhostButton}" Click="BtnLimpiarFiltros_Click" Background="#FF1976D2" FontWeight="Bold" Margin="15" Foreground="White"/>
+                <Button Content="Limpiar filtros" Width="140" Style="{StaticResource GhostButton}" Click="BtnLimpiarFiltros_Click" Background="#FF1976D2" FontWeight="Bold" Margin="15" Foreground="White" BorderBrush="{x:Null}"/>
                 <Button Content="Exportar a CSV" Style="{StaticResource GhostButton}" Width="140" Click="BtnExportarExcel_Click" FontWeight="Bold" BorderBrush="{x:Null}" Background="#FF34C759" Foreground="White" Margin="10"/>
             </StackPanel>
 
             <!-- DataGrid -->
-            <Border Grid.Row="1" Style="{StaticResource Card}" Padding="10">
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="10" Background="{DynamicResource AccentLight}">
                 <DataGrid x:Name="StockGrid"
-                  AutoGenerateColumns="False"
-                  ItemsSource="{Binding ProductosFiltrados}"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  IsReadOnly="True">
+          AutoGenerateColumns="False"
+          ItemsSource="{Binding ProductosFiltrados}"
+          CanUserAddRows="False"
+          CanUserDeleteRows="False"
+          IsReadOnly="True"
+          MouseRightButtonDown="StockGrid_MouseRightButtonDown" Background="White">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding ProductoID}" Width="80"/>
                         <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="2*"/>
                         <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="2*"/>
                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Stock}" Width="120"/>
-                        <DataGridTextColumn Header="Categoría" Binding="{Binding CategoriaNombre}" Width="150"/>
                     </DataGrid.Columns>
+
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Editar producto" Click="EditarProducto_Click">
+                                <MenuItem.Icon>
+                                    <Image Source="/Assets/Icons/editar.png"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Eliminar producto" Click="EliminarProducto_Click">
+                                <MenuItem.Icon>
+                                    <Image Source="/Assets/Icons/borrar.png"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
             </Border>
-            
+
         </Grid>
 
         <!-- FOOTER: acciones -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right"  Margin="0,16,0,0">
-            <Button Content="Salir" Style="{StaticResource GhostButton}" Width="140" Click="BtnExportar_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#FFFF5A5A" FontWeight="Bold" Foreground="White" Margin="10"/>
+            <Button Content="Salir" Style="{StaticResource GhostButton}" Width="140" Click="BtnExportar_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#FFFF5A5A" FontWeight="Bold" Foreground="White" Margin="10" BorderBrush="{x:Null}"/>
             <Button Content="Importar" Style="{StaticResource GhostButton}" Width="120" Click="BtnImportar_Click" Foreground="White" FontWeight="Bold" Background="#FF1976D2" Margin="10"/>
         </StackPanel>
-        
+
     </Grid>
 </Window>

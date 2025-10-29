@@ -3,23 +3,26 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfApp1.DTOs;
 using WpfApp1.ViewModels;
+using WpfApp1.Views;
 
 namespace WpfApp1.Views
 {
     public partial class StockWindow : Window
     {
-        private ProductosViewModel vm;
+        private ProductosViewModel ProductosVM;
+
+        public event Action ProductoModificado;
 
         public StockWindow()
         {
             InitializeComponent();
 
-            vm = new ProductosViewModel();
-            this.DataContext = vm;
+            ProductosVM = new ProductosViewModel();
+            this.DataContext = ProductosVM;
 
             this.Loaded += StockWindow_Loaded;
 
-            // Enlazar eventos de filtros
+
             cbCategoria.SelectionChanged += CbCategoria_SelectionChanged;
             chkSoloCriticos.Checked += ChkSoloCriticos_Changed;
             chkSoloCriticos.Unchecked += ChkSoloCriticos_Changed;
@@ -27,13 +30,12 @@ namespace WpfApp1.Views
 
         private async void StockWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Cargar categorías primero para poder filtrar
-            await vm.CargarCategoriasAsync();
-            await vm.CargarProductosAsync();
+
+            await ProductosVM.CargarCategoriasAsync();
+            await ProductosVM.CargarProductosAsync();
             ActualizarKPIs();
 
-            // Enlazar ComboBox al listado de categorías
-            cbCategoria.ItemsSource = vm.Categorias;
+            cbCategoria.ItemsSource = ProductosVM.Categorias;
             cbCategoria.DisplayMemberPath = "Nombre";
             cbCategoria.SelectedValuePath = "CategoriaID";
         }
@@ -43,21 +45,21 @@ namespace WpfApp1.Views
         {
             if (cbCategoria.SelectedItem != null)
             {
-                vm.CategoriaSeleccionada = (CategoriaDto)cbCategoria.SelectedItem;
+                ProductosVM.CategoriaSeleccionada = (CategoriaDto)cbCategoria.SelectedItem;
             }
         }
 
         private void ChkSoloCriticos_Changed(object sender, RoutedEventArgs e)
         {
-            vm.SoloCriticos = chkSoloCriticos.IsChecked == true;
+            ProductosVM.SoloCriticos = chkSoloCriticos.IsChecked == true;
         }
 
         private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
         {
-            vm.LimpiarFiltros();
+            ProductosVM.LimpiarFiltros();
             chkSoloCriticos.IsChecked = false;
-            if (vm.Categorias.Count > 0)
-                cbCategoria.SelectedItem = vm.Categorias[0];
+            if (ProductosVM.Categorias.Count > 0)
+                cbCategoria.SelectedItem = ProductosVM.Categorias[0];
         }
         #endregion
 
@@ -86,7 +88,7 @@ namespace WpfApp1.Views
 
             try
             {
-                await vm.ImportarDesdeCsvAsync(openFileDialog.FileName);
+                await ProductosVM.ImportarDesdeCsvAsync(openFileDialog.FileName);
                 ActualizarKPIs();
             }
             catch (Exception ex)
@@ -97,7 +99,7 @@ namespace WpfApp1.Views
 
         private void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.Productos.Count == 0)
+            if (ProductosVM.Productos.Count == 0)
             {
                 MessageBox.Show("No hay datos para exportar.", "Exportar", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
@@ -111,15 +113,44 @@ namespace WpfApp1.Views
 
             if (saveFileDialog.ShowDialog() != true) return;
 
-            vm.ExportarAExcel(saveFileDialog.FileName);
+            ProductosVM.ExportarAExcel(saveFileDialog.FileName);
         }
         #endregion
 
         private void ActualizarKPIs()
         {
-            txtTotalProductos.Text = vm.TotalProductos.ToString();
-            txtCriticos.Text = vm.Criticos.ToString();
-            txtUnidades.Text = vm.Unidades.ToString();
+            txtTotalProductos.Text = ProductosVM.TotalProductos.ToString();
+            txtCriticos.Text = ProductosVM.Criticos.ToString();
+            txtUnidades.Text = ProductosVM.Unidades.ToString();
+        }
+
+        private void StockGrid_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var row = ItemsControl.ContainerFromElement(StockGrid, e.OriginalSource as DependencyObject) as DataGridRow;
+            if (row != null)
+                row.IsSelected = true;
+        }
+
+        private async void EditarProducto_Click(object sender, RoutedEventArgs e)
+        {
+            var producto = StockGrid.SelectedItem as ProductoDto;
+            if (producto == null)
+            {
+                MessageBox.Show("Selecciona un producto primero.");
+                return;
+            }
+
+            var ventanaEdicion = new AddProduct(producto);
+            bool? resultado = ventanaEdicion.ShowDialog();
+            if (resultado == true)
+            {
+                ProductoModificado?.Invoke();
+            }
+        }
+
+        private void EliminarProducto_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

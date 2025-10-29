@@ -121,6 +121,9 @@
     <Compile Include="Views\EnviosPendientesWindow.xaml.cs">
       <DependentUpon>EnviosPendientesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FiltroStockWindow.xaml.cs">
+      <DependentUpon>FiltroStockWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HomeWindow.xaml.cs">
       <DependentUpon>HomeWindow.xaml</DependentUpon>
     </Compile>
@@ -129,8 +132,8 @@
     <Compile Include="Models\Envio.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Services\EnvioService.cs" />
-    <Compile Include="Services\IEnvioService.cs" />
-    <Compile Include="Services\IPersonaService.cs" />
+    <Compile Include="Services\Interfaces\IEnvioService.cs" />
+    <Compile Include="Services\Interfaces\IPersonaService.cs" />
     <Compile Include="Services\PersonaService.cs" />
     <Compile Include="ViewModels\UsuarioViewModel.cs" />
     <Compile Include="Views\ProveedoresWindow.xaml.cs">
@@ -172,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EnviosPendientesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FiltroStockWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,6 +242,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\editar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\borrar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\filtrar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
