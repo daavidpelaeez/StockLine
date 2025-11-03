@@ -221,8 +221,8 @@
                     <ComboBox x:Name="cbEstado" Width="230" Height="30" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderLight}">
                         <ComboBoxItem Content="Todos"/>
                         <ComboBoxItem Content="Pendiente"/>
-                        <ComboBoxItem Content="En Proceso"/>
-                        <ComboBoxItem Content="Finalizado"/>
+                        <ComboBoxItem Content="Preparado"/>
+                        <ComboBoxItem Content="Enviado"/>
                     </ComboBox>
                     <Button Content="Aplicar" Style="{StaticResource GhostButton}" Height="20" Width="120" Margin="0,10,0,6" Click="AplicarEstado_Click" BorderBrush="Black" FontWeight="Bold" Background="White"/>
 
@@ -289,22 +289,42 @@
                         <!-- placeholder para futuros controles -->
                     </StackPanel>
 
-                    <DataGrid x:Name="EnviosGrid" Grid.Row="1" Style="{StaticResource NiceDataGrid}" AutoGenerateColumns="False">
+                    <DataGrid x:Name="EnviosGrid" 
+                             Grid.Row="1" 
+                             Style="{StaticResource NiceDataGrid}" 
+                             AutoGenerateColumns="False"
+                             MouseDoubleClick="EnviosGrid_MouseDoubleClick">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Finalizar" Click="Finalizar_Click"/>
-                                <MenuItem Header="Editar" Click="Editar_Click"/>
-                                <MenuItem Header="Eliminar" Click="Eliminar_Click"/>
+                                <MenuItem Header="Ver Detalles / Editar" Click="Editar_Click">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="👁" FontSize="14"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Marcar como Preparado" Click="Finalizar_Click">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="✓" FontSize="14" Foreground="#2ECC71"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Eliminar Envio" Click="Eliminar_Click">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="🗑" FontSize="14"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
 
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
-                            <DataGridTextColumn Header="Ayuntamiento" Binding="{Binding Ayuntamiento.Nombre}" Width="2*"/>
-                            <DataGridTextColumn Header="Producto" Binding="{Binding Producto.Nombre}" Width="2*"/>
-                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
-                            <DataGridTextColumn Header="Fecha envío" Binding="{Binding FechaEnvio, StringFormat=d}" Width="150"/>
-                            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="140"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding EnvioID}" Width="80"/>
+                            <DataGridTextColumn Header="Ayuntamiento" Binding="{Binding AyuntamientoNombre}" Width="2*"/>
+                            <DataGridTextColumn Header="Comercial" Binding="{Binding ComercialNombre}" Width="1.5*"/>
+                            <DataGridTextColumn Header="Fecha envio" Binding="{Binding FechaEnvio, StringFormat='dd/MM/yyyy'}" Width="120"/>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="120"/>
+                            <DataGridTextColumn Header="Referencia" Binding="{Binding NumeroReferencia}" Width="140"/>
+                            <DataGridTextColumn Header="Modificado por" Binding="{Binding UsuarioModificadorNombre}" Width="150"/>
+                            <DataGridTextColumn Header="Fecha modificación" Binding="{Binding FechaModificacion, StringFormat='dd/MM/yyyy HH:mm'}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

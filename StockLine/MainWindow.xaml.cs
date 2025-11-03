@@ -69,7 +69,8 @@ namespace WpfApp1
                 MessageBox.Show($"Login correcto. Bienvenido {usuario.Nombre} {usuario.Apellidos}");
 
                 
-                HomeWindow hw = new HomeWindow(usuario.Nombre);
+                // Pasar UsuarioID y RoleID al HomeWindow
+                HomeWindow hw = new HomeWindow(usuario.Nombre, usuario.UsuarioID, usuario.RoleID);
                 hw.Show();
                 this.Close();
             }

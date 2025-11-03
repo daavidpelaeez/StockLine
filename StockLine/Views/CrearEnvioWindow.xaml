@@ -1,0 +1,339 @@
+<Window x:Class="WpfApp1.Views.CrearEnvioWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Crear Nuevo Envio" 
+        Height="700" 
+        Width="900"
+        Background="#F5F7FA"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="24,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2980B9"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#BDC3C7"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#7F8C8D"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="24,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#ECF0F1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AddButton" TargetType="Button">
+            <Setter Property="Background" Value="#2ECC71"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#27AE60"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="12" Margin="20" Padding="30">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Opacity="0.1" BlurRadius="20" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="Crear Nuevo Envio" 
+                          FontSize="26" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+                <TextBlock Text="Completa la informacion del envio" 
+                          FontSize="14" 
+                          Foreground="#7F8C8D"
+                          Margin="0,6,0,0"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0">
+                                <TextBlock Text="Ayuntamiento *" Style="{StaticResource LabelStyle}"/>
+                                <ComboBox x:Name="cbAyuntamiento" 
+                                         Style="{StaticResource ComboBoxStyle}"
+                                         DisplayMemberPath="Nombre"
+                                         SelectedValuePath="AyuntamientoID"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="2">
+                                <TextBlock Text="Comercial *" Style="{StaticResource LabelStyle}"/>
+                                <ComboBox x:Name="cbComercial" 
+                                         Style="{StaticResource ComboBoxStyle}"
+                                         DisplayMemberPath="Nombre"
+                                         SelectedValuePath="ComercialID"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,16,0,0">
+                                <TextBlock Text="Fecha de Envio *" Style="{StaticResource LabelStyle}"/>
+                                <DatePicker x:Name="dpFechaEnvio" 
+                                           Height="38" 
+                                           FontSize="14"
+                                           BorderBrush="#BDC3C7"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,16,0,0">
+                                <TextBlock Text="Numero de Referencia" Style="{StaticResource LabelStyle}"/>
+                                <TextBox x:Name="txtNumeroReferencia" 
+                                        Style="{StaticResource TextBoxStyle}"
+                                        MaxLength="50"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="Productos del Envio" 
+                              FontSize="18" 
+                              FontWeight="SemiBold" 
+                              Foreground="#2C3E50"
+                              Margin="0,0,0,12"/>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Producto *" 
+                                              FontSize="12" 
+                                              FontWeight="SemiBold" 
+                                              Foreground="#7F8C8D"
+                                              Margin="0,0,0,4"/>
+                                    <ComboBox x:Name="cbProducto" 
+                                             Style="{StaticResource ComboBoxStyle}"
+                                             DisplayMemberPath="Nombre"
+                                             SelectedValuePath="ProductoID"
+                                             SelectionChanged="cbProducto_SelectionChanged"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Cantidad *" 
+                                              FontSize="12" 
+                                              FontWeight="SemiBold" 
+                                              Foreground="#7F8C8D"
+                                              Margin="0,0,0,4"/>
+                                    <TextBox x:Name="txtCantidad" 
+                                            Style="{StaticResource TextBoxStyle}"
+                                            Text="1"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="SIM (opcional)" 
+                                              FontSize="12" 
+                                              FontWeight="SemiBold" 
+                                              Foreground="#7F8C8D"
+                                              Margin="0,0,0,4"/>
+                                    <ComboBox x:Name="cbSIM" 
+                                             Style="{StaticResource ComboBoxStyle}"
+                                             SelectedValuePath="SIMID"
+                                             IsEnabled="False">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <Run Text="{Binding NumeroSIM}"/>
+                                                    <Run Text=" - " Foreground="#7F8C8D"/>
+                                                    <Run Text="{Binding ProductoNombre}" Foreground="#7F8C8D" FontSize="11"/>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <Button Grid.Column="6" 
+                                       Content="+ Agregar" 
+                                       Style="{StaticResource AddButton}"
+                                       Click="btnAgregarProducto_Click"
+                                       Width="130"
+                                       Margin="0,18,0,0"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" 
+                                      Text="Selecciona un producto, cantidad y opcionalmente una SIM, luego haz clic en Agregar"
+                                      FontSize="12"
+                                      Foreground="#7F8C8D"
+                                      FontStyle="Italic"/>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid x:Name="dgProductos"
+                             AutoGenerateColumns="False"
+                             CanUserAddRows="False"
+                             HeadersVisibility="Column"
+                             GridLinesVisibility="Horizontal"
+                             HorizontalGridLinesBrush="#ECF0F1"
+                             BorderThickness="1"
+                             BorderBrush="#ECF0F1"
+                             Background="White"
+                             RowHeight="44"
+                             MinHeight="150"
+                             MaxHeight="250">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Producto" Binding="{Binding ProductoNombre}" Width="2*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="SIM" Binding="{Binding SIMNumero}" Width="1.5*" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="Acciones" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Eliminar" 
+                                               Background="#E74C3C" 
+                                               Foreground="White"
+                                               BorderThickness="0"
+                                               Padding="8,4"
+                                               FontSize="12"
+                                               Cursor="Hand"
+                                               Click="btnEliminarProducto_Click"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock x:Name="txtValidacion" 
+                              Text="Debe agregar al menos un producto"
+                              Foreground="#E74C3C"
+                              FontSize="12"
+                              Margin="0,8,0,0"
+                              Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid Grid.Row="2" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancelar" 
+                           Style="{StaticResource SecondaryButton}"
+                           Click="btnCancelar_Click"
+                           Margin="0,0,12,0"/>
+                    <Button x:Name="btnGuardar"
+                           Content="Crear Envio" 
+                           Style="{StaticResource PrimaryButton}"
+                           Click="btnGuardar_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

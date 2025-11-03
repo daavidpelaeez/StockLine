@@ -92,10 +92,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DTOs\AyuntamientoDTO.cs" />
     <Compile Include="DTOs\CategoriaDto.cs" />
+    <Compile Include="DTOs\ComercialDTO.cs" />
+    <Compile Include="DTOs\EnvioDTO.cs" />
     <Compile Include="DTOs\LoginResponse.cs" />
     <Compile Include="DTOs\ProductoDto.cs" />
+    <Compile Include="DTOs\SIMDTO.cs" />
     <Compile Include="DTOs\UsuarioDTO.cs" />
+    <Compile Include="Services\AyuntamientoService.cs" />
+    <Compile Include="Services\CategoriaService.cs" />
+    <Compile Include="Services\ComercialService.cs" />
+    <Compile Include="Services\Interfaces\ICategoriaService.cs" />
+    <Compile Include="Services\ProductoService.cs" />
+    <Compile Include="Services\SIMService.cs" />
     <Compile Include="ViewModels\ProductosViewModel.cs" />
     <Compile Include="Views\AddEditAyuntamientos.xaml.cs">
       <DependentUpon>AddEditAyuntamientos.xaml</DependentUpon>
@@ -115,8 +125,20 @@
     <Compile Include="Views\AyuntamientosWindow.xaml.cs">
       <DependentUpon>AyuntamientosWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CategoriasWindow.xaml.cs">
+      <DependentUpon>CategoriasWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ComercialesWindow.xaml.cs">
       <DependentUpon>ComercialesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CrearEditarCategoriaWindow.xaml.cs">
+      <DependentUpon>CrearEditarCategoriaWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CrearEnvioWindow.xaml.cs">
+      <DependentUpon>CrearEnvioWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DetalleEnvioWindow.xaml.cs">
+      <DependentUpon>DetalleEnvioWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EnviosPendientesWindow.xaml.cs">
       <DependentUpon>EnviosPendientesWindow.xaml</DependentUpon>
@@ -132,7 +154,6 @@
     <Compile Include="Models\Envio.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Services\EnvioService.cs" />
-    <Compile Include="Services\Interfaces\IEnvioService.cs" />
     <Compile Include="Services\Interfaces\IPersonaService.cs" />
     <Compile Include="Services\PersonaService.cs" />
     <Compile Include="ViewModels\UsuarioViewModel.cs" />
@@ -170,8 +191,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CategoriasWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ComercialesWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CrearEditarCategoriaWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CrearEnvioWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DetalleEnvioWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EnviosPendientesWindow.xaml">
@@ -251,6 +284,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\filtrar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\apagar.png" />
+    <Resource Include="Assets\Icons\ayuntamiento.png" />
+    <Resource Include="Assets\Icons\comercial.png" />
+    <Resource Include="Assets\Icons\enviospendientes.png" />
+    <Resource Include="Assets\Icons\inicio.png" />
+    <Resource Include="Assets\Icons\reportes.png" />
+    <Resource Include="Assets\Icons\settings.png" />
+    <Resource Include="Assets\Icons\stock.png" />
+    <Resource Include="Assets\Icons\usuarios.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

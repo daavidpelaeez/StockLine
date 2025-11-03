@@ -18,20 +18,23 @@ namespace WpfApp1.Views
 {
     public partial class HomeWindow : Window
     {
-
         public string NombreUsuario { get; set; }
+        public int UsuarioID { get; set; }
+        public int RoleID { get; set; }
         public ProductosViewModel ProductosVM { get; set; } = new ProductosViewModel();
 
         public int MaximoProgressBar { get; set; } = 2000;
 
         private int MaxProductosMostrar = 5; 
 
-
         public event Action ProductoModificado;
-        public HomeWindow(String usuario)
+        
+        public HomeWindow(String usuario, int usuarioId = 1, int roleId = 1)
         {
             InitializeComponent();
             NombreUsuario = usuario;
+            UsuarioID = usuarioId;
+            RoleID = roleId;
             DataContext = this;
             CargarProductosHome();
         }
@@ -94,9 +97,6 @@ namespace WpfApp1.Views
             }
         }
 
-
-
-
         private async void btnStockCompleto_Click(object sender, RoutedEventArgs e)
         {
             StockWindow stock = new StockWindow();
@@ -124,11 +124,11 @@ namespace WpfApp1.Views
             }
         }
 
-
-
         private void TarjetaEnvios_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            EnviosPendientesWindow enviosWindow = new EnviosPendientesWindow();
+            // RoleID 3 = Admin, ajusta segun tu logica
+            bool esAdmin = RoleID == 3;
+            EnviosPendientesWindow enviosWindow = new EnviosPendientesWindow(UsuarioID, esAdmin);
             enviosWindow.ShowDialog();
         }
 
@@ -143,6 +143,36 @@ namespace WpfApp1.Views
         {
             AyuntamientosWindow ayuntamientosWindow = new AyuntamientosWindow();
             ayuntamientosWindow.ShowDialog(); 
+        }
+
+        private void btnCategorias_Click(object sender, RoutedEventArgs e)
+        {
+            CategoriasWindow categoriasWindow = new CategoriasWindow();
+            categoriasWindow.ShowDialog();
+        }
+
+        private void btnAjustes_Click(object sender, RoutedEventArgs e)
+        {
+            AjustesWindow ajustesWindow = new AjustesWindow();
+            ajustesWindow.ShowDialog();
+        }
+
+        /*
+        private void btnSIMs_Click(object sender, RoutedEventArgs e)
+        {
+            GestionSIMsWindow simsWindow = new GestionSIMsWindow();
+            simsWindow.ShowDialog();
+        }
+        */
+
+        private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void CloseWindow_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

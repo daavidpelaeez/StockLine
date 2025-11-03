@@ -1,0 +1,156 @@
+<Window x:Class="WpfApp1.Views.CrearEditarCategoriaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nueva Categoria"
+        Height="400"
+        Width="600"
+        Background="#F2F5F8"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Color x:Key="AccentColor">#0A84FF</Color>
+        <Color x:Key="SurfaceColor">#FFFFFF</Color>
+        <Color x:Key="BorderLightColor">#E6E9ED</Color>
+        <Color x:Key="MutedTextColor">#6E7780</Color>
+        <Color x:Key="MainTextColor">#0B1220</Color>
+
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+        <SolidColorBrush x:Key="BorderLight" Color="{StaticResource BorderLightColor}"/>
+        <SolidColorBrush x:Key="MutedText" Color="{StaticResource MutedTextColor}"/>
+        <SolidColorBrush x:Key="MainText" Color="{StaticResource MainTextColor}"/>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="24,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#BDC3C7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedText}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="24,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#ECF0F1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="12" Margin="20" Padding="30">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Opacity="0.1" BlurRadius="20" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock x:Name="txtTitulo" 
+                          Text="Nueva Categoria" 
+                          FontSize="24" 
+                          FontWeight="Bold" 
+                          Foreground="{StaticResource MainText}"/>
+                <TextBlock Text="Completa la informacion de la categoria" 
+                          FontSize="14" 
+                          Foreground="{StaticResource MutedText}"
+                          Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- FORM -->
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Nombre de la Categoria *" 
+                          FontSize="13" 
+                          FontWeight="SemiBold" 
+                          Foreground="{StaticResource MainText}"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="txtNombre" 
+                        Height="42"
+                        Padding="12"
+                        FontSize="14"
+                        BorderBrush="{StaticResource BorderLight}"
+                        BorderThickness="1"
+                        TextChanged="txtNombre_TextChanged">
+                    <TextBox.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </TextBox.Resources>
+                </TextBox>
+
+                <TextBlock x:Name="txtError" 
+                          Text="El nombre es obligatorio"
+                          Foreground="#FF3B30"
+                          FontSize="12"
+                          Margin="0,8,0,0"
+                          Visibility="Collapsed"/>
+            </StackPanel>
+
+            <!-- BUTTONS -->
+            <StackPanel Grid.Row="2" 
+                       Orientation="Horizontal" 
+                       HorizontalAlignment="Right"
+                       Margin="0,24,0,0">
+                <Button Content="Cancelar" 
+                       Style="{StaticResource SecondaryButton}"
+                       Width="120"
+                       Margin="0,0,12,0"
+                       Click="BtnCancelar_Click"/>
+                <Button x:Name="btnGuardar"
+                       Content="Guardar" 
+                       Style="{StaticResource PrimaryButton}"
+                       Width="120"
+                       Click="BtnGuardar_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
