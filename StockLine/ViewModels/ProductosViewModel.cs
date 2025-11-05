@@ -149,6 +149,33 @@ namespace WpfApp1.ViewModels
                 ProductosFiltrados.Add(p);
         }
 
+        public void AplicarBusqueda(string textoBusqueda)
+        {
+            ProductosFiltrados.Clear();
+            IEnumerable<ProductoDto> query = Productos;
+
+            // Aplicar filtro de categoría
+            if (CategoriaSeleccionada != null && CategoriaSeleccionada.CategoriaID != 0)
+                query = System.Linq.Enumerable.Where(query, p => p.CategoriaID == CategoriaSeleccionada.CategoriaID);
+
+            // Aplicar filtro de críticos
+            if (SoloCriticos)
+                query = System.Linq.Enumerable.Where(query, p => p.Stock < 10);
+
+            // Aplicar búsqueda por texto
+            if (!string.IsNullOrEmpty(textoBusqueda))
+            {
+                query = System.Linq.Enumerable.Where(query, p =>
+                    p.Nombre.ToLower().Contains(textoBusqueda) ||
+                    p.Descripcion.ToLower().Contains(textoBusqueda) ||
+                    p.ProductoID.ToString().Contains(textoBusqueda)
+                );
+            }
+
+            foreach (ProductoDto p in query)
+                ProductosFiltrados.Add(p);
+        }
+
         public void LimpiarFiltros()
         {
             if (Categorias.Count > 0)

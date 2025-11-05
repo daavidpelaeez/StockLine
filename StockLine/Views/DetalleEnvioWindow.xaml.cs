@@ -111,6 +111,34 @@ namespace WpfApp1.Views
                 if (resultado)
                 {
                     MessageBox.Show("Estado actualizado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Crear movimientos de stock si el estado es 'Enviado'
+                    if (estadoSeleccionado == "Enviado" && envio != null && envio.Detalles != null)
+                    {
+                        using (var client = new System.Net.Http.HttpClient())
+                        {
+                            client.BaseAddress = new Uri("http://localhost:5200/");
+                            foreach (var detalle in envio.Detalles)
+                            {
+                                var movimiento = new
+                                {
+                                    productoID = detalle.ProductoID,
+                                    cantidad = detalle.Cantidad,
+                                    tipoMovimiento = "Salida",
+                                    usuarioID = usuarioId,
+                                    observaciones = $"Salida por Envío #{envio.EnvioID}"
+                                };
+                                var json = Newtonsoft.Json.JsonConvert.SerializeObject(movimiento);
+                                var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                                var resp = await client.PostAsync("api/movimientosstock", content);
+                                if (!resp.IsSuccessStatusCode)
+                                {
+                                    var error = await resp.Content.ReadAsStringAsync();
+                                    System.Diagnostics.Debug.WriteLine($"Error creando movimiento de stock: {error}");
+                                    // Opcional: mostrar error al usuario
+                                }
+                            }
+                        }
+                    }
                     if (EnvioModificado != null)
                         EnvioModificado();
                     CargarDetalleEnvio(envio.EnvioID);

@@ -52,10 +52,17 @@ namespace WpfApp1.Views
 
         private void QuickValue_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && int.TryParse(btn.Content.ToString(), out int valor))
+            if (sender is Button btn && btn.Name != null)
             {
+                int valor = 2000; // valor por defecto
+
+                if (btn.Name == "btnRapido500") valor = 500;
+                else if (btn.Name == "btnRapido1000") valor = 1000;
+                else if (btn.Name == "btnRapido2000") valor = 2000;
+                else if (btn.Name == "btnRapido5000") valor = 5000;
+
                 sliderMaximo.Value = valor;  // Actualiza el slider
-                txtValor.Text = valor.ToString(); // Actualiza el texto junto al slider
+                txtValor.Text = valor.ToString(); // Actualiza el texto
             }
         }
     }

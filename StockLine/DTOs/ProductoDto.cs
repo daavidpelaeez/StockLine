@@ -15,5 +15,8 @@ namespace WpfApp1.DTOs
         public string Foto { get; set; } = "default.png";
         public int? CategoriaID { get; set; }             
         public string CategoriaNombre { get; set; } = ""; 
+        
+        // Propiedad calculada para determinar si el stock es critico
+        public bool EsCritico => Stock < 10;
     }
 }

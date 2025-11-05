@@ -13,6 +13,11 @@ namespace WpfApp1.Services
         Task<List<SIMDTO>> GetAllAsync();
         Task<List<SIMDTO>> GetByProductoAsync(int productoId);
         Task<SIMDTO> GetByIdAsync(int id);
+        Task<SIMDTO> CreateAsync(SIMDTO sim);
+        Task<bool> UpdateAsync(int id, SIMDTO sim);
+        Task<bool> DeleteAsync(int id);
+        Task<bool> AsignarProductoAsync(int simId, int productoId);
+        Task<bool> DesasignarProductoAsync(int simId);
     }
 
     public class SIMService : ISIMService
@@ -53,6 +58,57 @@ namespace WpfApp1.Services
 
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<SIMDTO>(json);
+        }
+
+        public async Task<SIMDTO> CreateAsync(SIMDTO sim)
+        {
+            var json = JsonConvert.SerializeObject(sim);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("api/sims", content);
+            
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<SIMDTO>(responseJson);
+        }
+
+        public async Task<bool> UpdateAsync(int id, SIMDTO sim)
+        {
+            var json = JsonConvert.SerializeObject(sim);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"api/sims/{id}", content);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var response = await client.DeleteAsync($"api/sims/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AsignarProductoAsync(int simId, int productoId)
+        {
+            var json = JsonConvert.SerializeObject(productoId);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"api/sims/{simId}/asignar-producto")
+            {
+                Content = content
+            };
+
+            var response = await client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DesasignarProductoAsync(int simId)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"api/sims/{simId}/desasignar-producto");
+            
+            var response = await client.SendAsync(request);
+            return response.IsSuccessStatusCode;
         }
     }
 }

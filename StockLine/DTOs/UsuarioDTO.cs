@@ -13,5 +13,6 @@ namespace WpfApp1.DTOs
         public string Apellidos { get; set; }
         public string Email { get; set; }
         public int RoleID { get; set; }
+        public bool Activo { get; set; } = true;
     }
 }

@@ -1,0 +1,548 @@
+﻿<Window x:Class="WpfApp1.Views.ReportesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Reportes y Estadisticas" 
+        Height="800" Width="1350"
+        WindowStartupLocation="CenterScreen"
+        Background="#F2F5F8"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize">
+
+    <Window.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="15" ShadowDepth="0"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MetricCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="12" ShadowDepth="0"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+        </Style>
+
+        <Style x:Key="SubtitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#7F8C8D"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <Style x:Key="MetricValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,8,0,4"/>
+        </Style>
+
+        <Style x:Key="MetricLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#7F8C8D"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER MODERNO CON MINIMIZAR Y CERRAR -->
+            <Border Grid.Row="0" Background="White" CornerRadius="10,10,0,0" Padding="0,0,0,0" Margin="0,0,0,15">
+                <Grid Height="60">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock Text="Reportes y Estadísticas" FontSize="28" FontWeight="Bold" Foreground="#2C3E50"/>
+                        <TextBlock Text="Análisis completo del sistema" FontSize="13" Foreground="#7F8C8D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,15,0,0">
+                        <Button Content="─" 
+                               Width="40" Height="30" 
+                               Background="Transparent" 
+                               BorderThickness="0"
+                               FontSize="16"
+                               Foreground="#7F8C8D"
+                               Cursor="Hand"
+                               Click="MinimizeWindow_Click"/>
+                        <Button Content="☐" 
+                               Width="40" Height="30" 
+                               Background="Transparent" 
+                               BorderThickness="0"
+                               FontSize="16"
+                               Foreground="#7F8C8D"
+                               Cursor="Hand"
+                               Click="MaximizeWindow_Click"/>
+                        <Button Content="✕" 
+                               Width="40" Height="30" 
+                               Background="#FF6B6B" 
+                               BorderThickness="0"
+                               FontSize="16"
+                               Foreground="White"
+                               Cursor="Hand"
+                               Click="CloseWindow_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- METRICAS PRINCIPALES -->
+            <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,12">
+                <!-- Total Productos - Click para ver stock -->
+                <Border Style="{StaticResource MetricCardStyle}"
+                        MouseLeftButtonUp="TarjetaProductos_Click">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Grid.Row="0" 
+                               Source="/Assets/Icons/stock.png" 
+                               Width="40" 
+                               Height="40" 
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1"
+                                  x:Name="txtTotalProductos" 
+                                  Text="0" 
+                                  Style="{StaticResource MetricValueStyle}"
+                                  Foreground="#3498DB"
+                                  HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2"
+                                  Text="Total Productos" 
+                                  Style="{StaticResource MetricLabelStyle}"
+                                  HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Total Envios - Click para ver envios -->
+                <Border Style="{StaticResource MetricCardStyle}"
+                        MouseLeftButtonUp="TarjetaEnvios_Click">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Grid.Row="0" 
+                               Source="/Assets/Icons/enviospendientes.png" 
+                               Width="40" 
+                               Height="40" 
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1"
+                                  x:Name="txtTotalEnvios" 
+                                  Text="0" 
+                                  Style="{StaticResource MetricValueStyle}"
+                                  Foreground="#2ECC71"
+                                  HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2"
+                                  Text="Total Envios" 
+                                  Style="{StaticResource MetricLabelStyle}"
+                                  HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Total SIMs - Click para ver SIMs -->
+                <Border Style="{StaticResource MetricCardStyle}"
+                        MouseLeftButtonUp="TarjetaSIMs_Click">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" 
+                                Width="40" 
+                                Height="40" 
+                                Background="#F39C12"
+                                CornerRadius="20"
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="SIM" 
+                                      FontSize="14" 
+                                      FontWeight="Bold" 
+                                      Foreground="White"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="1"
+                                  x:Name="txtTotalSIMs" 
+                                  Text="0" 
+                                  Style="{StaticResource MetricValueStyle}"
+                                  Foreground="#F39C12"
+                                  HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2"
+                                  Text="Tarjetas SIM" 
+                                  Style="{StaticResource MetricLabelStyle}"
+                                  HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Ayuntamientos Activos - Click para ver ayuntamientos -->
+                <Border Style="{StaticResource MetricCardStyle}"
+                        MouseLeftButtonUp="TarjetaAyuntamientos_Click">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Grid.Row="0" 
+                               Source="/Assets/Icons/ayuntamiento.png" 
+                               Width="40" 
+                               Height="40" 
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1"
+                                  x:Name="txtTotalAyuntamientos" 
+                                  Text="0" 
+                                  Style="{StaticResource MetricValueStyle}"
+                                  Foreground="#E74C3C"
+                                  HorizontalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2"
+                                  Text="Ayuntamientos" 
+                                  Style="{StaticResource MetricLabelStyle}"
+                                  HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- COLUMNA IZQUIERDA -->
+                <StackPanel Grid.Column="0">
+                    <!-- Envios por Estado -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Envios por Estado" Style="{StaticResource TitleStyle}"/>
+                            <TextBlock Text="Distribucion de envios segun su estado actual" 
+                                      Style="{StaticResource SubtitleStyle}"/>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Pendiente -->
+                                <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                                    <Grid>
+                                        <TextBlock Text="Pendiente" 
+                                                  FontSize="13" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#3498DB"/>
+                                        <TextBlock x:Name="txtEnviosPendientes" 
+                                                  Text="0" 
+                                                  FontSize="13" 
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Right"
+                                                  Foreground="#3498DB"/>
+                                    </Grid>
+                                    <ProgressBar x:Name="pbPendientes" 
+                                                Height="6" 
+                                                Margin="0,4,0,0"
+                                                Background="#E8F2FF"
+                                                Foreground="#3498DB"
+                                                BorderThickness="0"/>
+                                </StackPanel>
+
+                                <!-- Preparado -->
+                                <StackPanel Grid.Row="1" Margin="0,0,0,12">
+                                    <Grid>
+                                        <TextBlock Text="Preparado" 
+                                                  FontSize="13" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#F39C12"/>
+                                        <TextBlock x:Name="txtEnviosPreparados" 
+                                                  Text="0" 
+                                                  FontSize="13" 
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Right"
+                                                  Foreground="#F39C12"/>
+                                    </Grid>
+                                    <ProgressBar x:Name="pbPreparados" 
+                                                Height="6" 
+                                                Margin="0,4,0,0"
+                                                Background="#FFF5E6"
+                                                Foreground="#F39C12"
+                                                BorderThickness="0"/>
+                                </StackPanel>
+
+                                <!-- Enviado -->
+                                <StackPanel Grid.Row="2">
+                                    <Grid>
+                                        <TextBlock Text="Enviado" 
+                                                  FontSize="13" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#2ECC71"/>
+                                        <TextBlock x:Name="txtEnviosEnviados" 
+                                                  Text="0" 
+                                                  FontSize="13" 
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Right"
+                                                  Foreground="#2ECC71"/>
+                                    </Grid>
+                                    <ProgressBar x:Name="pbEnviados" 
+                                                Height="6" 
+                                                Margin="0,4,0,0"
+                                                Background="#E8F8F1"
+                                                Foreground="#2ECC71"
+                                                BorderThickness="0"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Top Productos -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Top 5 Productos Mas Enviados" Style="{StaticResource TitleStyle}"/>
+                            <TextBlock Text="Productos con mayor movimiento" 
+                                      Style="{StaticResource SubtitleStyle}"/>
+
+                            <DataGrid x:Name="dgTopProductos" 
+                                     AutoGenerateColumns="False"
+                                     CanUserAddRows="False"
+                                     IsReadOnly="True"
+                                     GridLinesVisibility="None"
+                                     HeadersVisibility="Column"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     RowHeight="38"
+                                     FontSize="12"
+                                     Margin="0,12,0,0"
+                                     MaxHeight="220">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="#" Binding="{Binding Posicion}" Width="35"/>
+                                    <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
+                                    <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- COLUMNA DERECHA -->
+                <StackPanel Grid.Column="1">
+                    <!-- Estado del Stock -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Estado del Stock" Style="{StaticResource TitleStyle}"/>
+                            <TextBlock Text="Analisis de inventario" 
+                                      Style="{StaticResource SubtitleStyle}"/>
+
+                            <StackPanel Margin="0,15,0,0">
+                                <!-- Stock Bajo -->
+                                <Border Background="#FFF5F5" 
+                                       CornerRadius="8" 
+                                       Padding="12" 
+                                       Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Stock Bajo" 
+                                                  FontSize="12" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#E74C3C"/>
+                                        <TextBlock x:Name="txtStockBajo" 
+                                                  Text="0 productos" 
+                                                  FontSize="18" 
+                                                  FontWeight="Bold"
+                                                  Foreground="#E74C3C"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Stock Medio -->
+                                <Border Background="#FFF8E6" 
+                                       CornerRadius="8" 
+                                       Padding="12" 
+                                       Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Stock Medio" 
+                                                  FontSize="12" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#F39C12"/>
+                                        <TextBlock x:Name="txtStockMedio" 
+                                                  Text="0 productos" 
+                                                  FontSize="18" 
+                                                  FontWeight="Bold"
+                                                  Foreground="#F39C12"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Stock Alto -->
+                                <Border Background="#F0FFF4" 
+                                       CornerRadius="8" 
+                                       Padding="12">
+                                    <StackPanel>
+                                        <TextBlock Text="Stock Alto" 
+                                                  FontSize="12" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#2ECC71"/>
+                                        <TextBlock x:Name="txtStockAlto" 
+                                                  Text="0 productos" 
+                                                  FontSize="18" 
+                                                  FontWeight="Bold"
+                                                  Foreground="#2ECC71"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SIMs Disponibles -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Tarjetas SIM" Style="{StaticResource TitleStyle}"/>
+                            <TextBlock Text="Estado de las SIMs" 
+                                      Style="{StaticResource SubtitleStyle}"/>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- SIMs Disponibles -->
+                                <Border Grid.Row="0" 
+                                       Background="#E8F8F5" 
+                                       CornerRadius="8" 
+                                       Padding="12" 
+                                       Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Disponibles" 
+                                                  FontSize="12" 
+                                                  Foreground="#16A085"/>
+                                        <TextBlock x:Name="txtSIMsDisponibles" 
+                                                  Text="0" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Foreground="#16A085"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- SIMs Asignadas -->
+                                <Border Grid.Row="1" 
+                                       Background="#FFF0E6" 
+                                       CornerRadius="8" 
+                                       Padding="12">
+                                    <StackPanel>
+                                        <TextBlock Text="Asignadas" 
+                                                  FontSize="12" 
+                                                  Foreground="#E67E22"/>
+                                        <TextBlock x:Name="txtSIMsAsignadas" 
+                                                  Text="0" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Foreground="#E67E22"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- FOOTER CON BOTONES DE ACCION -->
+            <Grid Grid.Row="3" Margin="0,15,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                           Background="#3498DB"
+                           Foreground="White"
+                           Margin="0,0,10,0"
+                           Click="BtnExportarPDF_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Exportar PDF" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                           Background="#2ECC71"
+                           Foreground="White"
+                           Click="BtnExportarExcel_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Exportar Excel" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Window>

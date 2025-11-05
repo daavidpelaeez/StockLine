@@ -97,13 +97,16 @@
     <Compile Include="DTOs\ComercialDTO.cs" />
     <Compile Include="DTOs\EnvioDTO.cs" />
     <Compile Include="DTOs\LoginResponse.cs" />
+    <Compile Include="DTOs\MovimientoDto.cs" />
     <Compile Include="DTOs\ProductoDto.cs" />
     <Compile Include="DTOs\SIMDTO.cs" />
     <Compile Include="DTOs\UsuarioDTO.cs" />
+    <Compile Include="Models\NotificacionDescartada.cs" />
     <Compile Include="Services\AyuntamientoService.cs" />
     <Compile Include="Services\CategoriaService.cs" />
     <Compile Include="Services\ComercialService.cs" />
     <Compile Include="Services\Interfaces\ICategoriaService.cs" />
+    <Compile Include="Services\NotificacionService.cs" />
     <Compile Include="Services\ProductoService.cs" />
     <Compile Include="Services\SIMService.cs" />
     <Compile Include="ViewModels\ProductosViewModel.cs" />
@@ -122,6 +125,9 @@
     <Compile Include="Views\AjustesWindow.xaml.cs">
       <DependentUpon>AjustesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AsignarSIMProductoWindow.xaml.cs">
+      <DependentUpon>AsignarSIMProductoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AyuntamientosWindow.xaml.cs">
       <DependentUpon>AyuntamientosWindow.xaml</DependentUpon>
     </Compile>
@@ -134,8 +140,17 @@
     <Compile Include="Views\CrearEditarCategoriaWindow.xaml.cs">
       <DependentUpon>CrearEditarCategoriaWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CrearEditarSIMWindow.xaml.cs">
+      <DependentUpon>CrearEditarSIMWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CrearEditarUsuarioWindow.xaml.cs">
+      <DependentUpon>CrearEditarUsuarioWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CrearEnvioWindow.xaml.cs">
       <DependentUpon>CrearEnvioWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CrearMovimientoWindow.xaml.cs">
+      <DependentUpon>CrearMovimientoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DetalleEnvioWindow.xaml.cs">
       <DependentUpon>DetalleEnvioWindow.xaml</DependentUpon>
@@ -145,6 +160,9 @@
     </Compile>
     <Compile Include="Views\FiltroStockWindow.xaml.cs">
       <DependentUpon>FiltroStockWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GestionSIMsWindow.xaml.cs">
+      <DependentUpon>GestionSIMsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomeWindow.xaml.cs">
       <DependentUpon>HomeWindow.xaml</DependentUpon>
@@ -157,11 +175,26 @@
     <Compile Include="Services\Interfaces\IPersonaService.cs" />
     <Compile Include="Services\PersonaService.cs" />
     <Compile Include="ViewModels\UsuarioViewModel.cs" />
+    <Compile Include="Views\MovimientosStockWindow.xaml.cs">
+      <DependentUpon>MovimientosStockWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProveedoresWindow.xaml.cs">
       <DependentUpon>ProveedoresWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RecuperarWindow.xaml.cs">
+      <DependentUpon>RecuperarWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportesWindow.xaml.cs">
+      <DependentUpon>ReportesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StockWindow.xaml.cs">
       <DependentUpon>StockWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UsuariosWindow.xaml.cs">
+      <DependentUpon>UsuariosWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VerMovimientoWindow.xaml.cs">
+      <DependentUpon>VerMovimientoWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\AddEditAyuntamientos.xaml">
       <SubType>Designer</SubType>
@@ -187,6 +220,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AsignarSIMProductoWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AyuntamientosWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -201,7 +237,16 @@
     <Page Include="Views\CrearEditarCategoriaWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CrearEditarSIMWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CrearEditarUsuarioWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CrearEnvioWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CrearMovimientoWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DetalleEnvioWindow.xaml">
@@ -213,6 +258,9 @@
     </Page>
     <Page Include="Views\FiltroStockWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GestionSIMsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HomeWindow.xaml">
@@ -239,12 +287,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MovimientosStockWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ProveedoresWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RecuperarWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReportesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StockWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UsuariosWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VerMovimientoWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -295,6 +361,16 @@
     <Resource Include="Assets\Icons\settings.png" />
     <Resource Include="Assets\Icons\stock.png" />
     <Resource Include="Assets\Icons\usuarios.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\hola.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\actualizar.png" />
+    <Resource Include="Assets\Icons\adminRol.png" />
+    <Resource Include="Assets\Icons\comercialRol.png" />
+    <Resource Include="Assets\Icons\usuario.png" />
+    <Resource Include="Assets\Icons\usuarioRol.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

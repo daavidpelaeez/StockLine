@@ -6,7 +6,10 @@
         Width="900"
         Background="#F2F5F8"
         WindowStartupLocation="CenterScreen"
-        FontFamily="Segoe UI">
+        FontFamily="Segoe UI"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize">
 
     <Window.Resources>
         <Color x:Key="AccentColor">#0A84FF</Color>
@@ -84,30 +87,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER -->
-        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-            <Grid>
+        <!-- HEADER MODERNO CON MINIMIZAR Y CERRAR -->
+        <Border Grid.Row="0" Background="White" CornerRadius="12,12,0,0" Padding="0,0,0,0" Margin="0,0,0,20">
+            <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Gestion de Categorias" 
-                              FontSize="24" 
-                              FontWeight="Bold" 
-                              Foreground="{StaticResource MainText}"/>
-                    <TextBlock Text="Administra las categorias de productos" 
-                              FontSize="14" 
-                              Foreground="{StaticResource MutedText}"
-                              Margin="0,4,0,0"/>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,0,0,0">
+                    <TextBlock Text="Gestion de Categorías" FontSize="24" FontWeight="Bold" Foreground="#0B1220"/>
+                    <TextBlock Text="Administra las categorías de productos" FontSize="14" Foreground="#6E7780" Margin="0,4,0,0"/>
                 </StackPanel>
-
-                <Button Grid.Column="1" 
-                       Content="+ Nueva Categoria" 
-                       Style="{StaticResource SuccessButton}"
-                       Width="170"
-                       Click="BtnNuevaCategoria_Click"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <Button Content="_" Width="40" Height="32" Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#7F8C8D" Cursor="Hand" Click="MinimizeWindow_Click"/>
+                    <Button Content="☐" Width="40" Height="32" Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#7F8C8D" Cursor="Hand" Click="MaximizeWindow_Click"/>
+                    <Button Content="x" Width="40" Height="32" Background="#FF6B6B" BorderThickness="0" FontSize="16" Foreground="White" Cursor="Hand" Click="BtnCerrar_Click"/>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -157,7 +152,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <Button Content="?? Editar" 
+                                        <Button Content="Editar" 
                                                Width="80"
                                                Height="32"
                                                Margin="0,0,8,0"
@@ -166,7 +161,7 @@
                                                BorderThickness="0"
                                                Cursor="Hand"
                                                Click="BtnEditar_Click"/>
-                                        <Button Content="??? Eliminar" 
+                                        <Button Content="Eliminar" 
                                                Width="90"
                                                Height="32"
                                                Background="{StaticResource DangerBrush}"

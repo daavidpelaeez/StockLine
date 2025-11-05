@@ -28,9 +28,13 @@ namespace WpfApp1.Views
         private ProductoDto productoEdicion;
         private string rutaFoto;
         private ProductoDto _producto;
+        
         public AddProduct()
         {
             InitializeComponent();
+            _producto = new ProductoDto();
+            txtProductoVentana.Text = "Nuevo Producto";
+            CargarCategoriasAsync();
         }
 
         public AddProduct(ProductoDto producto)
@@ -43,6 +47,8 @@ namespace WpfApp1.Views
             DescripcionBox.Text = _producto.Descripcion;
             CantidadBox.Text = _producto.Stock.ToString();
 
+            txtProductoVentana.Text = "Editar Producto";
+            
             CargarFotoExistenteAsync();
             CargarDetallesRapidos();
             CargarCategoriasAsync();
@@ -76,7 +82,6 @@ namespace WpfApp1.Views
                             PreviewImage.Source = image;
                             PreviewHint.Visibility = Visibility.Collapsed;
 
-
                             _producto.Foto = null; 
                         }
                     }
@@ -84,10 +89,9 @@ namespace WpfApp1.Views
             }
             catch
             {
-
+                // Error silencioso si no hay foto
             }
         }
-
 
         private async void Guardar_Click(object sender, RoutedEventArgs e)
         {
@@ -96,70 +100,210 @@ namespace WpfApp1.Views
                 // Validar campos básicos
                 if (string.IsNullOrWhiteSpace(NombreBox.Text))
                 {
-                    MessageBox.Show("El nombre es obligatorio.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!int.TryParse(CantidadBox.Text, out int stock))
                 {
-                    MessageBox.Show("Cantidad inválida.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("La cantidad debe ser un número válido.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                // Actualizar DTO con los valores del formulario
-                _producto.Nombre = NombreBox.Text.Trim();
-                _producto.Descripcion = DescripcionBox.Text.Trim();
-                _producto.Stock = stock;
-                _producto.CategoriaID = CategoriaComboBox.SelectedValue != null
-                    ? (int)CategoriaComboBox.SelectedValue
-                    : (int?)null;
+                if (CategoriaComboBox.SelectedValue == null)
+                {
+                    MessageBox.Show("Debes seleccionar una categoría.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5200/"); // URL de tu API
+                    client.BaseAddress = new Uri("http://localhost:5200/");
+                    client.Timeout = TimeSpan.FromMinutes(5);
 
-                    // 1️⃣ Guardar producto
-                    var json = System.Text.Json.JsonSerializer.Serialize(_producto);
-                    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                    var response = await client.PutAsync("api/productos/" + _producto.ProductoID, content);
-                    response.EnsureSuccessStatusCode();
+                    HttpResponseMessage response = null;
+                    int productoId = 0;
 
-                    // 2️⃣ Actualizar _producto con la respuesta del servidor
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    _producto = Newtonsoft.Json.JsonConvert.DeserializeObject<ProductoDto>(jsonResponse);
+                    bool tieneFotoLocal = !string.IsNullOrEmpty(_producto.Foto) && File.Exists(_producto.Foto);
 
-                    // 3️⃣ Actualizar el ComboBox con la categoría actual
-                    if (_producto.CategoriaID.HasValue)
+                    System.Diagnostics.Debug.WriteLine($"Tiene foto local: {tieneFotoLocal}");
+
+                    if (tieneFotoLocal)
                     {
-                        CategoriaComboBox.SelectedValue = _producto.CategoriaID;
-                    }
+                        // Preparar contenido del archivo
+                        var fileBytes = File.ReadAllBytes(_producto.Foto);
+                        var fileContent = new ByteArrayContent(fileBytes);
 
-                    // 2️⃣ Subir la foto si se cambió (si _producto.Foto es ruta local)
-                    if (!string.IsNullOrEmpty(_producto.Foto) && File.Exists(_producto.Foto))
-                    {
-                        using (var form = new MultipartFormDataContent())
-                        using (var fileStream = File.OpenRead(_producto.Foto))
+                        string extension = System.IO.Path.GetExtension(_producto.Foto).ToLower();
+                        string contentType = "image/jpeg";
+                        if (extension == ".png") contentType = "image/png";
+                        else if (extension == ".webp") contentType = "image/webp";
+                        else if (extension == ".gif") contentType = "image/gif";
+                        else if (extension == ".jpg" || extension == ".jpeg") contentType = "image/jpeg";
+
+                        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+                        if (_producto.ProductoID > 0)
                         {
-                            var fileContent = new StreamContent(fileStream);
-                            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // o detectar según extensión
-                            form.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
+                            // El servidor puede no soportar PUT multipart. Primero actualizamos los datos sin la foto (JSON PUT)
+                            var productoDataNoFoto = new
+                            {
+                                ProductoID = _producto.ProductoID,
+                                Nombre = NombreBox.Text.Trim(),
+                                Descripcion = string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim(),
+                                Stock = stock,
+                                CategoriaID = (int)CategoriaComboBox.SelectedValue,
+                                Foto = "default.png"
+                            };
 
-                            var uploadResponse = await client.PostAsync("api/productos/upload/" + _producto.ProductoID, form);
-                            uploadResponse.EnsureSuccessStatusCode();
+                            var jsonSettings = new Newtonsoft.Json.JsonSerializerSettings
+                            {
+                                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                                Formatting = Newtonsoft.Json.Formatting.None
+                            };
+
+                            var jsonNoFoto = Newtonsoft.Json.JsonConvert.SerializeObject(productoDataNoFoto, jsonSettings);
+                            var jsonContent = new StringContent(jsonNoFoto, System.Text.Encoding.UTF8, "application/json");
+
+                            System.Diagnostics.Debug.WriteLine($"Actualizando producto (sin foto) ID: {_producto.ProductoID}");
+                            var putResponse = await client.PutAsync($"api/productos/{_producto.ProductoID}", jsonContent);
+
+                            // Si la actualización falla, retornamos el error
+                            if (!putResponse.IsSuccessStatusCode)
+                            {
+                                response = putResponse;
+                            }
+                            else
+                            {
+                                productoId = _producto.ProductoID;
+
+                                // Luego subimos la foto por separado al endpoint de upload
+                                using (var uploadForm = new MultipartFormDataContent())
+                                {
+                                    uploadForm.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
+
+                                    System.Diagnostics.Debug.WriteLine($"Subiendo foto al endpoint: api/productos/upload/{productoId}");
+                                    var uploadResponse = await client.PostAsync($"api/productos/upload/{productoId}", uploadForm);
+                                    response = uploadResponse;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Crear nuevo producto con multipart/form-data (incluye foto en la misma petición)
+                            using (var form = new MultipartFormDataContent())
+                            {
+                                form.Add(new StringContent(NombreBox.Text.Trim()), "Nombre");
+                                form.Add(new StringContent(string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim()), "Descripcion");
+                                form.Add(new StringContent(stock.ToString()), "Stock");
+                                form.Add(new StringContent(((int)CategoriaComboBox.SelectedValue).ToString()), "CategoriaID");
+
+                                form.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
+
+                                System.Diagnostics.Debug.WriteLine("Enviando multipart POST a api/productos");
+                                response = await client.PostAsync("api/productos", form);
+                            }
                         }
                     }
+                    else
+                    {
+                        // Sin foto: enviar JSON con los campos necesarios
+                        var productoData = new
+                        {
+                            ProductoID = _producto.ProductoID,
+                            Nombre = NombreBox.Text.Trim(),
+                            Descripcion = string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim(),
+                            Stock = stock,
+                            CategoriaID = (int)CategoriaComboBox.SelectedValue,
+                            Foto = "default.png"
+                        };
+
+                        var jsonSettings = new Newtonsoft.Json.JsonSerializerSettings
+                        {
+                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                            Formatting = Newtonsoft.Json.Formatting.None
+                        };
+
+                        var json = Newtonsoft.Json.JsonConvert.SerializeObject(productoData, jsonSettings);
+                        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                        if (_producto.ProductoID > 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Enviando JSON PUT a api/productos/{_producto.ProductoID}: {json}");
+                            response = await client.PutAsync($"api/productos/{_producto.ProductoID}", content);
+                            productoId = _producto.ProductoID;
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Enviando JSON POST a api/productos: {json}");
+                            response = await client.PostAsync("api/productos", content);
+                        }
+                    }
+
+                    var responseBody = response != null ? await response.Content.ReadAsStringAsync() : string.Empty;
+                    System.Diagnostics.Debug.WriteLine($"Código de respuesta: {response?.StatusCode}");
+                    System.Diagnostics.Debug.WriteLine($"Cuerpo de respuesta: {responseBody}");
+
+                    if (response == null || !response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show($"Error al guardar el producto:\n\nCódigo: {response?.StatusCode}\nDetalle: {responseBody}", 
+                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Intentar obtener el ID del producto guardado
+                    try
+                    {
+                        var jsonSettingsResp = new Newtonsoft.Json.JsonSerializerSettings
+                        {
+                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                        };
+
+                        var productoGuardado = Newtonsoft.Json.JsonConvert.DeserializeObject<ProductoDto>(responseBody, jsonSettingsResp);
+                        if (productoGuardado != null && productoGuardado.ProductoID > 0)
+                        {
+                            productoId = productoGuardado.ProductoID;
+                        }
+                        else
+                        {
+                            // intentar extraer manualmente
+                            dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                            if (obj != null)
+                            {
+                                if (obj.ProductoID != null) productoId = (int)obj.ProductoID;
+                                else if (obj.productoID != null) productoId = (int)obj.productoID;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"No se pudo obtener ProductoID: {ex.Message}");
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Producto guardado con ID: {productoId}");
+
+                    // Si enviamos multipart con foto ya se subió en la misma petición; no hacer upload separado
                 }
 
                 MessageBox.Show("Producto guardado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.DialogResult = true; // cierra la ventana y devuelve true
+                this.DialogResult = true;
                 this.Close();
+            }
+            catch (HttpRequestException httpEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error HTTP: {httpEx.Message}");
+                MessageBox.Show($"Error de conexión con el servidor:\n\n{httpEx.Message}\n\nPor favor, verifica que el servidor esté ejecutándose en http://localhost:5200", "Error de Conexión", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar el producto:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"Error general: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                MessageBox.Show($"Error al guardar el producto:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private async Task CargarCategoriasAsync()
         {
@@ -176,10 +320,10 @@ namespace WpfApp1.Views
                     var categorias = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CategoriaDto>>(json);
 
                     CategoriaComboBox.ItemsSource = categorias;
-                    CategoriaComboBox.DisplayMemberPath = "Nombre";  // lo que se muestra
-                    CategoriaComboBox.SelectedValuePath = "CategoriaID"; // valor seleccionado
+                    CategoriaComboBox.DisplayMemberPath = "Nombre";
+                    CategoriaComboBox.SelectedValuePath = "CategoriaID";
 
-                    // **Selecciona la categoría del producto después de asignar ItemsSource**
+                    // Seleccionar categoría del producto si existe
                     if (_producto != null && _producto.CategoriaID.HasValue)
                     {
                         CategoriaComboBox.SelectedValue = _producto.CategoriaID;
@@ -188,10 +332,9 @@ namespace WpfApp1.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error cargando categorías: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error cargando categorías:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private void CargarDetallesRapidos()
         {
@@ -199,19 +342,18 @@ namespace WpfApp1.Views
 
             QuickNombre.Text = _producto.Nombre ?? "—";
             QuickCantidad.Text = _producto.Stock.ToString();
-            QuickDescripcion.Text = _producto.Descripcion ?? "-";
-            txtProductoVentana.Text = _producto.Nombre ?? "Producto";
+            QuickDescripcion.Text = _producto.Descripcion ?? "—";
         }
-
 
         private void SeleccionarFoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Images|*.jpg;*.jpeg;*.png;*.webp";
+            ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.webp";
             if (ofd.ShowDialog() == true)
             {
                 PreviewImage.Source = new BitmapImage(new Uri(ofd.FileName));
                 PreviewHint.Visibility = Visibility.Collapsed;
+                FotoNombre.Text = System.IO.Path.GetFileName(ofd.FileName);
 
                 // Guardamos temporalmente la ruta local
                 _producto.Foto = ofd.FileName;
@@ -223,6 +365,7 @@ namespace WpfApp1.Views
             FotoNombre.Text = "";
             PreviewImage.Source = null;
             PreviewHint.Visibility = Visibility.Visible;
+            _producto.Foto = null;
         }
 
         private void ImageDrop_DragOver(object sender, DragEventArgs e)
@@ -243,16 +386,34 @@ namespace WpfApp1.Views
                 if (files.Length > 0)
                 {
                     string file = files[0];
-                    FotoNombre.Text = file;
+                    FotoNombre.Text = System.IO.Path.GetFileName(file);
                     PreviewImage.Source = new BitmapImage(new Uri(file, UriKind.Absolute));
                     PreviewHint.Visibility = Visibility.Collapsed;
+                    _producto.Foto = file;
                 }
             }
         }
 
         private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
             this.Close();
+        }
+
+        // Eventos para actualizar vista previa en tiempo real
+        private void NombreBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QuickNombre.Text = string.IsNullOrWhiteSpace(NombreBox.Text) ? "—" : NombreBox.Text;
+        }
+
+        private void DescripcionBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QuickDescripcion.Text = string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "—" : DescripcionBox.Text;
+        }
+
+        private void CantidadBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            QuickCantidad.Text = string.IsNullOrWhiteSpace(CantidadBox.Text) ? "—" : CantidadBox.Text;
         }
     }
 }
