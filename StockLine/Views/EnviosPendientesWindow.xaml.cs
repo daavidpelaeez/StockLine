@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using WpfApp1.DTOs;
 using WpfApp1.Services;
 
@@ -204,10 +205,26 @@ namespace WpfApp1.Views
             ventanaDetalle.ShowDialog();
         }
 
+        private async Task ActualizarSIMsUbicacionPorEnvio(EnvioDTO envio)
+        {
+            var simService = new SIMService();
+            foreach (var detalle in envio.Detalles)
+            {
+                if (detalle.SIMID.HasValue)
+                {
+                    var sim = await simService.GetByIdAsync(detalle.SIMID.Value);
+                    if (sim != null)
+                    {
+                        sim.Ubicacion = envio.AyuntamientoNombre;
+                        await simService.UpdateAsync(sim.SIMID, sim);
+                    }
+                }
+            }
+        }
+
         private async void Finalizar_Click(object sender, RoutedEventArgs args)
         {
             var envioSeleccionado = EnviosGrid.SelectedItem as EnvioDTO;
-            
             if (envioSeleccionado == null)
             {
                 MessageBox.Show("Selecciona un envio primero.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -223,17 +240,17 @@ namespace WpfApp1.Views
                 return;
             }
 
-            if (envioSeleccionado.Estado == "Preparado")
+            if (envioSeleccionado.Estado == "Enviado")
             {
-                MessageBox.Show("Este envio ya esta preparado.", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Este envio ya está marcado como enviado.", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirmacion = MessageBox.Show(
-                $"Estas seguro de marcar el envio #{envioSeleccionado.EnvioID} como Preparado?\n\n" +
+                $"Estas seguro de marcar el envio #{envioSeleccionado.EnvioID} como Enviado?\n\n" +
                 $"Ayuntamiento: {envioSeleccionado.AyuntamientoNombre}\n" +
                 $"Fecha: {envioSeleccionado.FechaEnvio:dd/MM/yyyy}",
-                "Confirmar Preparacion",
+                "Confirmar Envio",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -242,11 +259,16 @@ namespace WpfApp1.Views
 
             try
             {
-                var resultado = await _envioService.UpdateEstadoAsync(envioSeleccionado.EnvioID, "Preparado", _usuarioId);
+                var resultado = await _envioService.UpdateEstadoAsync(envioSeleccionado.EnvioID, "Enviado", _usuarioId);
 
                 if (resultado)
                 {
-                    MessageBox.Show("Envio marcado como preparado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Recargar datos de SIMs desde el backend
+                    var simService = new SIMService();
+                    var simsActualizadas = await simService.GetAllAsync();
+                    // Aquí puedes actualizar la UI donde se muestran las SIMs, por ejemplo:
+                    // ActualizarSIMsEnUI(simsActualizadas);
+                    MessageBox.Show("Envio marcado como enviado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
                     await CargarDatos();
                 }
                 else
@@ -284,7 +306,7 @@ namespace WpfApp1.Views
                 $"Ayuntamiento: {envioSeleccionado.AyuntamientoNombre}\n" +
                 $"Fecha: {envioSeleccionado.FechaEnvio:dd/MM/yyyy}\n" +
                 $"Estado: {envioSeleccionado.Estado}\n\n" +
-                $"Esta accion NO se puede deshacer.\n\n" +
+                $"Esta acion NO se puede deshacer.\n\n" +
                 $"¿Deseas continuar?",
                 "Confirmar Eliminacion",
                 MessageBoxButton.YesNo,

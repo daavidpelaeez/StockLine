@@ -9,155 +9,180 @@
         AllowsTransparency="True"
         ResizeMode="CanResize">
 
-    <Grid Margin="20">
+    <Window.Resources>
+        <!-- Modern DataGrid Style -->
+        <Style x:Key="ModernDataGrid" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="#F5F7FA"/>
+            <Setter Property="AlternatingRowBackground" Value="#EAF0F6"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="RowHeight" Value="48"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#2C3E50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="8,4"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="#F5F7FA"/>
+                        <Setter Property="Margin" Value="2,2,2,2"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="FontFamily" Value="Segoe UI"/>
+                        <Setter Property="Foreground" Value="#2C3E50"/>
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.04"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridRow">
+                                    <Border x:Name="DGR_Border" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                                        <DataGridCellsPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="DGR_Border" Property="Background" Value="#D6EAF8"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="DGR_Border" Property="Background" Value="#EBF5FB"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Volver Button Style -->
+        <Style x:Key="ModernVolverButton" TargetType="Button">
+            <Setter Property="Background" Value="#34495E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="28,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2C3E50"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <!-- Modern Header -->
+        <Border Grid.Row="0" Background="#2C3E50" CornerRadius="0,0,20,20" Height="110" VerticalAlignment="Top" Effect="{DynamicResource DropShadowEffect}" >
+            <Grid Margin="30,0,30,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <TextBlock Text="Gestion de Tarjetas SIM" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Administra las tarjetas SIM del sistema" FontSize="15" Foreground="#BFC9D1" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,15,0,0">
+                    <Button x:Name="btnNuevaSIM"
+                            Height="40"
+                            Padding="20,10"
+                            Background="#27AE60"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="+" FontSize="18" FontWeight="Bold" Margin="0,0,8,0"/>
+                                <TextBlock Text="Nueva SIM" FontSize="16" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Content="-" Width="40" Height="30" Background="Transparent" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="#BFC9D1" Cursor="Hand" Click="MinimizeWindow_Click"/>
+                    <Button Width="40" Height="30" Background="Transparent" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="#BFC9D1" Cursor="Hand" Click="MaximizeWindow_Click">
+                        <TextBlock Text="&#x25A1;" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Button>
+                    <Button Content="x" Width="40" Height="30" Background="#FF6B6B" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="White" Cursor="Hand" Click="CloseWindow_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-        <Grid Grid.Row="0" Margin="0,0,0,20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,0,0">
-                <TextBlock Text="Gestion de Tarjetas SIM" FontSize="28" FontWeight="Bold" Foreground="#2C3E50"/>
-                <TextBlock Text="Administra las tarjetas SIM del sistema" FontSize="14" Foreground="#7F8C8D" Margin="0,5,0,0"/>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,0">
-                <Button Content="-" Width="40" Height="30" Background="Transparent" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="#7F8C8D" Cursor="Hand" Click="MinimizeWindow_Click"/>
-                <Button Width="40" Height="30" Background="Transparent" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="#7F8C8D" Cursor="Hand" Click="MaximizeWindow_Click">
-                    <TextBlock Text="&#x25A1;" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </Button>
-                <Button Content="x" Width="40" Height="30" Background="#FF6B6B" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Foreground="White" Cursor="Hand" Click="CloseWindow_Click"/>
-            </StackPanel>
-        </Grid>
-
-        <Border Grid.Row="1" 
-                Background="White" 
-                CornerRadius="10" 
-                Padding="20" 
-                Margin="0,0,0,15">
+        <!-- Search & Actions -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="30,15,30,0" Height="80" Effect="{DynamicResource DropShadowEffect}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <TextBox x:Name="txtBuscar" 
-                        Grid.Column="0"
-                        Height="40"
-                        Padding="10"
-                        FontSize="13"
-                        VerticalContentAlignment="Center"
-                        BorderBrush="#BDC3C7"
-                        BorderThickness="1"/>
-
-                <ComboBox x:Name="cbFiltroEstado" 
-                         Grid.Column="1"
-                         Width="150"
-                         Height="40"
-                         Margin="10,0,0,0"
-                         VerticalContentAlignment="Center">
+                <TextBox x:Name="txtBuscar" Grid.Column="0" Height="40" Padding="10" FontSize="14" VerticalContentAlignment="Center" BorderBrush="#D1D8E0" BorderThickness="1" Background="#F5F7FA"/>
+                <ComboBox x:Name="cbFiltroEstado" Grid.Column="1" Width="150" Height="40" Margin="10,0,0,0" VerticalContentAlignment="Center" Background="#F5F7FA" BorderBrush="#D1D8E0">
                     <ComboBoxItem Content="Todas" IsSelected="True"/>
                     <ComboBoxItem Content="Disponibles"/>
                     <ComboBoxItem Content="Asignadas"/>
                 </ComboBox>
-
-                <Button x:Name="btnNuevaSIM" 
-                       Grid.Column="2"
-                       Content="Nueva SIM" 
-                       Height="40"
-                       Padding="20,10"
-                       Background="#27AE60"
-                       Foreground="White"
-                       BorderThickness="0"
-                       FontSize="13"
-                       FontWeight="SemiBold"
-                       Cursor="Hand"
-                       Margin="10,0,0,0"/>
-
-                <Button x:Name="btnActualizar" 
-                       Grid.Column="3"
-                       Content="Actualizar" 
-                       Height="40"
-                       Padding="20,10"
-                       Background="#3498DB"
-                       Foreground="White"
-                       BorderThickness="0"
-                       FontSize="13"
-                       FontWeight="SemiBold"
-                       Cursor="Hand"
-                       Margin="10,0,0,0"/>
+                <Button x:Name="btnActualizar" Grid.Column="2" Content="Actualizar" Height="40" Padding="20,10" Background="#3498DB" Foreground="White" BorderThickness="0" FontSize="14" FontWeight="SemiBold" Cursor="Hand" Margin="10,0,0,0"/>
             </Grid>
         </Border>
 
-        <Border Grid.Row="2" 
-                Background="White" 
-                CornerRadius="10" 
-                Padding="0">
-            <DataGrid x:Name="dgSIMs" 
-                     AutoGenerateColumns="False"
-                     CanUserAddRows="False"
-                     CanUserDeleteRows="False"
-                     IsReadOnly="True"
-                     SelectionMode="Single"
-                     GridLinesVisibility="None"
-                     HeadersVisibility="Column"
-                     Background="White"
-                     BorderThickness="0"
-                     RowHeight="50"
-                     FontSize="13">
-                
+        <!-- DataGrid Modern -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="0" Margin="30,15,30,80" Effect="{DynamicResource DropShadowEffect}">
+            <DataGrid x:Name="dgSIMs" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" SelectionMode="Single" GridLinesVisibility="None" HeadersVisibility="Column" Background="White" BorderThickness="0" RowHeight="50" FontSize="14" Margin="0" Style="{StaticResource ModernDataGrid}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding SIMID}" Width="80"/>
                     <DataGridTextColumn Header="Numero SIM" Binding="{Binding NumeroSIM}" Width="*"/>
                     <DataGridTextColumn Header="Producto Asignado" Binding="{Binding ProductoNombre}" Width="*"/>
+                    <DataGridTextColumn Header="Ubicacion/Ayuntamiento" Binding="{Binding Ubicacion}" Width="*"/>
                     <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="120"/>
-                    
-                    <DataGridTemplateColumn Header="Acciones" Width="300">
+                    <DataGridTemplateColumn Header="Acciones" Width="270">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button x:Name="btnEditar"
-                                           Content="Editar" 
-                                           Width="80"
-                                           Height="32"
-                                           Margin="5,0"
-                                           Background="#3498DB"
-                                           Foreground="White"
-                                           BorderThickness="0"
-                                           Cursor="Hand"
-                                           Tag="{Binding}"
-                                           Click="BtnEditarSIM_Click"/>
-                                    
-                                    <Button x:Name="btnAsignar"
-                                           Content="Asignar" 
-                                           Width="80"
-                                           Height="32"
-                                           Margin="5,0"
-                                           Background="#F39C12"
-                                           Foreground="White"
-                                           BorderThickness="0"
-                                           Cursor="Hand"
-                                           Tag="{Binding}"
-                                           Click="BtnAsignarSIM_Click"/>
-                                    
-                                    <Button x:Name="btnEliminar"
-                                           Content="Eliminar" 
-                                           Width="90"
-                                           Height="32"
-                                           Margin="5,0"
-                                           Background="#E74C3C"
-                                           Foreground="White"
-                                           BorderThickness="0"
-                                           Cursor="Hand"
-                                           Tag="{Binding}"
-                                           Click="BtnEliminarSIM_Click"/>
+                                    <Button x:Name="btnEditar" Content="Editar" Width="80" Height="32" Margin="5,0" Background="#3498DB" Foreground="White" BorderThickness="0" Cursor="Hand" Tag="{Binding}" Click="BtnEditarSIM_Click"/>
+                                    <Button x:Name="btnAsignar" Content="Asignar" Width="80" Height="32" Margin="5,0" Background="#F39C12" Foreground="White" BorderThickness="0" Cursor="Hand" Tag="{Binding}" Click="BtnAsignarSIM_Click"/>
+                                    <Button x:Name="btnEliminar" Content="Eliminar" Width="90" Height="32" Margin="5,0" Background="#E74C3C" Foreground="White" BorderThickness="0" Cursor="Hand" Tag="{Binding}" Click="BtnEliminarSIM_Click"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -166,28 +191,23 @@
             </DataGrid>
         </Border>
 
-        <Grid Grid.Row="3" Margin="0,15,0,0">
-            <Button x:Name="btnVolver"
-                   Content="Volver" 
-                   Width="120"
-                   HorizontalAlignment="Left"
-                   Height="40"
-                   Padding="20,10"
-                   Background="#95A5A6"
-                   Foreground="White"
-                   BorderThickness="0"
-                   FontSize="13"
-                   FontWeight="SemiBold"
-                   Cursor="Hand"
-                   Click="BtnVolver_Click"/>
-
-            <TextBlock x:Name="txtTotalSIMs" 
-                      Text="Total de SIMs: 0" 
-                      FontSize="14"
-                      FontWeight="SemiBold"
-                      Foreground="#2C3E50"
-                      HorizontalAlignment="Right"
-                      VerticalAlignment="Center"/>
+        <!-- Footer Modern -->
+        <Grid Grid.Row="3" Margin="30,0,30,30" Height="50" VerticalAlignment="Bottom">
+            <Border Background="White" CornerRadius="10" Padding="10" Effect="{DynamicResource DropShadowEffect}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="btnVolver" Content="Volver" Style="{StaticResource ModernVolverButton}" Click="BtnVolver_Click" Grid.Column="0"/>
+                    <TextBlock x:Name="txtTotalSIMs" Text="Total de SIMs: 0" FontSize="15" FontWeight="SemiBold" Foreground="#2C3E50" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1"/>
+                </Grid>
+            </Border>
         </Grid>
+
+        <!-- DropShadow Effect Resource -->
+        <Grid.Resources>
+            <DropShadowEffect x:Key="DropShadowEffect" Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.12"/>
+        </Grid.Resources>
     </Grid>
 </Window>

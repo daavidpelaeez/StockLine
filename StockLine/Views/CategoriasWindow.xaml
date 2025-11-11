@@ -12,18 +12,21 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <Color x:Key="AccentColor">#0A84FF</Color>
-        <Color x:Key="SuccessColor">#34C759</Color>
-        <Color x:Key="DangerColor">#FF3B30</Color>
+        <!-- Colores actualizados a azul marino -->
+        <Color x:Key="PrimaryColor">#2C3E50</Color>
+        <Color x:Key="SuccessColor">#2ECC71</Color>
+        <Color x:Key="DangerColor">#E74C3C</Color>
+        <Color x:Key="WarningColor">#F39C12</Color>
         <Color x:Key="SurfaceColor">#FFFFFF</Color>
         <Color x:Key="PageBackground">#F2F5F8</Color>
-        <Color x:Key="BorderLightColor">#E6E9ED</Color>
-        <Color x:Key="MutedTextColor">#6E7780</Color>
-        <Color x:Key="MainTextColor">#0B1220</Color>
+        <Color x:Key="BorderLightColor">#2C3E50</Color>
+        <Color x:Key="MutedTextColor">#7F8C8D</Color>
+        <Color x:Key="MainTextColor">#2C3E50</Color>
 
-        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
         <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
         <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
         <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
         <SolidColorBrush x:Key="BgBrush" Color="{StaticResource PageBackground}"/>
         <SolidColorBrush x:Key="BorderLight" Color="{StaticResource BorderLightColor}"/>
@@ -44,7 +47,7 @@
         </Style>
 
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="20,0"/>
@@ -79,6 +82,35 @@
         <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
             <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
         </Style>
+
+        <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#F39C12"/>
+        </Style>
+
+        <!-- DataGrid estilos -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="#34495E"/>
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#F0F2F5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D6EAF8"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E1BEE7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="20" Background="{StaticResource BgBrush}">
@@ -88,15 +120,15 @@
         </Grid.RowDefinitions>
 
         <!-- HEADER MODERNO CON MINIMIZAR Y CERRAR -->
-        <Border Grid.Row="0" Background="White" CornerRadius="12,12,0,0" Padding="0,0,0,0" Margin="0,0,0,20">
+        <Border Grid.Row="0" Background="#FF2C3E50" CornerRadius="12,12,0,0" Padding="0,0,0,0" Margin="0,0,0,20">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,0,0,0">
-                    <TextBlock Text="Gestion de Categorías" FontSize="24" FontWeight="Bold" Foreground="#0B1220"/>
-                    <TextBlock Text="Administra las categorías de productos" FontSize="14" Foreground="#6E7780" Margin="0,4,0,0"/>
+                    <TextBlock Text="Gestion de Categorías" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Administra las categorías de productos" FontSize="14" Foreground="White" Margin="0,4,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
                     <Button Content="_" Width="40" Height="32" Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#7F8C8D" Cursor="Hand" Click="MinimizeWindow_Click"/>
@@ -115,22 +147,34 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Search Bar -->
-                <TextBox x:Name="txtBuscar" 
-                        Grid.Row="0"
-                        Height="40"
-                        Padding="12"
-                        FontSize="14"
-                        BorderBrush="{StaticResource BorderLight}"
-                        BorderThickness="1"
-                        Margin="0,0,0,16"
-                        TextChanged="TxtBuscar_TextChanged">
+                <!-- Search Bar y Botón Nueva Categoria -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                    <TextBox x:Name="txtBuscar" 
+                            Height="44"
+                            Padding="16,0"
+                            FontSize="16"
+                            BorderBrush="{StaticResource BorderLight}"
+                            BorderThickness="1"
+                            Width="400"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Center"
+                            TextChanged="TxtBuscar_TextChanged">
                     <TextBox.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius" Value="8"/>
                         </Style>
                     </TextBox.Resources>
-                </TextBox>
+                    </TextBox>
+                    <Button Content="+ Nueva Categoría"
+                            Style="{StaticResource SuccessButton}"
+                            Height="44"
+                            Width="180"
+                            Margin="24,0,0,0"
+                            Padding="24,0"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Click="BtnNuevaCategoria_Click"/>
+                </StackPanel>
 
                 <!-- DataGrid -->
                 <DataGrid x:Name="CategoriasGrid"
@@ -156,7 +200,7 @@
                                                Width="80"
                                                Height="32"
                                                Margin="0,0,8,0"
-                                               Background="{StaticResource AccentBrush}"
+                                               Style="{StaticResource WarningButton}"
                                                Foreground="White"
                                                BorderThickness="0"
                                                Cursor="Hand"
@@ -164,7 +208,7 @@
                                         <Button Content="Eliminar" 
                                                Width="90"
                                                Height="32"
-                                               Background="{StaticResource DangerBrush}"
+                                               Style="{StaticResource DangerButton}"
                                                Foreground="White"
                                                BorderThickness="0"
                                                Cursor="Hand"

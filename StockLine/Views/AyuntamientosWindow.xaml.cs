@@ -4,8 +4,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 using WpfApp1.DTOs;
 using WpfApp1.Services;
+using WpfApp1.ViewModels;
+using System.Collections.Generic; // Agregado para compilar correctamente List<>
 
 namespace WpfApp1.Views
 {
@@ -18,6 +23,9 @@ namespace WpfApp1.Views
         private ObservableCollection<AyuntamientoViewModel> _ayuntamientos;
         private ObservableCollection<AyuntamientoViewModel> _ayuntamientosFiltrados;
 
+        private string _filtroEstado = "Todos"; // Nuevo campo para el filtro
+        private string _textoBusqueda = "";
+
         public AyuntamientosWindow()
         {
             InitializeComponent();
@@ -27,111 +35,85 @@ namespace WpfApp1.Views
             _ayuntamientosFiltrados = new ObservableCollection<AyuntamientoViewModel>();
 
             dgAyuntamientos.ItemsSource = _ayuntamientosFiltrados;
-
+            txtBuscar.TextChanged += TxtBuscar_TextChanged;
             this.Loaded += AyuntamientosWindow_Loaded;
+        }
+
+        private void TxtBuscar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _textoBusqueda = txtBuscar.Text.Trim();
+            AplicarFiltros();
         }
 
         private async void AyuntamientosWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            await CargarAyuntamientos();
+            if (dgAyuntamientos != null)
+            {
+                dgAyuntamientos.ItemsSource = _ayuntamientosFiltrados;
+                await CargarAyuntamientos();
+            }
+            // Si es null, simplemente no hacer nada
         }
 
         private async System.Threading.Tasks.Task CargarAyuntamientos()
         {
             try
             {
-                // Mostrar cursor de espera
                 this.Cursor = System.Windows.Input.Cursors.Wait;
-                
-                var ayuntamientos = await _ayuntamientoService.GetAllAsync();
-                
-                // Verificar que la lista no sea nula
+                if (dgAyuntamientos == null)
+                {
+                    // Si es null, salir silenciosamente
+                    return;
+                }
+                // Eliminadas todas las referencias a txtTotalAyuntamientos y txtBuscar
+                string query = null;
+                if (_filtroEstado == "Activos") query = "?activos=true";
+                else if (_filtroEstado == "Inactivos") query = "?activos=false";
+
+                List<AyuntamientoDTO> ayuntamientos = null;
+                try
+                {
+                    ayuntamientos = await _ayuntamientoService.GetAllAsync(query);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al obtener ayuntamientos: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 if (ayuntamientos == null)
-                {
-                    ayuntamientos = new System.Collections.Generic.List<AyuntamientoDTO>();
-                }
-                
+                    ayuntamientos = new List<AyuntamientoDTO>();
+
+                // Filtra elementos nulos
+                var validos = ayuntamientos.Where(a => a != null).ToList();
+
                 _ayuntamientos.Clear();
-
-                foreach (var ayuntamiento in ayuntamientos)
+                foreach (var ayuntamiento in validos)
                 {
-                    try
+                    _ayuntamientos.Add(new AyuntamientoViewModel
                     {
-                        // Log para depuración
-                        System.Diagnostics.Debug.WriteLine($"=== Cargando Ayuntamiento ID: {ayuntamiento.AyuntamientoID} ===");
-                        System.Diagnostics.Debug.WriteLine($"Nombre: {ayuntamiento.Nombre}");
-                        System.Diagnostics.Debug.WriteLine($"ComercialID: {ayuntamiento.ComercialID}");
-                        System.Diagnostics.Debug.WriteLine($"ComercialNombre: {ayuntamiento.ComercialNombre}");
-                        
-                        _ayuntamientos.Add(new AyuntamientoViewModel
-                        {
-                            AyuntamientoID = ayuntamiento.AyuntamientoID,
-                            Nombre = ayuntamiento.Nombre ?? "Sin nombre",
-                            Direccion = ayuntamiento.Direccion ?? "Sin dirección",
-                            CP = ayuntamiento.CP ?? "",
-                            Ciudad = ayuntamiento.Ciudad ?? "",
-                            Provincia = ayuntamiento.Provincia ?? "",
-                            Telefono = ayuntamiento.Telefono ?? "Sin teléfono",
-                            Email = ayuntamiento.Email ?? "Sin email",
-                            ComercialID = ayuntamiento.ComercialID,
-                            ComercialNombre = ayuntamiento.ComercialNombre ?? "Sin asignar",
-                            InicialNombre = string.IsNullOrEmpty(ayuntamiento.Nombre) ? "?" : ayuntamiento.Nombre.Substring(0, 1).ToUpper()
-                        });
-                    }
-                    catch (Exception exItem)
-                    {
-                        // Si un item individual falla, continuar con los demás
-                        System.Diagnostics.Debug.WriteLine("Error al procesar ayuntamiento ID " + ayuntamiento.AyuntamientoID + ": " + exItem.Message);
-                    }
+                        AyuntamientoID = ayuntamiento.AyuntamientoID,
+                        Nombre = ayuntamiento.Nombre ?? "Sin nombre",
+                        Direccion = ayuntamiento.Direccion ?? "Sin dirección",
+                        CP = ayuntamiento.CP ?? "",
+                        Ciudad = ayuntamiento.Ciudad ?? "",
+                        Provincia = ayuntamiento.Provincia ?? "",
+                        Telefono = ayuntamiento.Telefono ?? "Sin teléfono",
+                        Email = ayuntamiento.Email ?? "Sin email",
+                        ComercialID = ayuntamiento.ComercialID,
+                        ComercialNombre = ayuntamiento.ComercialNombre ?? "Sin asignar",
+                        InicialNombre = string.IsNullOrEmpty(ayuntamiento.Nombre) ? "?" : ayuntamiento.Nombre.Substring(0, 1).ToUpper(),
+                        Activo = ayuntamiento.Activo
+                    });
                 }
-
                 AplicarFiltros();
-                ActualizarEstadisticas();
-            }
-            catch (InvalidOperationException ex)
-            {
-                if (ex.Message.Contains("conexión") || ex.Message.Contains("API"))
-                {
-                    MessageBox.Show(
-                        "Error de conexión con el servidor.\n\n" +
-                        "Verifica que la API esté ejecutándose.\n\n" +
-                        "Detalles: " + ex.Message,
-                        "Error de Conexión",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "Error al cargar ayuntamientos:\n\n" + ex.Message,
-                        "Error",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
-                
-                // Asegurar que las listas estén inicializadas aunque falle
-                _ayuntamientos.Clear();
-                _ayuntamientosFiltrados.Clear();
-                txtTotalAyuntamientos.Text = "Total de ayuntamientos: 0";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Error inesperado al cargar ayuntamientos:\n\n" +
-                    "Tipo: " + ex.GetType().Name + "\n" +
-                    "Mensaje: " + ex.Message,
-                    "Error Crítico",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                
-                // Asegurar que las listas estén inicializadas aunque falle
+                MessageBox.Show("Error inesperado al cargar ayuntamientos: " + ex.Message, "Error Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
                 _ayuntamientos.Clear();
                 _ayuntamientosFiltrados.Clear();
-                txtTotalAyuntamientos.Text = "Total de ayuntamientos: 0";
             }
             finally
             {
-                // Restaurar cursor normal
                 this.Cursor = System.Windows.Input.Cursors.Arrow;
             }
         }
@@ -141,19 +123,21 @@ namespace WpfApp1.Views
             try
             {
                 var resultado = _ayuntamientos.AsEnumerable();
-
-                if (!string.IsNullOrWhiteSpace(txtBuscar.Text))
+                if (!string.IsNullOrWhiteSpace(_textoBusqueda))
                 {
-                    var busqueda = txtBuscar.Text.ToLower();
+                    string filtro = _textoBusqueda.ToLower();
                     resultado = resultado.Where(a =>
-                        (a.Nombre != null && a.Nombre.ToLower().Contains(busqueda)) ||
-                        (a.Direccion != null && a.Direccion.ToLower().Contains(busqueda)) ||
-                        (a.Telefono != null && a.Telefono.ToLower().Contains(busqueda)) ||
-                        (a.Email != null && a.Email.ToLower().Contains(busqueda)) ||
-                        (a.ComercialNombre != null && a.ComercialNombre.ToLower().Contains(busqueda))
+                        (a.Nombre != null && a.Nombre.ToLower().Contains(filtro)) ||
+                        (a.Direccion != null && a.Direccion.ToLower().Contains(filtro)) ||
+                        (a.Email != null && a.Email.ToLower().Contains(filtro)) ||
+                        (a.Telefono != null && a.Telefono.ToLower().Contains(filtro))
                     );
                 }
-
+                if (_filtroEstado != "Todos")
+                {
+                    bool estadoActivo = _filtroEstado == "Activos";
+                    resultado = resultado.Where(a => a.Activo == estadoActivo);
+                }
                 _ayuntamientosFiltrados.Clear();
                 foreach (var ayuntamiento in resultado)
                 {
@@ -163,33 +147,12 @@ namespace WpfApp1.Views
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error en AplicarFiltros: " + ex.Message);
-                
-                // Si hay error, mostrar todos sin filtro
                 _ayuntamientosFiltrados.Clear();
                 foreach (var ayuntamiento in _ayuntamientos)
                 {
                     _ayuntamientosFiltrados.Add(ayuntamiento);
                 }
             }
-        }
-
-        private void ActualizarEstadisticas()
-        {
-            try
-            {
-                txtTotalAyuntamientos.Text = "Total de ayuntamientos: " + _ayuntamientosFiltrados.Count;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error en ActualizarEstadisticas: " + ex.Message);
-                txtTotalAyuntamientos.Text = "Total de ayuntamientos: 0";
-            }
-        }
-
-        private void TxtBuscar_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            AplicarFiltros();
-            ActualizarEstadisticas();
         }
 
         private void BtnNuevoAyuntamiento_Click(object sender, RoutedEventArgs e)
@@ -204,7 +167,7 @@ namespace WpfApp1.Views
             CargarAyuntamientos();
         }
 
-        private void BtnVer_Click(object sender, RoutedEventArgs e)
+        private async void BtnVer_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             var ayuntamiento = button?.Tag as AyuntamientoViewModel;
@@ -215,214 +178,129 @@ namespace WpfApp1.Views
                 return;
             }
 
-            var detalles = "Información del Ayuntamiento:\n\n" +
-                          "ID: " + ayuntamiento.AyuntamientoID + "\n" +
-                          "Nombre: " + ayuntamiento.Nombre + "\n" +
-                          "Dirección: " + ayuntamiento.Direccion + "\n" +
-                          "Código Postal: " + ayuntamiento.CP + "\n" +
-                          "Ciudad: " + ayuntamiento.Ciudad + "\n" +
-                          "Provincia: " + ayuntamiento.Provincia + "\n" +
-                          "Teléfono: " + ayuntamiento.Telefono + "\n" +
-                          "Email: " + ayuntamiento.Email + "\n" +
-                          "Comercial: " + ayuntamiento.ComercialNombre;
-
-            MessageBox.Show(detalles, "Detalles del Ayuntamiento", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void BtnEditar_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            var ayuntamiento = button?.Tag as AyuntamientoViewModel;
-
-            if (ayuntamiento == null)
+            var estado = ayuntamiento.Activo ? "Activo" : "Inactivo";
+            var colorEstado = ayuntamiento.Activo ? "#27AE60" : "#E74C3C";
+            var dialog = new Window
             {
-                MessageBox.Show("Selecciona un ayuntamiento para editar", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var ventana = new AddEditAyuntamientos(ayuntamiento);
-            ventana.AyuntamientoGuardado += async () => await CargarAyuntamientos();
-            ventana.ShowDialog();
-        }
-
-        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            // Deshabilitar el botón para evitar múltiples clicks
-            var button = sender as Button;
-            if (button == null) return;
-            
-            var ayuntamiento = button?.Tag as AyuntamientoViewModel;
-
-            if (ayuntamiento == null)
-            {
-                MessageBox.Show("Selecciona un ayuntamiento para eliminar", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var confirmacion = MessageBox.Show(
-                "¿Estás seguro de eliminar el ayuntamiento '" + ayuntamiento.Nombre + "'?\n\n" +
-                "ADVERTENCIA: No se podrá eliminar si tiene registros asociados.\n\n" +
-                "Esta acción NO se puede deshacer.",
-                "Confirmar Eliminación",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (confirmacion != MessageBoxResult.Yes)
-                return;
-
-            // Deshabilitar botón mientras se procesa
-            var originalIsEnabled = button.IsEnabled;
-            button.IsEnabled = false;
-
-            try
-            {
-                var resultado = await _ayuntamientoService.DeleteAsync(ayuntamiento.AyuntamientoID);
-
-                if (resultado)
+                Title = "Detalles del Ayuntamiento",
+                Width = 480,
+                Height = 540,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                WindowStyle = WindowStyle.None,
+                ResizeMode = ResizeMode.NoResize,
+                Background = Brushes.White,
+                Owner = this,
+                Content = new Border
                 {
-                    MessageBox.Show(
-                        "Ayuntamiento eliminado correctamente", 
-                        "Éxito", 
-                        MessageBoxButton.OK, 
-                        MessageBoxImage.Information);
-                    await CargarAyuntamientos();
+                    Background = Brushes.White,
+                    CornerRadius = new CornerRadius(16),
+                    Padding = new Thickness(32),
+                    Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Colors.Black, BlurRadius = 30, Opacity = 0.13, ShadowDepth = 0 },
+                    Child = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        Children =
+                        {
+                            new TextBlock { Text = "Información del Ayuntamiento", FontSize = 20, FontWeight = FontWeights.Bold, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Margin = new Thickness(0,0,0,18) },
+                            new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,0,0,10), Children =
+                                {
+                                    new Border { Width = 48, Height = 48, CornerRadius = new CornerRadius(24), Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Child = new TextBlock { Text = ayuntamiento.InicialNombre, Foreground = Brushes.White, FontWeight = FontWeights.Bold, FontSize = 22, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, VerticalAlignment = VerticalAlignment.Center },
+                                    new StackPanel { Margin = new Thickness(12,0,0,0), Children =
+                                        {
+                                            new TextBlock { Text = ayuntamiento.Nombre, FontWeight = FontWeights.Bold, FontSize = 15, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50") },
+                                            new TextBlock { Text = ayuntamiento.Email, FontSize = 12, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,2,0,0) }
+                                        }
+                                    }
+                                }
+                            },
+                            new TextBlock { Text = $"Dirección: {ayuntamiento.Direccion}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,8,0,0) },
+                            new TextBlock { Text = $"Ciudad: {ayuntamiento.Ciudad}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,4,0,0) },
+                            new TextBlock { Text = $"Provincia: {ayuntamiento.Provincia}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,4,0,0) },
+                            new TextBlock { Text = $"Código Postal: {ayuntamiento.CP}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,4,0,0) },
+                            new TextBlock { Text = $"Teléfono: {ayuntamiento.Telefono}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,4,0,0) },
+                            new TextBlock { Text = $"Comercial: {ayuntamiento.ComercialNombre}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#2ECC71"), Margin = new Thickness(0,8,0,0) },
+                            new TextBlock { Text = $"Estado: {estado}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString(colorEstado), Margin = new Thickness(0,8,0,0) },
+                            new TextBlock { Text = $"ID: {ayuntamiento.AyuntamientoID}", FontSize = 13, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,8,0,0) },
+                            new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,30,0,0), HorizontalAlignment = HorizontalAlignment.Right, Children =
+                                {
+                                    new Button { Content = ayuntamiento.Activo ? "Desactivar" : "Activar", Width = 120, Height = 38, Margin = new Thickness(0,0,12,0), Background = ayuntamiento.Activo ? (Brush)new BrushConverter().ConvertFromString("#E74C3C") : (Brush)new BrushConverter().ConvertFromString("#27AE60"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Tag = ayuntamiento },
+                                    new Button { Content = "Cerrar", Width = 120, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, IsCancel = true }
+                                }
+                            }
+                        }
+                    }
                 }
-                else
+            };
+            // Buscar el botón "Desactivar/Activar" de forma segura
+            StackPanel mainPanel = (dialog.Content as Border)?.Child as StackPanel;
+            Button btnToggleButton = null;
+            if (mainPanel != null)
+            {
+                foreach (var child in mainPanel.Children)
+                {
+                    if (child is StackPanel sp && sp.Orientation == Orientation.Horizontal && sp.HorizontalAlignment == HorizontalAlignment.Right)
+                    {
+                        foreach (var btnObj in sp.Children)
+                        {
+                            if (btnObj is Button btn && (btn.Content?.ToString() == "Desactivar" || btn.Content?.ToString() == "Activar"))
+                            {
+                                btnToggleButton = btn;
+                                break;
+                            }
+                        }
+                    }
+                    if (btnToggleButton != null) break;
+                }
+            }
+            if (btnToggleButton == null)
+            {
+                MessageBox.Show("No se encontró el botón de activar/desactivar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                dialog.ShowDialog();
+                return;
+            }
+            btnToggleButton.Click += async (s, ev) =>
+            {
+                try
+                {
+                    var dto = new AyuntamientoDTO
+                    {
+                        AyuntamientoID = ayuntamiento.AyuntamientoID,
+                        Nombre = ayuntamiento.Nombre,
+                        Direccion = ayuntamiento.Direccion,
+                        CP = ayuntamiento.CP,
+                        Ciudad = ayuntamiento.Ciudad,
+                        Provincia = ayuntamiento.Provincia,
+                        Telefono = ayuntamiento.Telefono,
+                        Email = ayuntamiento.Email,
+                        ComercialID = ayuntamiento.ComercialID,
+                        Activo = !ayuntamiento.Activo // Cambiar el estado
+                    };
+
+                    // Llamada a la API para actualizar el estado
+                    var respuesta = await _ayuntamientoService.UpdateAsync(dto);
+
+                    if (respuesta)
+                    {
+                        dialog.Close();
+                        MessageBox.Show("Estado del ayuntamiento actualizado con éxito.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await CargarAyuntamientos(); // Recarga la lista desde la API
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al actualizar el ayuntamiento. Inténtalo de nuevo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(
-                        "No se pudo eliminar el ayuntamiento.\n" +
-                        "Inténtalo nuevamente o contacta con el administrador.",
+                        "Error inesperado:\n\n" + ex.Message,
                         "Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
-            }
-            catch (ArgumentException argEx)
-            {
-                MessageBox.Show(
-                    "Datos inválidos:\n\n" + argEx.Message,
-                    "Error de Validación",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Detectar si es un error de registros asociados
-                if (ex.Message.Contains("registros asociados") || 
-                    ex.Message.Contains("REFERENCE constraint") ||
-                    ex.Message.Contains("envíos") ||
-                    ex.Message.Contains("comerciales") ||
-                    ex.Message.Contains("Conflict"))
-                {
-                    MessageBox.Show(
-                        "⚠️ NO SE PUEDE ELIMINAR ESTE AYUNTAMIENTO\n\n" +
-                        "El ayuntamiento tiene registros asociados.\n\n" +
-                        "Posibles causas:\n" +
-                        "• Tiene envíos registrados\n" +
-                        "• Tiene comerciales asignados\n" +
-                        "• Tiene otros registros dependientes\n\n" +
-                        "SOLUCIONES:\n" +
-                        "1. Reasignar los registros a otro ayuntamiento\n" +
-                        "2. Eliminar primero los registros asociados\n" +
-                        "3. Contactar con el administrador\n\n" +
-                        "Detalles técnicos:\n" + ex.Message,
-                        "Ayuntamiento con Registros Asociados",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
-                else if (ex.Message.Contains("no existe") || 
-                         ex.Message.Contains("ya fue eliminado") ||
-                         ex.Message.Contains("NotFound"))
-                {
-                    MessageBox.Show(
-                        "⚠️ AYUNTAMIENTO NO ENCONTRADO\n\n" +
-                        "El ayuntamiento no existe o ya fue eliminado.\n\n" +
-                        "Se actualizará la lista automáticamente.",
-                        "Ayuntamiento No Encontrado",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                    await CargarAyuntamientos();
-                }
-                else if (ex.Message.Contains("conexión") || 
-                         ex.Message.Contains("servidor") ||
-                         ex.Message.Contains("API"))
-                {
-                    MessageBox.Show(
-                        "❌ ERROR DE CONEXIÓN\n\n" +
-                        "No se pudo conectar con el servidor.\n\n" +
-                        "VERIFICA:\n" +
-                        "• Que la API esté ejecutándose\n" +
-                        "• Que el servidor esté en http://localhost:5200/\n" +
-                        "• Tu conexión a internet\n\n" +
-                        "Detalles técnicos:\n" + ex.Message,
-                        "Error de Conexión",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
-                else if (ex.Message.Contains("permisos") || 
-                         ex.Message.Contains("Unauthorized") ||
-                         ex.Message.Contains("Forbidden"))
-                {
-                    MessageBox.Show(
-                        "🔒 SIN PERMISOS\n\n" +
-                        "No tienes permisos para eliminar este ayuntamiento.\n\n" +
-                        "Contacta con el administrador del sistema.",
-                        "Acceso Denegado",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
-                else if (ex.Message.Contains("tiempo de espera") ||
-                         ex.Message.Contains("timeout") ||
-                         ex.Message.Contains("excedido"))
-                {
-                    MessageBox.Show(
-                        "⏱️ TIEMPO DE ESPERA AGOTADO\n\n" +
-                        "La operación tardó demasiado tiempo.\n\n" +
-                        "POSIBLES CAUSAS:\n" +
-                        "• El servidor está sobrecargado\n" +
-                        "• Problemas de red\n" +
-                        "• La base de datos está procesando otras operaciones\n\n" +
-                        "Intenta nuevamente en unos momentos.",
-                        "Timeout",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
-                else
-                {
-                    // Error genérico pero controlado
-                    MessageBox.Show(
-                        "❌ ERROR AL ELIMINAR\n\n" +
-                        ex.Message + "\n\n" +
-                        "Si el problema persiste, contacta con el administrador.",
-                        "Error",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Error completamente inesperado
-                MessageBox.Show(
-                    "💥 ERROR INESPERADO\n\n" +
-                    "Ha ocurrido un error no controlado:\n\n" +
-                    "Tipo: " + ex.GetType().Name + "\n" +
-                    "Mensaje: " + ex.Message + "\n\n" +
-                    "Por favor, informa al administrador del sistema.\n\n" +
-                    "Stack Trace (para soporte técnico):\n" + ex.StackTrace,
-                    "Error Crítico",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-            finally
-            {
-                // Re-habilitar el botón
-                button.IsEnabled = originalIsEnabled;
-            }
-        }
+            };
 
-        private void BtnVolver_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
+            dialog.ShowDialog();
         }
 
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
@@ -443,40 +321,61 @@ namespace WpfApp1.Views
             this.Close();
         }
 
-        // Métodos vacíos que ya no se usan pero los mantenemos para evitar errores
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ComboEstado_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var combo = sender as ComboBox;
+            if (combo?.SelectedItem is ComboBoxItem item)
+            {
+                _filtroEstado = item.Content.ToString();
+                CargarAyuntamientos();
+            }
         }
 
-        private void GrdAyuntamientos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            var ayuntamiento = button?.Tag as AyuntamientoViewModel;
+            if (ayuntamiento == null)
+            {
+                MessageBox.Show("Selecciona un ayuntamiento para editar.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var ventana = new AddEditAyuntamientos(ayuntamiento); // Corregido: se pasa el objeto completo
+            ventana.AyuntamientoGuardado += async () => await CargarAyuntamientos();
+            ventana.ShowDialog();
         }
 
-        private void BtnEdit_Click(object sender, RoutedEventArgs e)
+        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            var ayuntamiento = button?.Tag as AyuntamientoViewModel;
+            if (ayuntamiento == null)
+            {
+                MessageBox.Show("Selecciona un ayuntamiento para eliminar.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var confirm = MessageBox.Show($"¿Seguro que deseas eliminar el ayuntamiento '{ayuntamiento.Nombre}'?", "Confirmar eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm == MessageBoxResult.Yes)
+            {
+                bool eliminado = false;
+                try
+                {
+                    eliminado = await _ayuntamientoService.DeleteAsync(ayuntamiento.AyuntamientoID);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al eliminar: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                if (eliminado)
+                {
+                    MessageBox.Show("Ayuntamiento eliminado correctamente.", "Eliminado", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await CargarAyuntamientos();
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo eliminar el ayuntamiento.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
-
-        private void BtnDelete_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void BtnAdd_Click(object sender, RoutedEventArgs e)
-        {
-        }
-    }
-
-    public class AyuntamientoViewModel
-    {
-        public int AyuntamientoID { get; set; }
-        public string Nombre { get; set; }
-        public string Direccion { get; set; }
-        public string CP { get; set; }
-        public string Ciudad { get; set; }
-        public string Provincia { get; set; }
-        public string Telefono { get; set; }
-        public string Email { get; set; }
-        public int? ComercialID { get; set; }
-        public string ComercialNombre { get; set; }
-        public string InicialNombre { get; set; }
     }
 }

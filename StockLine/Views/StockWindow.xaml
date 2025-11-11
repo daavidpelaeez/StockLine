@@ -13,27 +13,27 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Paleta de colores moderna y minimalista -->
-        <SolidColorBrush x:Key="PrimaryColor" Color="#6366F1"/>
+        <!-- Paleta de colores azul marino -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
         <!-- Indigo vibrante -->
         <SolidColorBrush x:Key="PrimaryHover" Color="#4F46E5"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#10B981"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
         <!-- Verde esmeralda -->
-        <SolidColorBrush x:Key="DangerColor" Color="#EF4444"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>
         <!-- Rojo suave -->
-        <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#F39C12"/>
         <!-- Ámbar -->
         <SolidColorBrush x:Key="SurfaceColor" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F5F7FA"/>
         <!-- Gris muy claro -->
-        <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/>
-        <SolidColorBrush x:Key="TextPrimaryColor" Color="#1E293B"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="TextPrimaryColor" Color="#2C3E50"/>
         <!-- Slate 800 -->
-        <SolidColorBrush x:Key="TextSecondaryColor" Color="#64748B"/>
+        <SolidColorBrush x:Key="TextSecondaryColor" Color="#7F8C8D"/>
         <!-- Slate 500 -->
-        <SolidColorBrush x:Key="HoverColor" Color="#F1F5F9"/>
+        <SolidColorBrush x:Key="HoverColor" Color="#D6EAF8"/>
         <!-- Slate 100 -->
-        <SolidColorBrush x:Key="AccentLight" Color="#EEF2FF"/>
+        <SolidColorBrush x:Key="AccentLight" Color="#34495E"/>
         <!-- Indigo 50 -->
 
         <!-- Estilo para cards con sombra suave -->
@@ -69,7 +69,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryHover}"/>
+                                <Setter TargetName="border" Property="Background" Value="#233140"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="RenderTransform">
@@ -131,7 +131,67 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#059669"/>
+                                <Setter TargetName="border" Property="Background" Value="#27AE60"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="border" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón Warning -->
+        <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="{StaticResource WarningColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#D68910"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="border" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón Danger -->
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C0392B"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="RenderTransform">
@@ -300,26 +360,26 @@
         </Style>
 
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="{StaticResource AccentLight}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Height" Value="44"/>
             <Setter Property="Padding" Value="16,0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="#34495E"/>
         </Style>
 
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#F0F2F5"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource HoverColor}"/>
+                    <Setter Property="Background" Value="#D6EAF8"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#D4E6FF"/>
+                    <Setter Property="Background" Value="#E1BEE7"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -356,7 +416,7 @@
 
             <!-- HEADER DE LA VENTANA -->
             <Border Grid.Row="0" 
-                    Background="{StaticResource SurfaceColor}" 
+                    Background="#FF2C3E50" 
                     CornerRadius="16,16,0,0"
                     BorderBrush="{StaticResource BorderColor}"
                     BorderThickness="0,0,0,1">
@@ -372,10 +432,7 @@
                             CornerRadius="12" 
                             Background="{StaticResource PrimaryColor}"
                             VerticalAlignment="Center">
-                        <TextBlock Text="📦" 
-                                 FontSize="24" 
-                                 HorizontalAlignment="Center" 
-                                 VerticalAlignment="Center"/>
+                        <Image Source="/assets/icons/controlStock.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <!-- Título -->
@@ -385,10 +442,10 @@
                         <TextBlock Text="Control de Stock" 
                                  FontSize="22"
                                  FontWeight="Bold"
-                                 Foreground="{StaticResource TextPrimaryColor}"/>
+                                 Foreground="White"/>
                         <TextBlock Text="Gestiona tu inventario en tiempo real" 
                                  FontSize="13"
-                                 Foreground="{StaticResource TextSecondaryColor}"
+                                 Foreground="White"
                                  Margin="0,2,0,0"/>
                     </StackPanel>
 
@@ -447,8 +504,8 @@
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="TOTAL PRODUCTOS" 
                                           FontSize="11" 
-                                          Foreground="{StaticResource TextSecondaryColor}"
-                                          FontWeight="SemiBold"/>
+                                          Foreground="Black"
+                                          FontWeight="Bold"/>
                                 <TextBlock x:Name="txtTotalProductos" 
                                           Text="0" 
                                           FontSize="32" 
@@ -463,10 +520,7 @@
                                    CornerRadius="26"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top">
-                                <TextBlock Text="📦" 
-                                          FontSize="24" 
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                <Image Source="/assets/icons/controlStock.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                     </Border>
@@ -482,8 +536,8 @@
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="STOCK CRÍTICO" 
                                           FontSize="11" 
-                                          Foreground="{StaticResource TextSecondaryColor}"
-                                          FontWeight="SemiBold"/>
+                                          Foreground="Black"
+                                          FontWeight="Bold"/>
                                 <TextBlock x:Name="txtCriticos" 
                                           Text="0" 
                                           FontSize="32" 
@@ -517,8 +571,8 @@
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="UNIDADES TOTALES" 
                                           FontSize="11" 
-                                          Foreground="{StaticResource TextSecondaryColor}"
-                                          FontWeight="SemiBold"/>
+                                          Foreground="Black"
+                                          FontWeight="Bold"/>
                                 <TextBlock x:Name="txtUnidades" 
                                           Text="0" 
                                           FontSize="32" 
@@ -527,16 +581,14 @@
                                           Margin="0,8,0,0"/>
                             </StackPanel>
                             
+                            <!-- KPI Unidades Totales -->
                             <Border Grid.Row="0"
                                    Width="52" Height="52"
                                    Background="#D1FAE5"
                                    CornerRadius="26"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top">
-                                <TextBlock Text="📊" 
-                                          FontSize="24" 
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                <Image Source="/assets/icons/unidades.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                     </Border>
@@ -661,7 +713,7 @@
 
                         <!-- Botón Limpiar Filtros -->
                         <Button Grid.Column="3"
-                               Content="🔄 Limpiar"
+                               Content="Limpiar"
                                Style="{StaticResource SecondaryButton}"
                                Width="120"
                                Margin="0,0,8,0"
@@ -759,14 +811,15 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button Content="✏️"
-                                                   Width="32"
+                                            <Button Content="Editar"
+                                                   Width="70"
                                                    Height="32"
                                                    Margin="4,0"
                                                    Background="{StaticResource WarningColor}"
                                                    Foreground="White"
                                                    BorderThickness="0"
-                                                   FontSize="14"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
                                                    Cursor="Hand"
                                                    Tag="{Binding}"
                                                    Click="EditarProducto_Click"
@@ -787,14 +840,15 @@
                                                 </Button.Template>
                                             </Button>
 
-                                            <Button Content="🗑️"
-                                                   Width="32"
+                                            <Button Content="Eliminar"
+                                                   Width="80"
                                                    Height="32"
                                                    Margin="4,0"
                                                    Background="{StaticResource DangerColor}"
                                                    Foreground="White"
                                                    BorderThickness="0"
-                                                   FontSize="14"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
                                                    Cursor="Hand"
                                                    Tag="{Binding}"
                                                    Click="EliminarProducto_Click"

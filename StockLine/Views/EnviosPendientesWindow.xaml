@@ -288,7 +288,7 @@
 
             <!-- HEADER DE LA VENTANA -->
             <Border Grid.Row="0" 
-                    Background="White" 
+                    Background="#FF2C3E50" 
                     CornerRadius="16,16,0,0"
                     BorderBrush="{StaticResource BorderColor}"
                     BorderThickness="0,0,0,1">
@@ -301,13 +301,12 @@
 
                     <!-- Logo/Icono -->
                     <Border Width="56" Height="56" 
-                            CornerRadius="14" 
-                            Background="{StaticResource PrimaryColor}"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="📦" 
-                                 FontSize="28" 
-                                 HorizontalAlignment="Center" 
-                                 VerticalAlignment="Center"/>
+                            CornerRadius="14"
+                            VerticalAlignment="Center" Background="Black">
+                        <Image Source="/Assets/Icons/stock.png"
+                               Width="32" Height="32"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
                     </Border>
 
                     <!-- Título -->
@@ -315,7 +314,7 @@
                               VerticalAlignment="Center" 
                               Margin="20,0,0,0">
                         <TextBlock Text="Gestión de Envíos" 
-                                 Style="{StaticResource TitleStyle}"/>
+                                 Style="{StaticResource TitleStyle}" Foreground="White"/>
                         <TextBlock Text="Administra y controla todos los envíos del sistema" 
                                  Style="{StaticResource SubtitleStyle}"/>
                     </StackPanel>
@@ -355,7 +354,7 @@
                 <!-- PANEL LATERAL DE FILTROS -->
                 <Border Grid.Column="0" 
                         Style="{StaticResource CardStyle}"
-                        Margin="24,24,12,24">
+                        Margin="24,24,12,24" Background="#FF2C3E50">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <!-- Sección de navegación -->
@@ -365,17 +364,17 @@
                                      Foreground="{StaticResource TextPrimaryColor}"
                                      Margin="0,0,0,16"/>
 
-                            <Button Content="🏠 Volver al Inicio" 
+                            <Button Content="Volver al Inicio" 
                                   Style="{StaticResource SecondaryButton}" 
                                   HorizontalAlignment="Stretch"
                                   Margin="0,0,0,8"
-                                  Click="VolverAlInicio_Click"/>
+                                  Click="VolverAlInicio_Click" Foreground="White" FontWeight="Bold"/>
 
-                            <Button Content="📋 Todos los Envíos" 
+                            <Button Content="Todos los Envíos" 
                                   Style="{StaticResource SecondaryButton}" 
                                   HorizontalAlignment="Stretch"
                                   Margin="0,0,0,16"
-                                  Click="AplicarTodos_Click"/>
+                                  Click="AplicarTodos_Click" Foreground="White" FontWeight="Bold"/>
 
                             <Separator Margin="0,8,0,20" Background="{StaticResource BorderColor}"/>
 
@@ -388,7 +387,7 @@
 
                             <!-- Filtro por Estado -->
                             <TextBlock Text="Estado del Envío" 
-                                     Style="{StaticResource FilterLabel}"/>
+                                     Style="{StaticResource FilterLabel}" Foreground="White" FontWeight="Bold"/>
                             <ComboBox x:Name="cbEstado" 
                                     Style="{StaticResource ModernComboBox}"
                                     Margin="0,0,0,8">
@@ -405,7 +404,7 @@
 
                             <!-- Filtro Últimos Envíos -->
                             <TextBlock Text="Cantidad a Mostrar" 
-                                     Style="{StaticResource FilterLabel}"/>
+                                     Style="{StaticResource FilterLabel}" FontWeight="Bold" Foreground="White"/>
                             <ComboBox x:Name="cbUltimosEnvios" 
                                     Style="{StaticResource ModernComboBox}"
                                     Margin="0,0,0,8">
@@ -421,7 +420,7 @@
 
                             <!-- Filtro por Ayuntamiento -->
                             <TextBlock Text="Ayuntamiento" 
-                                     Style="{StaticResource FilterLabel}"/>
+                                     Style="{StaticResource FilterLabel}" Foreground="White" FontWeight="Bold"/>
                             <ComboBox x:Name="cbAyuntamiento" 
                                     Style="{StaticResource ModernComboBox}"
                                     Margin="0,0,0,8"/>
@@ -434,7 +433,7 @@
                             <Separator Margin="0,8,0,20" Background="{StaticResource BorderColor}"/>
 
                             <!-- Botón Exportar -->
-                            <Button Content="📄 Exportar a CSV" 
+                            <Button Content="Exportar a CSV" 
                                   Style="{StaticResource SuccessButton}" 
                                   HorizontalAlignment="Stretch"
                                   Height="48"

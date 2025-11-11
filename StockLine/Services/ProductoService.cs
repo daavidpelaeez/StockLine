@@ -7,12 +7,6 @@ using WpfApp1.DTOs;
 
 namespace WpfApp1.Services
 {
-    public interface IProductoService
-    {
-        Task<List<ProductoDto>> GetAllAsync();
-        Task<ProductoDto> GetByIdAsync(int id);
-    }
-
     public class ProductoService : IProductoService
     {
         private static readonly HttpClient client = new HttpClient
@@ -20,13 +14,12 @@ namespace WpfApp1.Services
             BaseAddress = new Uri("http://localhost:5200/")
         };
 
-        public async Task<List<ProductoDto>> GetAllAsync()
+        public async Task<List<ProductoDto>> GetAllAsync(string query = null)
         {
-            var response = await client.GetAsync("api/productos");
-            
+            var url = "api/productos" + (string.IsNullOrWhiteSpace(query) ? "" : query);
+            var response = await client.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 return new List<ProductoDto>();
-
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<ProductoDto>>(json);
         }
@@ -34,10 +27,8 @@ namespace WpfApp1.Services
         public async Task<ProductoDto> GetByIdAsync(int id)
         {
             var response = await client.GetAsync($"api/productos/{id}");
-            
             if (!response.IsSuccessStatusCode)
                 return null;
-
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ProductoDto>(json);
         }

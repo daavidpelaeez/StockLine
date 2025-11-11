@@ -12,17 +12,17 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Colores modernos -->
-        <SolidColorBrush x:Key="PrimaryColor" Color="#9C27B0"/>
+        <!-- Colores modernos actualizados a azul marino #2C3E50 -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
         <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>
         <SolidColorBrush x:Key="WarningColor" Color="#F39C12"/>
         <SolidColorBrush x:Key="SurfaceColor" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="BackgroundColor" Color="#F5F7FA"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#E0E4E8"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="TextPrimaryColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="TextSecondaryColor" Color="#7F8C8D"/>
-        <SolidColorBrush x:Key="HoverColor" Color="#F3E5F5"/>
+        <SolidColorBrush x:Key="HoverColor" Color="#34495E"/>
 
         <!-- Estilo para títulos -->
         <Style x:Key="TitleStyle" TargetType="TextBlock">
@@ -49,7 +49,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón primario moderno -->
+        <!-- Botón primario azul marino -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -163,14 +163,15 @@
         </Style>
 
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#F3E5F5"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Height" Value="48"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
             <Setter Property="Padding" Value="16,0"/>
             <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="#34495E"/>
         </Style>
 
         <Style TargetType="DataGridRow">
@@ -179,7 +180,7 @@
             <Setter Property="BorderBrush" Value="#F0F2F5"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource HoverColor}"/>
+                    <Setter Property="Background" Value="#D6EAF8"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="#E1BEE7"/>
@@ -218,9 +219,9 @@
 
             <!-- HEADER DE LA VENTANA -->
             <Border Grid.Row="0" 
-                    Background="White" 
+                    Background="#FF2C3E50" 
                     CornerRadius="16,16,0,0"
-                    BorderBrush="{StaticResource BorderColor}"
+                    BorderBrush="#FF2C3E50"
                     BorderThickness="0,0,0,1">
                 <Grid Height="80" Margin="30,0">
                     <Grid.ColumnDefinitions>
@@ -232,12 +233,9 @@
                     <!-- Logo/Icono -->
                     <Border Width="56" Height="56" 
                             CornerRadius="14" 
-                            Background="{StaticResource PrimaryColor}"
+                            Background="{DynamicResource BackgroundBrush}"
                             VerticalAlignment="Center">
-                        <TextBlock Text="🏛️" 
-                                 FontSize="28" 
-                                 HorizontalAlignment="Center" 
-                                 VerticalAlignment="Center"/>
+                        <Image Source="/icons/ayuntamiento.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <!-- Título -->
@@ -245,9 +243,9 @@
                               VerticalAlignment="Center" 
                               Margin="20,0,0,0">
                         <TextBlock Text="Gestión de Ayuntamientos" 
-                                 Style="{StaticResource TitleStyle}"/>
+                                 Style="{StaticResource TitleStyle}" Foreground="White"/>
                         <TextBlock Text="Administra todos los ayuntamientos del sistema" 
-                                 Style="{StaticResource SubtitleStyle}"/>
+                                 Style="{StaticResource SubtitleStyle}" Foreground="White"/>
                     </StackPanel>
 
                     <!-- Botones de control de ventana -->
@@ -274,7 +272,7 @@
                                Margin="0,0,8,0"/>
                         <Button Content="✕" 
                                Width="40" Height="30" 
-                               Background="#FF6B6B" 
+                               Background="#2C3E50" 
                                BorderThickness="0"
                                FontSize="16"
                                Foreground="White"
@@ -296,55 +294,41 @@
                 <Border Grid.Row="0" 
                         Style="{StaticResource CardStyle}"
                         Margin="24,24,24,16"
-                        Padding="20">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        Padding="20" Background="#FF2C3E50">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Filtrar por estado:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="White"/>
+                            <ComboBox x:Name="ComboEstado" Width="120" SelectionChanged="ComboEstado_SelectionChanged">
+                                <ComboBoxItem Content="Todos" IsSelected="True"/>
+                                <ComboBoxItem Content="Activos"/>
+                                <ComboBoxItem Content="Inactivos"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Búsqueda -->
-                        <Grid Grid.Column="0">
-                            <TextBox x:Name="txtBuscar" 
-                                   Style="{StaticResource ModernTextBox}"
-                                   Width="500"
-                                   HorizontalAlignment="Left"
-                                   TextChanged="TxtBuscar_TextChanged"/>
-                            <TextBlock Text="🔍 Buscar por nombre, dirección, teléfono o email..." 
-                                     Foreground="{StaticResource TextSecondaryColor}"
-                                     FontSize="14"
-                                     VerticalAlignment="Center"
-                                     Margin="16,0,0,0"
-                                     IsHitTestVisible="False">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=txtBuscar}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                            <!-- Búsqueda -->
+                            <Grid Grid.Column="0">
+                                <TextBox x:Name="txtBuscar" 
+                                       Style="{StaticResource ModernTextBox}"
+                                       Width="500"
+                                       HorizontalAlignment="Left"/>
+                            </Grid>
+
+                            <!-- Botón Actualizar -->
+
+                            <!-- Botón Nuevo Ayuntamiento -->
+                            <Button Grid.Column="2" 
+                                  Content="+ Nuevo Ayuntamiento" 
+                                  Style="{StaticResource SuccessButton}"
+                                  Width="210"
+                                  Click="BtnNuevoAyuntamiento_Click"/>
                         </Grid>
-
-                        <!-- Botón Actualizar -->
-                        <Button Grid.Column="1" 
-                              Content="🔄 Actualizar" 
-                              Style="{StaticResource SecondaryButton}"
-                              Width="140"
-                              Margin="12,0"
-                              Click="BtnActualizar_Click"/>
-
-                        <!-- Botón Nuevo Ayuntamiento -->
-                        <Button Grid.Column="2" 
-                              Content="+ Nuevo Ayuntamiento" 
-                              Style="{StaticResource SuccessButton}"
-                              Width="210"
-                              Click="BtnNuevoAyuntamiento_Click"/>
-                    </Grid>
+                    </StackPanel>
                 </Border>
 
                 <!-- Tabla de ayuntamientos -->
@@ -410,11 +394,11 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button Content="👁 Ver"
+                                            <Button Content="Ver"
                                                    Width="90"
                                                    Height="36"
                                                    Margin="4,0"
-                                                   Background="#3498DB"
+                                                   Background="#2C3E50"
                                                    Foreground="White"
                                                    BorderThickness="0"
                                                    FontSize="12"
@@ -441,11 +425,11 @@
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Content="✏ Editar"
+                                            <Button Content="Editar"
                                                    Width="90"
                                                    Height="36"
                                                    Margin="4,0"
-                                                   Background="{StaticResource WarningColor}"
+                                                   Background="#F39C12"
                                                    Foreground="White"
                                                    BorderThickness="0"
                                                    FontSize="12"
@@ -472,11 +456,11 @@
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Content="🗑 Eliminar"
+                                            <Button Content="Eliminar"
                                                    Width="100"
                                                    Height="36"
                                                    Margin="4,0"
-                                                   Background="{StaticResource DangerColor}"
+                                                   Background="#E74C3C"
                                                    Foreground="White"
                                                    BorderThickness="0"
                                                    FontSize="12"

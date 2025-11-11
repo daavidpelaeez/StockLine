@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WpfApp1.DTOs;
@@ -50,7 +51,7 @@ namespace WpfApp1.Views
             await CargarDatos();
         }
 
-        private async System.Threading.Tasks.Task CargarDatos()
+        private async Task CargarDatos()
         {
             try
             {
@@ -77,10 +78,88 @@ namespace WpfApp1.Views
             }
         }
 
+        private async Task RecargarSIMsDisponiblesParaProducto(int productoId)
+        {
+            try
+            {
+                var todasLasSIMs = await _simService.GetAllAsync();
+                var simsDisponibles = todasLasSIMs
+                    .Where(s => s.ProductoID == productoId && string.IsNullOrEmpty(s.Ubicacion))
+                    .ToList();
+                simsDisponibles.Insert(0, new SIMDTO
+                {
+                    SIMID = 0,
+                    NumeroSIM = "Sin SIM",
+                    ProductoID = productoId
+                });
+                cbSIM.ItemsSource = simsDisponibles;
+                cbSIM.SelectedIndex = 0;
+                cbSIM.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al recargar SIMs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                cbSIM.IsEnabled = false;
+                cbSIM.ItemsSource = null;
+            }
+        }
+
+        private async Task RecargarSIMsAsociadasAProducto(int productoId)
+        {
+            try
+            {
+                var todasLasSIMs = await _simService.GetAllAsync();
+                var simsAsociadas = todasLasSIMs
+                    .Where(s => s.ProductoID == productoId)
+                    .ToList();
+                simsAsociadas.Insert(0, new SIMDTO
+                {
+                    SIMID = 0,
+                    NumeroSIM = "Sin SIM",
+                    ProductoID = productoId
+                });
+                cbSIM.ItemsSource = simsAsociadas;
+                cbSIM.SelectedIndex = 0;
+                cbSIM.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar SIMs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                cbSIM.IsEnabled = false;
+                cbSIM.ItemsSource = null;
+            }
+        }
+
+        private async Task RecargarSIMsEnAlmacenParaProducto(int productoId)
+        {
+            try
+            {
+                var todasLasSIMs = await _simService.GetAllAsync();
+                var simsEnAlmacen = todasLasSIMs
+                    .Where(s => s.Ubicacion != null && s.Ubicacion.Trim().Equals("En almacén", StringComparison.OrdinalIgnoreCase)
+                        && s.ProductoID == productoId)
+                    .ToList();
+                simsEnAlmacen.Insert(0, new SIMDTO
+                {
+                    SIMID = 0,
+                    NumeroSIM = "Sin SIM",
+                    ProductoID = productoId
+                });
+                cbSIM.ItemsSource = simsEnAlmacen;
+                cbSIM.SelectedIndex = 0;
+                cbSIM.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar SIMs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                cbSIM.IsEnabled = false;
+                cbSIM.ItemsSource = null;
+            }
+        }
+
         private async void cbProducto_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var productoSeleccionado = cbProducto.SelectedItem as ProductoDto;
-            
             if (productoSeleccionado == null)
             {
                 cbSIM.IsEnabled = false;
@@ -88,39 +167,15 @@ namespace WpfApp1.Views
                 return;
             }
 
-            // ? NUEVA LÓGICA: Solo productos de categoría "Dispositivos con SIM" pueden llevar SIM
             bool puedeLlevarSIM = productoSeleccionado.CategoriaNombre != null && 
                                   productoSeleccionado.CategoriaNombre.Equals(CATEGORIA_CON_SIM, StringComparison.OrdinalIgnoreCase);
 
             if (puedeLlevarSIM)
             {
-                try
-                {
-                    // ? Cargar SIMs disponibles para este producto específico
-                    var simsDelProducto = await _simService.GetByProductoAsync(productoSeleccionado.ProductoID);
-                    
-                    // Agregar opción "Sin SIM" al inicio
-                    simsDelProducto.Insert(0, new SIMDTO 
-                    { 
-                        SIMID = 0, 
-                        NumeroSIM = "Sin SIM", 
-                        ProductoID = productoSeleccionado.ProductoID 
-                    });
-                    
-                    cbSIM.ItemsSource = simsDelProducto;
-                    cbSIM.SelectedIndex = 0;
-                    cbSIM.IsEnabled = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al cargar SIMs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    cbSIM.IsEnabled = false;
-                    cbSIM.ItemsSource = null;
-                }
+                await RecargarSIMsEnAlmacenParaProducto(productoSeleccionado.ProductoID);
             }
             else
             {
-                // El producto NO pertenece a la categoría "Dispositivos con SIM"
                 cbSIM.IsEnabled = false;
                 cbSIM.ItemsSource = null;
             }
@@ -157,14 +212,20 @@ namespace WpfApp1.Views
             int? simId = null;
             string simNumero = null;
             
-            if (cbSIM.IsEnabled && cbSIM.SelectedValue != null)
+            var simSeleccionada = cbSIM.SelectedItem as SIMDTO;
+            if (cbSIM.IsEnabled && simSeleccionada != null)
             {
-                var simIdValue = (int)cbSIM.SelectedValue;
-                if (simIdValue > 0)
+                if (simSeleccionada.SIMID > 0)
                 {
-                    simId = simIdValue;
-                    var simSeleccionada = cbSIM.SelectedItem as SIMDTO;
-                    simNumero = simSeleccionada?.NumeroSIM;
+                    simId = simSeleccionada.SIMID;
+                    simNumero = simSeleccionada.NumeroSIM;
+                    // Solo preguntar si la ubicación NO es 'En almacén'
+                    if (!string.IsNullOrEmpty(simSeleccionada.Ubicacion) && !simSeleccionada.Ubicacion.Trim().Equals("En almacén", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var confirmacion = MessageBox.Show($"La SIM '{simNumero}' ya está asignada a la ubicación '{simSeleccionada.Ubicacion}'. ¿Deseas modificar la ubicación?", "Confirmar modificación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        if (confirmacion != MessageBoxResult.Yes)
+                            return;
+                    }
                 }
             }
 
@@ -289,6 +350,15 @@ namespace WpfApp1.Views
         {
             this.DialogResult = false;
             this.Close();
+        }
+
+        private async void btnActualizarSIMs_Click(object sender, RoutedEventArgs e)
+        {
+            var productoSeleccionado = cbProducto.SelectedItem as ProductoDto;
+            if (productoSeleccionado != null)
+            {
+                await RecargarSIMsDisponiblesParaProducto(productoSeleccionado.ProductoID);
+            }
         }
     }
 

@@ -201,62 +201,61 @@ namespace WpfApp1.Views
         {
             var button = sender as Button;
             var producto = button?.Tag as ProductoDto;
-            
             if (producto == null)
             {
                 producto = StockGrid.SelectedItem as ProductoDto;
             }
-            
             if (producto == null)
             {
                 MessageBox.Show("Selecciona un producto para eliminar.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
             var confirmacion = MessageBox.Show(
-                $"¿Estás seguro de eliminar el producto '{producto.Nombre}'?\n\nEsta acción NO se puede deshacer.",
-                "Confirmar Eliminación",
+                producto.Activo == false ?
+                $"¿Quieres activar el producto '{producto.Nombre}'?" :
+                $"¿Estás seguro de desactivar el producto '{producto.Nombre}'?\n\nEsta acción NO se puede deshacer.",
+                producto.Activo == false ? "Confirmar Activación" : "Confirmar Desactivación",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
-
             if (confirmacion != MessageBoxResult.Yes)
                 return;
-
             try
             {
                 using (var client = new System.Net.Http.HttpClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5200/");
-                    
-                    System.Diagnostics.Debug.WriteLine($"Eliminando producto ID: {producto.ProductoID}");
-                    
-                    var response = await client.DeleteAsync($"api/productos/{producto.ProductoID}");
-                    
-                    if (!response.IsSuccessStatusCode)
+                    if (producto.Activo == false)
                     {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        System.Diagnostics.Debug.WriteLine($"Error al eliminar: {errorContent}");
-                        
-                        MessageBox.Show(
-                            $"Error al eliminar el producto:\n\nCódigo: {response.StatusCode}\nDetalle: {errorContent}",
-                            "Error",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                        return;
+                        // Activar (PUT)
+                        var dto = new { ProductoID = producto.ProductoID, Activo = true };
+                        var json = Newtonsoft.Json.JsonConvert.SerializeObject(dto);
+                        var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                        var res = await client.PutAsync($"api/productos/{producto.ProductoID}", content);
+                        if (!res.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Error activando: {await res.Content.ReadAsStringAsync()}");
+                            return;
+                        }
                     }
-                    
-                    System.Diagnostics.Debug.WriteLine("Producto eliminado correctamente");
+                    else
+                    {
+                        // Desactivar (DELETE)
+                        var res = await client.DeleteAsync($"api/productos/{producto.ProductoID}");
+                        if (!res.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Error desactivando: {await res.Content.ReadAsStringAsync()}");
+                            return;
+                        }
+                    }
                 }
-                
-                MessageBox.Show("Producto eliminado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(producto.Activo == false ? "Producto activado correctamente." : "Producto desactivado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 await ProductosVM.CargarProductosAsync();
                 ActualizarKPIs();
                 ProductoModificado?.Invoke();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Excepción al eliminar: {ex.Message}");
-                MessageBox.Show($"Error al eliminar el producto:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error al cambiar estado del producto:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -15,9 +15,9 @@ namespace WpfApp1.Services
         Task<SIMDTO> GetByIdAsync(int id);
         Task<SIMDTO> CreateAsync(SIMDTO sim);
         Task<bool> UpdateAsync(int id, SIMDTO sim);
-        Task<bool> DeleteAsync(int id);
-        Task<bool> AsignarProductoAsync(int simId, int productoId);
-        Task<bool> DesasignarProductoAsync(int simId);
+        Task<(bool, string)> DeleteAsync(int id);
+        Task<(bool, string)> AsignarProductoAsync(int simId, int productoId);
+        Task<(bool, string)> DesasignarProductoAsync(int simId);
     }
 
     public class SIMService : ISIMService
@@ -83,32 +83,34 @@ namespace WpfApp1.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<(bool, string)> DeleteAsync(int id)
         {
             var response = await client.DeleteAsync($"api/sims/{id}");
-            return response.IsSuccessStatusCode;
+            var error = await response.Content.ReadAsStringAsync();
+            return (response.IsSuccessStatusCode, error);
         }
 
-        public async Task<bool> AsignarProductoAsync(int simId, int productoId)
+        public async Task<(bool, string)> AsignarProductoAsync(int simId, int productoId)
         {
-            var json = JsonConvert.SerializeObject(productoId);
+            var json = JsonConvert.SerializeObject(productoId); // solo el número
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"api/sims/{simId}/asignar-producto")
             {
                 Content = content
             };
-
             var response = await client.SendAsync(request);
-            return response.IsSuccessStatusCode;
+            var error = await response.Content.ReadAsStringAsync();
+            return (response.IsSuccessStatusCode, error);
         }
 
-        public async Task<bool> DesasignarProductoAsync(int simId)
+        public async Task<(bool, string)> DesasignarProductoAsync(int simId)
         {
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"api/sims/{simId}/desasignar-producto");
-            
-            var response = await client.SendAsync(request);
-            return response.IsSuccessStatusCode;
+            // Usar PUT, endpoint correcto y body 'null' como texto plano
+            var json = "null";
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"api/sims/{simId}/desasignar", content);
+            var error = await response.Content.ReadAsStringAsync();
+            return (response.IsSuccessStatusCode, error);
         }
     }
 }

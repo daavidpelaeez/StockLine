@@ -141,7 +141,7 @@
                         <Border Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="true">
                             <Grid>
                                 <Rectangle x:Name="PART_Track" Fill="Transparent" Height="8" RadiusX="4" RadiusY="4"/>
-                                <Rectangle x:Name="PART_Indicator" Fill="{TemplateBinding Foreground}" Height="8" RadiusX="4" RadiusY="4"/>
+                                <Rectangle x:Name="PART_Indicator" Fill="{TemplateBinding Foreground}" Height="8" RadiusX="4" RadiusY="4" HorizontalAlignment="Left"/>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -169,7 +169,7 @@
                     <Border.Effect>
                         <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.18"/>
                     </Border.Effect>
-                    <Border Background="#D0E3FA" CornerRadius="12,0,0,12">
+                    <Border Background="#FF2C3E50" CornerRadius="12,0,0,12">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -182,10 +182,10 @@
                                 <TextBlock Text="Stockline" 
                                           FontSize="36" 
                                           FontWeight="Bold" 
-                                          Foreground="#2C3E50" FontStyle="Italic"/>
+                                          Foreground="White" FontStyle="Italic"/>
                                 <TextBlock Text="Sistema de Gestión" 
                                           FontSize="11" 
-                                          Foreground="#7F8C8D"
+                                          Foreground="White"
                                           Margin="0,4,0,0" FontWeight="Bold"/>
                             </StackPanel>
 
@@ -446,7 +446,7 @@
                                 <Button x:Name="btnUsuarios" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Usuarios"
-                                       Click="btnUsuarios_Click">
+                                       Click="btnUsuarios_Click" Foreground="White" FontStyle="Italic" FontSize="16">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -482,7 +482,7 @@
                                 <Button x:Name="btnAyuntamientos" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Ayuntamientos"
-                                       Click="btnAyuntamientos_Click">
+                                       Click="btnAyuntamientos_Click" FontStyle="Italic" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -518,7 +518,7 @@
                                 <Button x:Name="btnCategorias" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Categorías"
-                                       Click="btnCategorias_Click">
+                                       Click="btnCategorias_Click" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -555,7 +555,7 @@
                                 <Button x:Name="btnSIMs" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Tarjetas SIM"
-                                       Click="btnSIMs_Click">
+                                       Click="btnSIMs_Click" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -592,7 +592,7 @@
                                 <Button x:Name="btnStock" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Stock"
-                                       Click="btnStockCompleto_Click">
+                                       Click="btnStockCompleto_Click" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -628,7 +628,7 @@
                                 <Button x:Name="btnReportes" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Reportes"
-                                       Click="btnReportes_Click">
+                                       Click="btnReportes_Click" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -664,7 +664,7 @@
                                 <Button x:Name="btnAjustes" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Ajustes"
-                                       Click="btnAjustes_Click">
+                                       Click="btnAjustes_Click" Foreground="White">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
@@ -714,7 +714,7 @@
                 </Border>
 
                 <!-- CONTENIDO PRINCIPAL -->
-                <Grid Grid.Column="1" Background="#EAF2FB">
+                <Grid Grid.Column="1" Background="#FFF5F9FD">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="80"/>
                         <RowDefinition Height="Auto"/>
@@ -849,14 +849,13 @@
                         </Border>
                     </UniformGrid>
 
-                    <!-- PANEL DE PRODUCTOS EN STOCK REDISEÑADO MODERNO -->
                     <Border Grid.Row="2"
                             CornerRadius="24"
                             Padding="0"
                             Margin="30,0,30,30"
                             Background="White"
-                            BorderBrush="#E3F2FD"
-                            BorderThickness="1">
+                            BorderBrush="Black"
+                            BorderThickness="2,2,2,2">
                         <Border.Effect>
                             <DropShadowEffect Color="#1976D2" Opacity="0.08" BlurRadius="24" ShadowDepth="0"/>
                         </Border.Effect>
@@ -899,8 +898,8 @@
                             </StackPanel>
 
                             <!-- Lista de productos como tarjetas -->
-                            <ScrollViewer Margin="0,16,0,0" VerticalScrollBarVisibility="Auto" Background="Transparent" Grid.Row="1">
-                                <StackPanel x:Name="panelProductos" Orientation="Vertical" Margin="32,0,32,0">
+                            <ScrollViewer Margin="0,16,0,0" VerticalScrollBarVisibility="Auto" Height="260" Background="Transparent" Grid.Row="1">
+                                <StackPanel x:Name="panelProductos" Orientation="Vertical" Margin="32,0,32,0" HorizontalAlignment="Stretch">
                                     <!-- Aquí se generarán los productos dinámicamente por código -->
                                 </StackPanel>
                             </ScrollViewer>

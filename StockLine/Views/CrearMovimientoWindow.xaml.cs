@@ -10,15 +10,18 @@ namespace WpfApp1.Views
 {
     public partial class CrearMovimientoWindow : Window
     {
-        public CrearMovimientoWindow()
+        private readonly int? _usuarioId;
+        public CrearMovimientoWindow(int? usuarioId = null)
         {
             InitializeComponent();
+            _usuarioId = usuarioId;
             Loaded += CrearMovimientoWindow_Loaded;
         }
 
         private async void CrearMovimientoWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await CargarProductos();
+            // Ya no mostramos ni editamos usuario en la ventana
         }
 
         private async Task CargarProductos()
@@ -81,15 +84,9 @@ namespace WpfApp1.Views
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(txtUsuario.Text))
+                if (!_usuarioId.HasValue)
                 {
-                    MessageBox.Show("Debes indicar el ID de usuario.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!int.TryParse(txtUsuario.Text, out int usuarioId) || usuarioId <= 0)
-                {
-                    MessageBox.Show("El ID de usuario debe ser un número válido.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("No se ha proporcionado el usuario actual.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -100,7 +97,7 @@ namespace WpfApp1.Views
                         productoID = (int)cbProducto.SelectedValue,
                         cantidad = cantidad,
                         tipoMovimiento = tipo,
-                        usuarioID = usuarioId,
+                        usuarioID = _usuarioId.Value,
                         observaciones = txtObservaciones.Text?.Trim() ?? ""
                     };
 

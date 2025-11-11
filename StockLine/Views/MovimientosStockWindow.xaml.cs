@@ -14,10 +14,13 @@ namespace WpfApp1.Views
         private int pageSize = 25;
         private int total = 0;
 
-        public MovimientosStockWindow()
+        private int? _usuarioIdFiltro = null;
+
+        public MovimientosStockWindow(int? usuarioId = null, string usuarioNombre = null)
         {
             InitializeComponent();
             Loaded += MovimientosStockWindow_Loaded;
+            _usuarioIdFiltro = usuarioId;
         }
 
         private async void MovimientosStockWindow_Loaded(object sender, RoutedEventArgs e)
@@ -78,9 +81,9 @@ namespace WpfApp1.Views
                     if (!string.IsNullOrWhiteSpace(tipo) && tipo != "Todos")
                         query += $"&tipo={tipo}";
 
-                    // Filtro usuario
-                    if (!string.IsNullOrWhiteSpace(txtUsuario.Text))
-                        query += $"&usuarioId={txtUsuario.Text.Trim()}";
+                    // Filtro usuario solo por ID
+                    if (_usuarioIdFiltro.HasValue)
+                        query += $"&usuarioId={_usuarioIdFiltro.Value}";
     
                     if (dpFrom.SelectedDate.HasValue)
                         query += $"&from={dpFrom.SelectedDate.Value:yyyy-MM-dd}";
@@ -158,10 +161,10 @@ namespace WpfApp1.Views
 
         private void Crear_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new CrearMovimientoWindow();
+            // Pasar el usuario actual si está disponible
+            var dlg = _usuarioIdFiltro.HasValue ? new CrearMovimientoWindow(_usuarioIdFiltro.Value) : new CrearMovimientoWindow();
             if (dlg.ShowDialog() == true)
             {
-                // optimista: refrescar
                 _ = BuscarAsync();
             }
         }

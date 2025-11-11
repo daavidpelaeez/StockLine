@@ -13,6 +13,8 @@ namespace WpfApp1.Views
 
         public event Action SIMGuardada;
 
+        private SIMDTO _simActual;
+
         public CrearEditarSIMWindow()
         {
             InitializeComponent();
@@ -29,6 +31,7 @@ namespace WpfApp1.Views
             _esEdicion = true;
             txtTitulo.Text = "Editar Tarjeta SIM";
             this.Loaded += CrearEditarSIMWindow_Loaded;
+            btnDesasignar.Click += BtnDesasignar_Click;
         }
 
         private async void CrearEditarSIMWindow_Loaded(object sender, RoutedEventArgs e)
@@ -38,9 +41,14 @@ namespace WpfApp1.Views
                 try
                 {
                     var sim = await _simService.GetByIdAsync(_simId.Value);
+                    _simActual = sim;
                     if (sim != null)
                     {
                         txtNumeroSIM.Text = sim.NumeroSIM;
+                        // Mostrar botón desasignar si está asignada a un producto
+                        btnDesasignar.Visibility = (sim.ProductoID.HasValue && sim.ProductoID.Value > 0)
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
                     }
                 }
                 catch (Exception ex)
@@ -103,6 +111,37 @@ namespace WpfApp1.Views
             {
                 MessageBox.Show("Error al guardar la SIM: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 btnGuardar.IsEnabled = true;
+            }
+        }
+
+        private async void BtnDesasignar_Click(object sender, RoutedEventArgs e)
+        {
+            if (_simActual == null || !_simActual.ProductoID.HasValue || _simActual.ProductoID.Value == 0)
+            {
+                MessageBox.Show("La SIM no está asignada a ningún producto.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var confirm = MessageBox.Show($"¿Seguro que deseas desasignar la SIM '{_simActual.NumeroSIM}' del producto?", "Confirmar desasignación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes)
+                return;
+            try
+            {
+                var (exito, error) = await _simService.DesasignarProductoAsync(_simActual.SIMID);
+                if (exito)
+                {
+                    MessageBox.Show("SIM desasignada correctamente. Ahora está disponible para asignar a otro producto.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    SIMGuardada?.Invoke();
+                    this.DialogResult = true;
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show($"No se pudo desasignar la SIM: {error}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al desasignar la SIM: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

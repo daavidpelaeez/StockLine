@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using WpfApp1.Services;
+using WpfApp1.DTOs;
 
 namespace WpfApp1.Views
 {
@@ -83,49 +84,46 @@ namespace WpfApp1.Views
             try
             {
                 btnAsignar.IsEnabled = false;
-                bool resultado;
+                bool exito;
+                string error;
 
                 if (chkDesasignar.IsChecked == true)
                 {
-                    resultado = await _simService.DesasignarProductoAsync(_simId);
-
-                    if (resultado)
+                    (exito, error) = await _simService.DesasignarProductoAsync(_simId);
+                    if (exito)
                     {
                         MessageBox.Show("SIM desasignada correctamente", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        if (ProductoAsignado != null)
-                            ProductoAsignado();
+                        ProductoAsignado?.Invoke();
                         this.DialogResult = true;
                         this.Close();
                     }
                     else
                     {
-                        MessageBox.Show("No se pudo desasignar la SIM", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"No se pudo desasignar la SIM: {error}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         btnAsignar.IsEnabled = true;
                     }
                 }
                 else
                 {
-                    if (cbProducto.SelectedValue == null)
+                    var productoSeleccionado = cbProducto.SelectedItem as ProductoDto;
+                    if (productoSeleccionado == null || productoSeleccionado.ProductoID <= 0)
                     {
-                        MessageBox.Show("Selecciona un producto", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Selecciona un producto válido", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                         btnAsignar.IsEnabled = true;
                         return;
                     }
-
-                    int productoId = (int)cbProducto.SelectedValue;
-                    resultado = await _simService.AsignarProductoAsync(_simId, productoId);
-
-                    if (resultado)
+                    int productoId = productoSeleccionado.ProductoID;
+                    (exito, error) = await _simService.AsignarProductoAsync(_simId, productoId);
+                    if (exito)
                     {
                         MessageBox.Show("SIM asignada correctamente al producto", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        if (ProductoAsignado != null)
-                            ProductoAsignado();
+                        ProductoAsignado?.Invoke();
                         this.DialogResult = true;
                         this.Close();
                     }
                     else
                     {
-                        MessageBox.Show("No se pudo asignar la SIM al producto", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"No se pudo asignar la SIM al producto: {error}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         btnAsignar.IsEnabled = true;
                     }
                 }

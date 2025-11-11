@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using WpfApp1.DTOs;
 using WpfApp1.Services;
+using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {

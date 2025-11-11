@@ -13,7 +13,7 @@
 
     <Window.Resources>
         <!-- Colores y estilos modernos similares a Ayuntamientos -->
-        <SolidColorBrush x:Key="PrimaryColor" Color="#1976D2"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
         <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>
         <SolidColorBrush x:Key="WarningColor" Color="#F39C12"/>
@@ -148,14 +148,14 @@
             <Setter Property="FontSize" Value="14"/>
         </Style>
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#E3F2FD"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Height" Value="48"/>
             <Setter Property="Padding" Value="16,0"/>
             <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="#34495E"/>
         </Style>
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
@@ -163,10 +163,10 @@
             <Setter Property="BorderBrush" Value="#F0F2F5"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource HoverColor}"/>
+                    <Setter Property="Background" Value="#D6EAF8"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#BBDEFB"/>
+                    <Setter Property="Background" Value="#E1BEE7"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -199,7 +199,7 @@
 
             <!-- HEADER DE LA VENTANA -->
             <Border Grid.Row="0" 
-                    Background="White" 
+                    Background="#FF2C3E50" 
                     CornerRadius="16,16,0,0"
                     BorderBrush="{StaticResource BorderColor}"
                     BorderThickness="0,0,0,1">
@@ -219,9 +219,9 @@
                               VerticalAlignment="Center" 
                               Margin="20,0,0,0">
                         <TextBlock Text="Gestión de Usuarios" 
-                                 Style="{StaticResource TitleStyle}"/>
+                                 Style="{StaticResource TitleStyle}" Foreground="White"/>
                         <TextBlock Text="Administra todos los usuarios del sistema" 
-                                 Style="{StaticResource SubtitleStyle}"/>
+                                 Style="{StaticResource SubtitleStyle}" Foreground="White" FontWeight="Bold"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" 
                               Orientation="Horizontal" 
@@ -264,7 +264,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Barra de búsqueda y acciones -->
+                <!-- Barra de búsqueda, filtro y acciones -->
                 <Border Grid.Row="0" 
                         Style="{StaticResource CardStyle}"
                         Margin="24,24,24,16"
@@ -274,6 +274,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="180"/>
                         </Grid.ColumnDefinitions>
                         <!-- Búsqueda -->
                         <Grid Grid.Column="0">
@@ -300,17 +301,13 @@
                                 </TextBlock.Style>
                             </TextBlock>
                         </Grid>
+                        <!-- Filtro activos/inactivos/todos -->
+                        <ComboBox x:Name="cbFiltroEstado" Grid.Column="3" Width="160" Height="38" Margin="12,0,0,0" VerticalAlignment="Center" SelectionChanged="CbFiltroEstado_SelectionChanged">
+                            <ComboBoxItem Content="Activos" IsSelected="True"/>
+                            <ComboBoxItem Content="Inactivos"/>
+                            <ComboBoxItem Content="Todos"/>
+                        </ComboBox>
                         <!-- Botón Actualizar -->
-                        <Button Grid.Column="1" 
-                              Style="{StaticResource SecondaryButton}"
-                              Width="140"
-                              Margin="12,0"
-                              Click="BtnActualizar_Click">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="/assets/icons/Actualizar.png" Width="20" Height="20" Margin="0,0,8,0"/>
-                                <TextBlock Text="Actualizar" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
                         <!-- Botón Nuevo Usuario -->
                         <Button Grid.Column="2" 
                               Content="+ Nuevo Usuario" 
@@ -413,7 +410,7 @@
                                                    Width="90"
                                                    Height="36"
                                                    Margin="4,0"
-                                                   Background="#42A5F5"
+                                                   Background="#2C3E50"
                                                    Foreground="White"
                                                    BorderThickness="0"
                                                    FontSize="12"
@@ -443,7 +440,7 @@
                                                    Width="90"
                                                    Height="36"
                                                    Margin="4,0"
-                                                   Background="#64B5F6"
+                                                   Background="#F39C12"
                                                    Foreground="White"
                                                    BorderThickness="0"
                                                    FontSize="12"

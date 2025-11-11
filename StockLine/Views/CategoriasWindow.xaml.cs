@@ -31,11 +31,11 @@ namespace WpfApp1.Views
             await CargarCategorias();
         }
 
-        private async System.Threading.Tasks.Task CargarCategorias()
+        private async System.Threading.Tasks.Task CargarCategorias(bool soloActivos = true)
         {
             try
             {
-                var categorias = await _categoriaService.GetAllAsync();
+                var categorias = await _categoriaService.GetAllAsync(soloActivos ? "?activos=true" : null);
                 
                 _categorias.Clear();
                 _categoriasFiltradas.Clear();
@@ -104,7 +104,6 @@ namespace WpfApp1.Views
 
             try
             {
-                // Verificar si hay productos vinculados a esta categoría
                 var productosCount = await _categoriaService.GetProductosCountByCategoriaAsync(categoria.CategoriaID);
 
                 if (productosCount == -1)
@@ -132,9 +131,9 @@ namespace WpfApp1.Views
 
                 // Si no hay productos vinculados, proceder con la confirmación
                 var confirmacion = MessageBox.Show(
-                    $"¿Estas seguro de eliminar la categoria '{categoria.Nombre}'?\n\n" +
-                    "Esta accion no se puede deshacer.",
-                    "Confirmar Eliminacion",
+                    $"¿Estas seguro de desactivar la categoria '{categoria.Nombre}'?\n\n" +
+                    "Esta acción no se puede deshacer.",
+                    "Confirmar Desactivación",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
@@ -145,15 +144,15 @@ namespace WpfApp1.Views
 
                 if (resultado)
                 {
-                    MessageBox.Show("Categoria eliminada correctamente.", 
-                        "Exito", 
+                    MessageBox.Show("Categoria desactivada correctamente.", 
+                        "Éxito", 
                         MessageBoxButton.OK, 
                         MessageBoxImage.Information);
                     await CargarCategorias();
                 }
                 else
                 {
-                    MessageBox.Show("No se pudo eliminar la categoria.", 
+                    MessageBox.Show("No se pudo desactivar la categoria.", 
                         "Error", 
                         MessageBoxButton.OK, 
                         MessageBoxImage.Error);
@@ -161,7 +160,7 @@ namespace WpfApp1.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar la categoria:\n{ex.Message}", 
+                MessageBox.Show($"Error al desactivar la categoria:\n{ex.Message}", 
                     "Error", 
                     MessageBoxButton.OK, 
                     MessageBoxImage.Error);

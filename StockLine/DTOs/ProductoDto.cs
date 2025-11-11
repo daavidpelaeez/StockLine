@@ -18,5 +18,7 @@ namespace WpfApp1.DTOs
         
         // Propiedad calculada para determinar si el stock es critico
         public bool EsCritico => Stock < 10;
+
+        public bool Activo { get; set; }
     }
 }

@@ -318,12 +318,15 @@ namespace WpfApp1.Views
 
         private void MostrarProductosEnStock()
         {
-            panelProductos.HorizontalAlignment = HorizontalAlignment.Stretch;
             panelProductos.Children.Clear();
 
             var productosFiltrados = ProductosVM.ProductosFiltrados
-                                            .Where(p => p.Stock <= MaximoProgressBar)
-                                            .Take(MaxProductosMostrar);
+                            .Take(MaxProductosMostrar)
+                            .ToList();
+
+            // Usar el valor de MaximoProgressBar como máximo para las progress bars
+            int maxStock = MaximoProgressBar > 0 ? MaximoProgressBar : 100;
+            if (maxStock < 100) maxStock = 100;
 
             foreach (var p in productosFiltrados)
             {
@@ -334,15 +337,11 @@ namespace WpfApp1.Views
                     CornerRadius = new CornerRadius(12),
                     Padding = new Thickness(0, 10, 0, 10),
                     Margin = new Thickness(0, 0, 0, 16),
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    MinWidth = 0,
-                    Width = double.NaN // Permite que se estire
+                    HorizontalAlignment = HorizontalAlignment.Stretch
                 };
 
-                // Grid principal para el contenido del producto
-                var grid = new Grid();
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                // StackPanel vertical para el contenido
+                var stack = new StackPanel { Orientation = Orientation.Vertical };
 
                 // StackPanel horizontal para nombre y badge
                 var headerStack = new StackPanel
@@ -381,26 +380,23 @@ namespace WpfApp1.Views
                 headerStack.Children.Add(txtNombre);
                 headerStack.Children.Add(badgeBorder);
 
-                Grid.SetRow(headerStack, 0);
-                grid.Children.Add(headerStack);
-
-                // ProgressBar que se estira correctamente
+                // Grid para ProgressBar para que se estire
+                var progressGrid = new Grid { Margin = new Thickness(16, 10, 16, 0) };
                 var progress = new ProgressBar
                 {
                     Value = p.Stock,
-                    Maximum = MaximoProgressBar,
+                    Maximum = maxStock,
                     Height = 8,
                     Style = (Style)FindResource("ModernProgressBar"),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(16, 10, 16, 0),
-                    MinWidth = 0,
-                    Width = double.NaN // Permite que se estire
+                    VerticalAlignment = VerticalAlignment.Center
                 };
-                Grid.SetRow(progress, 1);
-                grid.Children.Add(progress);
+                progressGrid.Children.Add(progress);
 
-                border.Child = grid;
+                stack.Children.Add(headerStack);
+                stack.Children.Add(progressGrid);
+
+                border.Child = stack;
                 panelProductos.Children.Add(border);
             }
         }

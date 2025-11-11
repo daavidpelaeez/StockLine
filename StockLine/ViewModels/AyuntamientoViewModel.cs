@@ -1,8 +1,6 @@
-using System;
-
-namespace WpfApp1.DTOs
+namespace WpfApp1.ViewModels
 {
-    public class AyuntamientoDTO
+    public class AyuntamientoViewModel
     {
         public int AyuntamientoID { get; set; }
         public string Nombre { get; set; }
@@ -14,6 +12,7 @@ namespace WpfApp1.DTOs
         public string Email { get; set; }
         public int? ComercialID { get; set; }
         public string ComercialNombre { get; set; }
+        public string InicialNombre { get; set; }
         public bool Activo { get; set; }
     }
 }

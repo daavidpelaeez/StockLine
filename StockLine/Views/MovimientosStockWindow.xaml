@@ -18,7 +18,7 @@
             <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12" MouseLeftButtonDown="BarraSuperior_MouseLeftButtonDown">
                 <TextBlock Text="Movimientos de Stock" FontWeight="Bold" FontSize="18" Foreground="#2C3E50" VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                    <Button Content="?" Width="36" Height="28" Background="#E2E8F0" BorderThickness="0" FontSize="14" Foreground="#7F8C8D" Cursor="Hand" Click="MinimizeWindow_Click"/>
+                    <Button Content="_" Width="36" Height="28" Background="#E2E8F0" BorderThickness="0" FontSize="14" Foreground="#7F8C8D" Cursor="Hand" Click="MinimizeWindow_Click"/>
                     <Button Content="?" Width="36" Height="28" Background="#E2E8F0" BorderThickness="0" FontSize="14" Foreground="#7F8C8D" Cursor="Hand" Click="MaximizeWindow_Click"/>
                     <Button Content="?" Width="36" Height="28" Background="#FF6B6B" BorderThickness="0" FontSize="14" Foreground="White" Cursor="Hand" Click="CloseWindow_Click"/>
                 </StackPanel>
@@ -35,7 +35,6 @@
                     </ComboBox>
                     <DatePicker x:Name="dpFrom" Width="120" Margin="0,0,8,0"/>
                     <DatePicker x:Name="dpTo" Width="120" Margin="0,0,8,0"/>
-                    <TextBox x:Name="txtUsuario" Width="120" Margin="0,0,8,0" VerticalContentAlignment="Center" Height="28"/>
                     <Button x:Name="btnBuscar" Content="Buscar" Width="90" Height="32" Margin="0,0,8,0" Click="Buscar_Click" Background="#3498DB" Foreground="White" FontWeight="SemiBold"/>
                     <Button x:Name="btnExportar" Content="Exportar CSV" Width="110" Height="32" Margin="0,0,8,0" Click="Exportar_Click" Background="#E2E8F0" Foreground="#2C3E50"/>
                     <Button x:Name="btnCrear" Content="Crear movimiento" Width="140" Height="32" Click="Crear_Click" Background="#27AE60" Foreground="White" FontWeight="SemiBold"/>

@@ -118,12 +118,12 @@
         </Style>
     </Window.Resources>
 
-    <Border Background="White" CornerRadius="12" Margin="20" Padding="30">
+    <Border Background="#FF2C3E50" CornerRadius="12" Margin="20" Padding="30">
         <Border.Effect>
             <DropShadowEffect Color="#000000" Opacity="0.1" BlurRadius="20" ShadowDepth="0"/>
         </Border.Effect>
 
-        <Grid>
+        <Grid Background="#FF2C3E50">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -134,10 +134,10 @@
                 <TextBlock Text="Crear Nuevo Envio" 
                           FontSize="26" 
                           FontWeight="Bold" 
-                          Foreground="#2C3E50"/>
+                          Foreground="White"/>
                 <TextBlock Text="Completa la informacion del envio" 
                           FontSize="14" 
-                          Foreground="#7F8C8D"
+                          Foreground="White"
                           Margin="0,6,0,0"/>
             </StackPanel>
 
@@ -192,7 +192,7 @@
                     <TextBlock Text="Productos del Envio" 
                               FontSize="18" 
                               FontWeight="SemiBold" 
-                              Foreground="#2C3E50"
+                              Foreground="White"
                               Margin="0,0,0,12"/>
 
                     <Border Background="#F8F9FA" CornerRadius="8" Padding="16" Margin="0,0,0,12">
@@ -327,9 +327,11 @@
                     <Button Content="Cancelar" 
                            Style="{StaticResource SecondaryButton}"
                            Click="btnCancelar_Click"
-                           Margin="0,0,12,0"/>
+						   Width ="120"
+                           Margin="0,0,12,0" Foreground="White" FontWeight="Bold"/>
                     <Button x:Name="btnGuardar"
                            Content="Crear Envio" 
+						   Width ="120"
                            Style="{StaticResource PrimaryButton}"
                            Click="btnGuardar_Click"/>
                 </StackPanel>

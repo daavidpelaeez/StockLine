@@ -102,19 +102,22 @@
     <Compile Include="DTOs\SIMDTO.cs" />
     <Compile Include="DTOs\UsuarioDTO.cs" />
     <Compile Include="Models\NotificacionDescartada.cs" />
+    <Compile Include="Models\SIM.cs" />
     <Compile Include="Services\AyuntamientoService.cs" />
     <Compile Include="Services\CategoriaService.cs" />
     <Compile Include="Services\ComercialService.cs" />
-    <Compile Include="Services\Interfaces\ICategoriaService.cs" />
+    <Compile Include="Services\IAyuntamientoService.cs" />
+    <Compile Include="Services\ICategoriaService.cs" />
+    <Compile Include="Services\IPersonaService.cs" />
+    <Compile Include="Services\IProductoService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
     <Compile Include="Services\ProductoService.cs" />
     <Compile Include="Services\SIMService.cs" />
+    <Compile Include="ViewModels\AyuntamientoViewModel.cs" />
     <Compile Include="ViewModels\ProductosViewModel.cs" />
+    <Compile Include="ViewModels\UsuarioViewModel.cs" />
     <Compile Include="Views\AddEditAyuntamientos.xaml.cs">
       <DependentUpon>AddEditAyuntamientos.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AddEditProveedores.xaml.cs">
-      <DependentUpon>AddEditProveedores.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddEditProduct.xaml.cs">
       <DependentUpon>AddEditProduct.xaml</DependentUpon>
@@ -133,9 +136,6 @@
     </Compile>
     <Compile Include="Views\CategoriasWindow.xaml.cs">
       <DependentUpon>CategoriasWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ComercialesWindow.xaml.cs">
-      <DependentUpon>ComercialesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CrearEditarCategoriaWindow.xaml.cs">
       <DependentUpon>CrearEditarCategoriaWindow.xaml</DependentUpon>
@@ -172,14 +172,9 @@
     <Compile Include="Models\Envio.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Services\EnvioService.cs" />
-    <Compile Include="Services\Interfaces\IPersonaService.cs" />
     <Compile Include="Services\PersonaService.cs" />
-    <Compile Include="ViewModels\UsuarioViewModel.cs" />
     <Compile Include="Views\MovimientosStockWindow.xaml.cs">
       <DependentUpon>MovimientosStockWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProveedoresWindow.xaml.cs">
-      <DependentUpon>ProveedoresWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RecuperarWindow.xaml.cs">
       <DependentUpon>RecuperarWindow.xaml</DependentUpon>
@@ -197,10 +192,6 @@
       <DependentUpon>VerMovimientoWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\AddEditAyuntamientos.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddEditProveedores.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,10 +219,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CategoriasWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ComercialesWindow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CrearEditarCategoriaWindow.xaml">
@@ -288,10 +275,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MovimientosStockWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProveedoresWindow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RecuperarWindow.xaml">
@@ -353,7 +336,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\apagar.png" />
-    <Resource Include="Assets\Icons\ayuntamiento.png" />
     <Resource Include="Assets\Icons\comercial.png" />
     <Resource Include="Assets\Icons\enviospendientes.png" />
     <Resource Include="Assets\Icons\inicio.png" />
@@ -371,6 +353,16 @@
     <Resource Include="Assets\Icons\comercialRol.png" />
     <Resource Include="Assets\Icons\usuario.png" />
     <Resource Include="Assets\Icons\usuarioRol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Services\Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ayuntamiento.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\controlStock.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

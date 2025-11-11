@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using Newtonsoft.Json;
 using WpfApp1.DTOs;
 
 namespace WpfApp1.Services
 {
-    public interface IAyuntamientoService
-    {
-        Task<List<AyuntamientoDTO>> GetAllAsync();
-        Task<AyuntamientoDTO> GetByIdAsync(int id);
-        Task<bool> CreateAsync(AyuntamientoDTO ayuntamiento);
-        Task<bool> UpdateAsync(AyuntamientoDTO ayuntamiento);
-        Task<bool> DeleteAsync(int id);
-    }
-
     public class AyuntamientoService : IAyuntamientoService
     {
         private static readonly HttpClient client = new HttpClient
@@ -33,28 +23,21 @@ namespace WpfApp1.Services
             _comercialService = new ComercialService();
         }
 
-        public async Task<List<AyuntamientoDTO>> GetAllAsync()
+        public async Task<List<AyuntamientoDTO>> GetAllAsync(string query = null)
         {
             try
             {
-                var response = await client.GetAsync("api/ayuntamientos");
-                
+                var url = "api/ayuntamientos" + (string.IsNullOrWhiteSpace(query) ? "" : query);
+                var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                     return new List<AyuntamientoDTO>();
-
                 var json = await response.Content.ReadAsStringAsync();
-                
                 if (string.IsNullOrWhiteSpace(json))
                     return new List<AyuntamientoDTO>();
-                
                 var ayuntamientos = JsonConvert.DeserializeObject<List<AyuntamientoDTO>>(json) ?? new List<AyuntamientoDTO>();
-                
-                // Obtener todos los comerciales para mapear los nombres
                 var comerciales = await _comercialService.GetAllAsync();
                 var comercialesDict = comerciales?.ToDictionary(c => c.ComercialID, c => c.Nombre + " " + c.Apellidos) 
                                       ?? new Dictionary<int, string>();
-
-                // Mapear el nombre del comercial si no viene en la respuesta
                 foreach (var ayuntamiento in ayuntamientos)
                 {
                     if (ayuntamiento.ComercialID.HasValue && 
@@ -73,11 +56,7 @@ namespace WpfApp1.Services
                     {
                         ayuntamiento.ComercialNombre = "Sin asignar";
                     }
-                    
-                    // Log para depuración
-                    System.Diagnostics.Debug.WriteLine($"Ayuntamiento: {ayuntamiento.Nombre}, ComercialID: {ayuntamiento.ComercialID}, ComercialNombre: {ayuntamiento.ComercialNombre}");
                 }
-                
                 return ayuntamientos;
             }
             catch (Exception ex)
@@ -92,18 +71,12 @@ namespace WpfApp1.Services
             try
             {
                 var response = await client.GetAsync($"api/ayuntamientos/{id}");
-                
                 if (!response.IsSuccessStatusCode)
                     return null;
-
                 var json = await response.Content.ReadAsStringAsync();
-                
                 if (string.IsNullOrWhiteSpace(json))
                     return null;
-                
                 var ayuntamiento = JsonConvert.DeserializeObject<AyuntamientoDTO>(json);
-                
-                // Si no tiene el nombre del comercial, buscarlo
                 if (ayuntamiento != null && 
                     ayuntamiento.ComercialID.HasValue && 
                     string.IsNullOrWhiteSpace(ayuntamiento.ComercialNombre))
@@ -122,7 +95,6 @@ namespace WpfApp1.Services
                 {
                     ayuntamiento.ComercialNombre = "Sin asignar";
                 }
-                
                 return ayuntamiento;
             }
             catch (Exception ex)
@@ -138,18 +110,14 @@ namespace WpfApp1.Services
             {
                 if (ayuntamiento == null)
                     throw new ArgumentNullException(nameof(ayuntamiento));
-
                 var json = JsonConvert.SerializeObject(ayuntamiento);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                 var response = await client.PostAsync("api/ayuntamientos", content);
-                
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
                     throw new InvalidOperationException("Error al crear el ayuntamiento: " + errorContent);
                 }
-                
                 return response.IsSuccessStatusCode;
             }
             catch (ArgumentNullException)
@@ -183,24 +151,18 @@ namespace WpfApp1.Services
             {
                 if (ayuntamiento == null)
                     throw new ArgumentNullException(nameof(ayuntamiento));
-
                 var json = JsonConvert.SerializeObject(ayuntamiento);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                 var response = await client.PutAsync($"api/ayuntamientos/{ayuntamiento.AyuntamientoID}", content);
-                
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    
-                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
                         throw new InvalidOperationException("El ayuntamiento no existe.");
                     }
-                    
                     throw new InvalidOperationException("Error al actualizar el ayuntamiento: " + errorContent);
                 }
-                
                 return response.IsSuccessStatusCode;
             }
             catch (ArgumentNullException)
@@ -232,25 +194,17 @@ namespace WpfApp1.Services
         {
             HttpResponseMessage response = null;
             string errorContent = string.Empty;
-            
             try
             {
-                // Validar ID
                 if (id <= 0)
                 {
                     throw new ArgumentException("El ID del ayuntamiento no es válido.", nameof(id));
                 }
-
-                // Realizar la petición DELETE
                 response = await client.DeleteAsync($"api/ayuntamientos/{id}");
-                
-                // Si fue exitoso, retornar true
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
                 }
-                
-                // Leer el contenido del error de forma segura
                 try
                 {
                     errorContent = await response.Content.ReadAsStringAsync();
@@ -259,40 +213,33 @@ namespace WpfApp1.Services
                 {
                     errorContent = "No se pudo leer el detalle del error.";
                 }
-                
-                // Manejar diferentes códigos de estado HTTP
                 switch (response.StatusCode)
                 {
-                    case HttpStatusCode.NotFound:
+                    case System.Net.HttpStatusCode.NotFound:
                         throw new InvalidOperationException(
                             "El ayuntamiento no existe o ya fue eliminado.\n" +
                             "Por favor, actualiza la lista de ayuntamientos.");
-                    
-                    case HttpStatusCode.Conflict:
+                    case System.Net.HttpStatusCode.Conflict:
                         throw new InvalidOperationException(
                             "El ayuntamiento no puede eliminarse porque tiene registros asociados.\n" +
                             "Puede tener envíos o comerciales asignados.\n\n" +
                             "Detalles: " + (string.IsNullOrWhiteSpace(errorContent) ? "Sin detalles adicionales" : errorContent));
-                    
-                    case HttpStatusCode.BadRequest:
+                    case System.Net.HttpStatusCode.BadRequest:
                         throw new InvalidOperationException(
                             "Solicitud inválida.\n\n" +
                             "Detalles: " + (string.IsNullOrWhiteSpace(errorContent) ? "Sin detalles adicionales" : errorContent));
-                    
-                    case HttpStatusCode.Unauthorized:
-                    case HttpStatusCode.Forbidden:
+                    case System.Net.HttpStatusCode.Unauthorized:
+                    case System.Net.HttpStatusCode.Forbidden:
                         throw new InvalidOperationException(
                             "No tienes permisos para eliminar este ayuntamiento.\n" +
                             "Contacta con el administrador del sistema.");
-                    
-                    case HttpStatusCode.InternalServerError:
-                    case HttpStatusCode.BadGateway:
-                    case HttpStatusCode.ServiceUnavailable:
+                    case System.Net.HttpStatusCode.InternalServerError:
+                    case System.Net.HttpStatusCode.BadGateway:
+                    case System.Net.HttpStatusCode.ServiceUnavailable:
                         throw new InvalidOperationException(
                             "Error del servidor al intentar eliminar el ayuntamiento.\n" +
                             "Código: " + (int)response.StatusCode + " - " + response.ReasonPhrase + "\n\n" +
                             "Detalles: " + (string.IsNullOrWhiteSpace(errorContent) ? "Sin detalles adicionales" : errorContent));
-                    
                     default:
                         throw new InvalidOperationException(
                             "Error al eliminar el ayuntamiento.\n" +
@@ -302,12 +249,10 @@ namespace WpfApp1.Services
             }
             catch (ArgumentException)
             {
-                // Re-lanzar excepciones de validación
                 throw;
             }
             catch (InvalidOperationException)
             {
-                // Re-lanzar excepciones de negocio para que sean manejadas por la UI
                 throw;
             }
             catch (HttpRequestException httpEx)
@@ -336,7 +281,6 @@ namespace WpfApp1.Services
             }
             finally
             {
-                // Liberar recursos de forma segura
                 if (response != null)
                 {
                     response.Dispose();

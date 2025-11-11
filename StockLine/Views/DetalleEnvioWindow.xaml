@@ -81,7 +81,7 @@
         </Style>
     </Window.Resources>
 
-    <Border Background="White" CornerRadius="10" Margin="20" Padding="30">
+    <Border Background="#FF2C3E50" CornerRadius="10" Margin="20" Padding="30">
         <Border.Effect>
             <DropShadowEffect Color="#000000" Opacity="0.1" BlurRadius="20" ShadowDepth="0"/>
         </Border.Effect>
@@ -97,11 +97,11 @@
                 <TextBlock Text="Detalle del Envio" 
                           FontSize="24" 
                           FontWeight="Bold" 
-                          Foreground="#2C3E50"/>
+                          Foreground="White"/>
                 <TextBlock x:Name="txtEnvioId" 
                           Text="ID: #0000" 
                           FontSize="14" 
-                          Foreground="#7F8C8D"
+                          Foreground="White"
                           Margin="0,4,0,0"/>
             </StackPanel>
 
@@ -195,7 +195,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Cerrar" Style="{StaticResource SecondaryButton}" Click="btnCerrar_Click"/>
+                    <Button Content="Cerrar" Style="{StaticResource SecondaryButton}" Click="btnCerrar_Click" Width="120" Foreground="White" FontWeight="Bold"/>
                 </StackPanel>
             </Grid>
         </Grid>

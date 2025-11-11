@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using WpfApp1.Services;
 
 namespace WpfApp1.ViewModels
@@ -21,5 +22,20 @@ namespace WpfApp1.ViewModels
             var usuarios = await _personaService.GetAllAsync();
            
         }
+
+        public int UsuarioID { get; set; }
+        public string Nombre { get; set; }
+        public string Apellidos { get; set; }
+        public string Email { get; set; }
+        public int RoleID { get; set; }
+        public bool Activo { get; set; }
+        public string NombreCompleto { get; set; }
+        public string InicialNombre { get; set; }
+        public string RolNombre { get; set; }
+        public Brush RolColor { get; set; }
+        public string EstadoTexto => Activo ? "Activo" : "Inactivo";
+        public Brush EstadoColor => Activo ?
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60")) :
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
     }
 }

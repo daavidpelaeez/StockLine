@@ -15,13 +15,12 @@ namespace WpfApp1.Services
             BaseAddress = new Uri("http://localhost:5200/")
         };
 
-        public async Task<List<CategoriaDto>> GetAllAsync()
+        public async Task<List<CategoriaDto>> GetAllAsync(string query = null)
         {
-            var response = await client.GetAsync("api/categorias");
-            
+            var url = "api/categorias" + (string.IsNullOrWhiteSpace(query) ? "" : query);
+            var response = await client.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 return new List<CategoriaDto>();
-
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<CategoriaDto>>(json);
         }
@@ -29,10 +28,8 @@ namespace WpfApp1.Services
         public async Task<CategoriaDto> GetByIdAsync(int id)
         {
             var response = await client.GetAsync($"api/categorias/{id}");
-            
             if (!response.IsSuccessStatusCode)
                 return null;
-
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<CategoriaDto>(json);
         }
@@ -41,12 +38,9 @@ namespace WpfApp1.Services
         {
             var json = JsonConvert.SerializeObject(categoria);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
             var response = await client.PostAsync("api/categorias", content);
-            
             if (!response.IsSuccessStatusCode)
                 return null;
-
             var responseJson = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<CategoriaDto>(responseJson);
         }
@@ -55,7 +49,6 @@ namespace WpfApp1.Services
         {
             var json = JsonConvert.SerializeObject(categoria);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
             var response = await client.PutAsync($"api/categorias/{categoria.CategoriaID}", content);
             return response.IsSuccessStatusCode;
         }
@@ -71,26 +64,19 @@ namespace WpfApp1.Services
             try
             {
                 var response = await client.GetAsync($"api/categorias/{categoriaId}/productos/count");
-                
                 if (!response.IsSuccessStatusCode)
-                    return -1; // Error al obtener el conteo
-
+                    return -1;
                 var json = await response.Content.ReadAsStringAsync();
-                
-                // Si la API devuelve solo un número
                 if (int.TryParse(json, out int count))
                     return count;
-                
-                // Si la API devuelve un objeto JSON como {"count": 5}
                 var result = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
                 if (result != null && result.ContainsKey("count"))
                     return result["count"];
-                
                 return -1;
             }
             catch
             {
-                return -1; // Error en la petición
+                return -1;
             }
         }
     }

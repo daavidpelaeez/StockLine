@@ -236,7 +236,7 @@
 
             <!-- HEADER DE LA VENTANA -->
             <Border Grid.Row="0" 
-                    Background="{StaticResource SurfaceColor}" 
+                    Background="#FF2C3E50" 
                     CornerRadius="16,16,0,0"
                     BorderBrush="{StaticResource BorderColor}"
                     BorderThickness="0,0,0,1">
@@ -250,7 +250,7 @@
                     <!-- Logo/Icono -->
                     <Border Width="48" Height="48" 
                             CornerRadius="12" 
-                            Background="{StaticResource PrimaryColor}"
+                            Background="{DynamicResource BackgroundBrush}"
                             VerticalAlignment="Center">
                         <TextBlock Text="📦" 
                                  FontSize="24" 
@@ -266,10 +266,10 @@
                                  Text="Nuevo Producto" 
                                  FontSize="22"
                                  FontWeight="Bold"
-                                 Foreground="{StaticResource TextPrimaryColor}"/>
+                                 Foreground="{DynamicResource BackgroundBrush}"/>
                         <TextBlock Text="Completa los datos del producto" 
                                  FontSize="13"
-                                 Foreground="{StaticResource TextSecondaryColor}"
+                                 Foreground="{DynamicResource BackgroundColor}"
                                  Margin="0,2,0,0"/>
                     </StackPanel>
 
@@ -318,17 +318,17 @@
                 <!-- Columna Izquierda: Formulario -->
                 <Border Grid.Column="0" 
                         Style="{StaticResource CardStyle}"
-                        Margin="24,20,12,24">
+                        Margin="24,20,12,24" Background="#FF2C3E50">
                     <StackPanel>
                         <TextBlock Text="Información del Producto" 
                                   FontSize="18"
                                   FontWeight="Bold"
-                                  Foreground="{StaticResource TextPrimaryColor}"
+                                  Foreground="{DynamicResource BackgroundBrush}"
                                   Margin="0,0,0,24"/>
 
                         <!-- Nombre -->
                         <StackPanel Margin="0,0,0,20">
-                            <TextBlock Text="Nombre del Producto *" Style="{StaticResource FormLabel}"/>
+                            <TextBlock Text="Nombre del Producto *" Style="{StaticResource FormLabel}" Foreground="{DynamicResource BackgroundBrush}"/>
                             <TextBox x:Name="NombreBox" 
                                     Style="{StaticResource ModernTextBox}"
                                     TextChanged="NombreBox_TextChanged"/>
@@ -336,7 +336,7 @@
 
                         <!-- Descripción -->
                         <StackPanel Margin="0,0,0,20">
-                            <TextBlock Text="Descripción" Style="{StaticResource FormLabel}"/>
+                            <TextBlock Text="Descripción" Style="{StaticResource FormLabel}" Foreground="{DynamicResource BackgroundBrush}"/>
                             <TextBox x:Name="DescripcionBox" 
                                     Style="{StaticResource ModernTextBox}"
                                     Height="140"
@@ -357,7 +357,7 @@
 
                             <!-- Cantidad -->
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Cantidad en Stock *" Style="{StaticResource FormLabel}"/>
+                                <TextBlock Text="Cantidad en Stock *" Style="{StaticResource FormLabel}" Foreground="{DynamicResource BackgroundBrush}"/>
                                 <TextBox x:Name="CantidadBox" 
                                         Style="{StaticResource ModernTextBox}"
                                         TextChanged="CantidadBox_TextChanged"/>
@@ -365,7 +365,7 @@
 
                             <!-- Categoría -->
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Categoría *" Style="{StaticResource FormLabel}"/>
+                                <TextBlock Text="Categoría *" Style="{StaticResource FormLabel}" Foreground="White"/>
                                 <ComboBox x:Name="CategoriaComboBox" 
                                          Style="{StaticResource ModernComboBox}"
                                          DisplayMemberPath="Nombre"
@@ -375,7 +375,7 @@
 
                         <!-- Foto -->
                         <StackPanel Margin="0,8,0,0">
-                            <TextBlock Text="Imagen del Producto" Style="{StaticResource FormLabel}"/>
+                            <TextBlock Text="Imagen del Producto" Style="{StaticResource FormLabel}" Foreground="{DynamicResource BackgroundBrush}"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -385,17 +385,17 @@
 
                                 <Button Grid.Column="0"
                                        x:Name="BtnSeleccionarFoto" 
-                                       Content="📁 Seleccionar Foto" 
+                                       Content="Seleccionar Foto" 
                                        Style="{StaticResource SecondaryButton}"
                                        Width="180"
-                                       Click="SeleccionarFoto_Click"/>
+                                       Click="SeleccionarFoto_Click" Foreground="White"/>
 
                                 <Button Grid.Column="1"
-                                       Content="🗑️ Limpiar" 
+                                       Content="Limpiar" 
                                        Style="{StaticResource SecondaryButton}"
                                        Width="110"
                                        Margin="12,0,0,0"
-                                       Click="LimpiarFoto_Click"/>
+                                       Click="LimpiarFoto_Click" Foreground="White"/>
 
                                 <TextBlock Grid.Column="2"
                                           x:Name="FotoNombre" 
@@ -412,12 +412,12 @@
                 <!-- Columna Derecha: Preview y Detalles -->
                 <Border Grid.Column="1" 
                         Style="{StaticResource CardStyle}"
-                        Margin="12,20,24,24">
+                        Margin="12,20,24,24" Background="#FF2C3E50">
                     <StackPanel>
                         <TextBlock Text="Vista Previa" 
                                   FontSize="18"
                                   FontWeight="Bold"
-                                  Foreground="{StaticResource TextPrimaryColor}"
+                                  Foreground="{DynamicResource BackgroundBrush}"
                                   Margin="0,0,0,24"/>
 
                         <!-- Preview Imagen -->
@@ -535,9 +535,9 @@
                                    Content="Cancelar" 
                                    Style="{StaticResource DangerButton}"
                                    Margin="0,0,8,0"
-                                   Click="Cancelar_Click"/>
+                                   Click="Cancelar_Click" Foreground="White"/>
                             <Button Grid.Column="1"
-                                   Content="💾 Guardar" 
+                                   Content="Guardar" 
                                    Style="{StaticResource SuccessButton}"
                                    Margin="8,0,0,0"
                                    Click="Guardar_Click"/>
