@@ -19,6 +19,14 @@ Stock Line centraliza todos los procesos en una **plataforma moderna, confiable 
 
 ---
 
+## ☁️ Azure Hosting
+
+- **Base de datos:** Hosteada en **Azure SQL Database** (`StockLine`), permitiendo conexión remota segura desde la API.  
+- **API REST:** Publicada en **Azure App Service** (`StockLineAPI`) con soporte HTTPS y Swagger protegido mediante autenticación básica.  
+- Esta configuración garantiza **alta disponibilidad, escalabilidad y acceso desde cualquier dispositivo**.
+
+---
+
 ## 💡 Origen de la Idea
 
 La idea nació de la experiencia directa en Vialine, donde se detectaban dificultades para mantener actualizada la información de equipos como PDAs, impresoras portátiles, rollos de papel, pruebas de drogas y otros dispositivos utilizados por la policía local.
@@ -31,10 +39,10 @@ El proyecto busca **eliminar duplicaciones, pérdida de datos y falta de trazabi
 
 | Componente         | Tecnología / Frameworks                             | Función Principal                                        |
 |------------------|-----------------------------------------------------|---------------------------------------------------------|
-| Escritorio        | C# + WPF (.NET Framework 4.8)                     | Gestión de inventario, reparaciones y envíos           |
-| API REST          | Java + Spring Boot                                 | Comunicación entre base de datos y apps                |
+| Escritorio        | C# + WPF (.NET Framework 4.8)                      | Gestión de inventario, reparaciones y envíos           |
+| API REST          | C# + ASP.NET Core 6.0                              | Comunicación entre base de datos y apps                |
 | Aplicación móvil  | Android Studio + Jetpack Compose                   | Registro de solicitudes de material por comerciales   |
-| Base de datos     | MySQL                                              | Almacenamiento de inventario, reparaciones, envíos    |
+| Base de datos     | Azure SQL Database                                 | Almacenamiento de inventario, reparaciones, envíos    |
 
 ---
 
