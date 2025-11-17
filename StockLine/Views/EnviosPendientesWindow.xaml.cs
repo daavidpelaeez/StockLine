@@ -24,23 +24,24 @@ namespace WpfApp1.Views
         private int _usuarioId;
         private bool _esAdmin;
 
-        public EnviosPendientesWindow(int usuarioId = 1, bool esAdmin = true)
+        public EnviosPendientesWindow(int usuarioId, bool esAdmin)
         {
             InitializeComponent();
-            
             _envioService = new EnvioService();
             _ayuntamientoService = new AyuntamientoService();
             _usuarioId = usuarioId;
             _esAdmin = esAdmin;
-            
             _envios = new ObservableCollection<EnvioDTO>();
             _enviosFiltrados = new ObservableCollection<EnvioDTO>();
-            
             this.Loaded += EnviosPendientesWindow_Loaded;
-            
             if (!_esAdmin)
             {
                 this.Title = "Envios Pendientes (Solo Lectura)";
+                itemArchivado.IsEnabled = false;
+            }
+            else
+            {
+                itemArchivado.IsEnabled = true;
             }
         }
 
@@ -81,6 +82,29 @@ namespace WpfApp1.Views
         {
             var resultado = _envios.AsEnumerable();
 
+            // Filtrar por estado si no es "Todos"
+            if (cbEstado != null && cbEstado.SelectedItem is ComboBoxItem estadoItem)
+            {
+                var estadoSeleccionado = estadoItem.Content.ToString();
+                if (estadoSeleccionado == "Archivado")
+                {
+                    resultado = resultado.Where(envio => envio.Estado == "Archivado");
+                }
+                else if (estadoSeleccionado != "Todos")
+                {
+                    resultado = resultado.Where(envio => envio.Estado != "Archivado" && envio.Estado == estadoSeleccionado);
+                }
+                else
+                {
+                    resultado = resultado.Where(envio => envio.Estado != "Archivado");
+                }
+            }
+            else
+            {
+                resultado = resultado.Where(envio => envio.Estado != "Archivado");
+            }
+
+            // Filtro de búsqueda
             if (!string.IsNullOrWhiteSpace(txtSearch.Text))
             {
                 var busqueda = txtSearch.Text.ToLower();
@@ -114,7 +138,7 @@ namespace WpfApp1.Views
             }
 
             var estadoSeleccionado = (cbEstado.SelectedItem as ComboBoxItem)?.Content.ToString();
-            var resultado = _envios.Where(envio => envio.Estado == estadoSeleccionado);
+            var resultado = _envios.Where(envio => estadoSeleccionado == "Archivado" ? envio.Estado == "Archivado" : envio.Estado == estadoSeleccionado);
 
             _enviosFiltrados.Clear();
             foreach (var envio in resultado)
@@ -393,6 +417,46 @@ namespace WpfApp1.Views
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+        }
+
+        private async void Archivar_Click(object sender, RoutedEventArgs args)
+        {
+            var envioSeleccionado = EnviosGrid.SelectedItem as EnvioDTO;
+            if (envioSeleccionado == null)
+            {
+                MessageBox.Show("Selecciona un envio primero.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (!_esAdmin)
+            {
+                MessageBox.Show("No tienes permisos para archivar envios. Solo los administradores pueden realizar esta accion.", "Acceso Denegado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (envioSeleccionado.Estado == "Archivado")
+            {
+                MessageBox.Show("Este envío ya está archivado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var confirmacion = MessageBox.Show($"¿Seguro que quieres archivar el envio #{envioSeleccionado.EnvioID}?", "Confirmar Archivado", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirmacion != MessageBoxResult.Yes)
+                return;
+            try
+            {
+                var resultado = await _envioService.UpdateEstadoAsync(envioSeleccionado.EnvioID, "Archivado", _usuarioId);
+                if (resultado)
+                {
+                    MessageBox.Show("Envío archivado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await CargarDatos();
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo archivar el envío.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al archivar el envío:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -20,5 +20,8 @@ namespace WpfApp1.DTOs
         public bool EsCritico => Stock < 10;
 
         public bool Activo { get; set; }
+
+        // Propiedad calculada para la URL completa de la foto, forzando recarga con un GUID
+        public string FotoUrl => $"http://localhost:5200/api/Productos/photo/{ProductoID}?v={Guid.NewGuid()}";
     }
 }

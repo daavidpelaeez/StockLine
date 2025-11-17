@@ -271,10 +271,9 @@
                         Padding="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="500"/>
                             <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="210"/>
                         </Grid.ColumnDefinitions>
                         <!-- Búsqueda -->
                         <Grid Grid.Column="0">
@@ -302,18 +301,20 @@
                             </TextBlock>
                         </Grid>
                         <!-- Filtro activos/inactivos/todos -->
-                        <ComboBox x:Name="cbFiltroEstado" Grid.Column="3" Width="160" Height="38" Margin="12,0,0,0" VerticalAlignment="Center" SelectionChanged="CbFiltroEstado_SelectionChanged">
+                        <ComboBox x:Name="cbFiltroEstado" Grid.Column="1" Width="150" Height="32" Margin="24,0,0,0" VerticalAlignment="Center" SelectionChanged="CbFiltroEstado_SelectionChanged">
                             <ComboBoxItem Content="Activos" IsSelected="True"/>
                             <ComboBoxItem Content="Inactivos"/>
                             <ComboBoxItem Content="Todos"/>
                         </ComboBox>
-                        <!-- Botón Actualizar -->
                         <!-- Botón Nuevo Usuario -->
                         <Button Grid.Column="2" 
-                              Content="+ Nuevo Usuario" 
-                              Style="{StaticResource SuccessButton}"
-                              Width="210"
-                              Click="BtnNuevoUsuario_Click"/>
+                                Content="+ Nuevo Usuario" 
+                                Style="{StaticResource SuccessButton}"
+                                Width="180"
+                                Height="32"
+                                Margin="24,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="BtnNuevoUsuario_Click"/>
                     </Grid>
                 </Border>
 

@@ -237,7 +237,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="30"/>
                                     </Grid.ColumnDefinitions>
-                                    
+
                                     <ContentPresenter x:Name="contentPresenter"
                                                     Grid.Column="0"
                                                     Margin="{TemplateBinding Padding}"
@@ -246,7 +246,7 @@
                                                     Content="{TemplateBinding SelectionBoxItem}"
                                                     ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                     IsHitTestVisible="False"/>
-                                    
+
                                     <Path Grid.Column="1"
                                           x:Name="arrow"
                                           Data="M 0 0 L 4 4 L 8 0 Z"
@@ -254,7 +254,7 @@
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Margin="0,0,8,0"/>
-                                    
+
                                     <ToggleButton x:Name="toggleButton"
                                                 Grid.ColumnSpan="2"
                                                 Background="Transparent"
@@ -270,7 +270,7 @@
                                     </ToggleButton>
                                 </Grid>
                             </Border>
-                            
+
                             <Popup x:Name="PART_Popup"
                                    IsOpen="{TemplateBinding IsDropDownOpen}"
                                    Placement="Bottom"
@@ -355,7 +355,7 @@
             <Setter Property="CanUserAddRows" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="SelectionMode" Value="Single"/>
-            <Setter Property="RowHeight" Value="64"/>
+            <Setter Property="RowHeight" Value="110"/>
             <Setter Property="FontSize" Value="13"/>
         </Style>
 
@@ -379,7 +379,7 @@
                     <Setter Property="Background" Value="#D6EAF8"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E1BEE7"/>
+                    <Setter Property="Background" Value="#F7FBFE"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -500,7 +500,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="TOTAL PRODUCTOS" 
                                           FontSize="11" 
@@ -513,7 +513,7 @@
                                           Foreground="{StaticResource TextPrimaryColor}"
                                           Margin="0,8,0,0"/>
                             </StackPanel>
-                            
+
                             <Border Grid.Row="0"
                                    Width="52" Height="52"
                                    Background="{StaticResource AccentLight}"
@@ -532,7 +532,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="STOCK CRÍTICO" 
                                           FontSize="11" 
@@ -545,7 +545,7 @@
                                           Foreground="{StaticResource DangerColor}"
                                           Margin="0,8,0,0"/>
                             </StackPanel>
-                            
+
                             <Border Grid.Row="0"
                                    Width="52" Height="52"
                                    Background="#FEE2E2"
@@ -567,7 +567,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Grid.Row="0">
                                 <TextBlock Text="UNIDADES TOTALES" 
                                           FontSize="11" 
@@ -580,7 +580,7 @@
                                           Foreground="{StaticResource SuccessColor}"
                                           Margin="0,8,0,0"/>
                             </StackPanel>
-                            
+
                             <!-- KPI Unidades Totales -->
                             <Border Grid.Row="0"
                                    Width="52" Height="52"
@@ -604,7 +604,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- TextBox de búsqueda -->
                         <Border Grid.Column="0"
                                 Background="{StaticResource SurfaceColor}"
@@ -617,13 +617,13 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <TextBlock Grid.Column="0"
                                           Text="🔍"
                                           FontSize="16"
                                           VerticalAlignment="Center"
                                           Margin="0,0,8,0"/>
-                                
+
                                 <TextBox x:Name="txtBusqueda"
                                         Grid.Column="1"
                                         Background="Transparent"
@@ -745,17 +745,18 @@
                              ItemsSource="{Binding ProductosFiltrados}"
                              MouseRightButtonDown="StockGrid_MouseRightButtonDown">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding ProductoID}" Width="70">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryColor}"/>
-                                        <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="FontSize" Value="13"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            
+                            <!-- FOTO primero, usando FotoUrl -->
+                            <DataGridTemplateColumn Header="FOTO" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Width="80" Height="80" CornerRadius="8" Background="#F5F7FA" Padding="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Image Source="{Binding FotoUrl}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- PRODUCTO (nombre) -->
                             <DataGridTemplateColumn Header="PRODUCTO" Width="2*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -768,7 +769,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            
+
                             <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Descripcion}" Width="3*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
@@ -779,7 +780,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            
+
                             <DataGridTemplateColumn Header="STOCK" Width="140">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

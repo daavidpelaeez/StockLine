@@ -42,37 +42,23 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#B6D4F7" Offset="0.0"/>
-                                            <GradientStop Color="#E3F2FD" Offset="1.0"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter TargetName="MenuText" Property="Foreground" Value="#1976D2"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#E8EEF5"/>
+                                <Setter TargetName="MenuText" Property="Foreground" Value="#22304A"/>
                                 <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
-                                <Setter TargetName="AccentBar" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="AccentBar" Property="Background" Value="#22304A"/>
                                 <Setter TargetName="ButtonBorder" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#1976D2" BlurRadius="8" ShadowDepth="0" Opacity="0.10"/>
+                                        <DropShadowEffect Color="#22304A" BlurRadius="8" ShadowDepth="0" Opacity="0.18"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#90CAF9" Offset="0.0"/>
-                                            <GradientStop Color="#E3F2FD" Offset="1.0"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter TargetName="MenuText" Property="Foreground" Value="#1976D2"/>
-                                <Setter TargetName="AccentBar" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#22304A"/>
+                                <Setter TargetName="MenuText" Property="Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="AccentBar" Property="Background" Value="#22304A"/>
                                 <Setter TargetName="ButtonBorder" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#1976D2" BlurRadius="10" ShadowDepth="0" Opacity="0.13"/>
+                                        <DropShadowEffect Color="#22304A" BlurRadius="10" ShadowDepth="0" Opacity="0.22"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -416,10 +402,11 @@
 
                                 <Button x:Name="btnInicio" 
                                        Style="{StaticResource SidebarButtonStyle}"
-                                       Tag="Inicio">
+                                       Tag="Inicio"
+                                       Background="#22304A">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border Background="#E3F2FD" 
+                                            <Border Background="{TemplateBinding Background}" 
                                                     CornerRadius="10"
                                                     Margin="5,2">
                                                 <Grid>
@@ -435,7 +422,7 @@
                                                     <TextBlock Grid.Column="1" 
                                                               Text="Inicio"
                                                               VerticalAlignment="Center"
-                                                              Foreground="#1976D2"
+                                                              Foreground="#FFFFFF"
                                                               FontWeight="SemiBold"/>
                                                 </Grid>
                                             </Border>
@@ -463,7 +450,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Usuarios"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -471,8 +458,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -499,7 +487,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Ayuntamientos"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -507,8 +495,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -535,7 +524,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Categorías"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -543,8 +532,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconText" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -573,7 +563,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Tarjetas SIM"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -581,8 +571,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconText" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -609,7 +600,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Stock"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -617,8 +608,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -645,7 +637,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Reportes"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -653,8 +645,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -681,7 +674,7 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Opacity="0.7"/>
-                                                    <TextBlock Grid.Column="1" 
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
                                                               Text="Ajustes"
                                                               VerticalAlignment="Center"
                                                               Foreground="{TemplateBinding Foreground}"/>
@@ -689,8 +682,9 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
+                                                    <Setter Property="Background" Value="#1976D2"/>
                                                     <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -854,7 +848,7 @@
                             Padding="0"
                             Margin="30,0,30,30"
                             Background="White"
-                            BorderBrush="Black"
+                            BorderBrush="#FF47577D"
                             BorderThickness="2,2,2,2">
                         <Border.Effect>
                             <DropShadowEffect Color="#1976D2" Opacity="0.08" BlurRadius="24" ShadowDepth="0"/>
@@ -866,42 +860,52 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Botón Filtrar arriba a la derecha -->
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,24,32,0" Grid.Row="0">
-                                <TextBlock Text="Filtrar" FontSize="15" Foreground="#2C3E50" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <Button Background="Transparent" BorderThickness="0" Width="36" Height="36" Cursor="Hand" Click="Filtrar_Click" Padding="0">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="Transparent" CornerRadius="8">
-                                                <Image Source="/Assets/Icons/filtrar.png" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E8EEF5"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </StackPanel>
-
-                            <!-- Encabezado moderno -->
-                            <StackPanel Orientation="Horizontal" Margin="32,32,32,0" VerticalAlignment="Center" Grid.Row="0">
-                                <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                            <!-- Encabezado y botón Filtrar en la misma fila -->
+                            <Grid Grid.Row="0" Margin="32,32,32,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Encabezado alineado a la izquierda -->
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left">
                                     <TextBlock Text="Productos en Stock" FontWeight="Bold" FontSize="22" Foreground="#2C3E50"/>
                                     <TextBlock Text="Control y estado actual del inventario" FontSize="13" Foreground="#7F8C8D" Margin="0,2,0,0"/>
                                 </StackPanel>
-                            </StackPanel>
+                                <!-- Botón Filtrar alineado a la derecha -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1">
+                                    <TextBlock Text="Filtrar" FontSize="15" Foreground="#2C3E50" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <Button Background="Transparent" BorderThickness="0" Width="36" Height="36" Cursor="Hand" Click="Filtrar_Click" Padding="0">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="Transparent" CornerRadius="8">
+                                                    <Image Source="/Assets/Icons/filtrar.png" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#E8EEF5"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
 
                             <!-- Lista de productos como tarjetas -->
-                            <ScrollViewer Margin="0,16,0,0" VerticalScrollBarVisibility="Auto" Height="260" Background="Transparent" Grid.Row="1">
-                                <StackPanel x:Name="panelProductos" Orientation="Vertical" Margin="32,0,32,0" HorizontalAlignment="Stretch">
-                                    <!-- Aquí se generarán los productos dinámicamente por código -->
-                                </StackPanel>
+                            <ScrollViewer Margin="0,16,0,0" VerticalScrollBarVisibility="Auto" Background="Transparent" Grid.Row="1">
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <ItemsControl x:Name="panelProductos" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Width="Auto"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </Grid>
                             </ScrollViewer>
 
                             <!-- Botón ver stock completo -->

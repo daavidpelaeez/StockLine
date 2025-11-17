@@ -272,6 +272,7 @@
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
+
     </Window.Resources>
 
     <!-- Borde exterior de la ventana -->
@@ -395,6 +396,7 @@
                                 <ComboBoxItem Content="Pendiente"/>
                                 <ComboBoxItem Content="Preparado"/>
                                 <ComboBoxItem Content="Enviado"/>
+                                <ComboBoxItem Content="Archivado" x:Name="itemArchivado" IsEnabled="False"/>
                             </ComboBox>
                             <Button Content="Aplicar Filtro" 
                                   Style="{StaticResource PrimaryButton}" 
@@ -508,6 +510,8 @@
                                     <MenuItem Header="✓ Marcar como Preparado" Click="Finalizar_Click"/>
                                     <Separator/>
                                     <MenuItem Header="🗑 Eliminar Envío" Click="Eliminar_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="📦 Archivar Envío" Click="Archivar_Click"/>
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
 

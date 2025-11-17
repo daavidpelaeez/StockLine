@@ -29,6 +29,8 @@ namespace WpfApp1.Views
         private string rutaFoto;
         private ProductoDto _producto;
         
+        public event Action ProductoGuardado;
+        
         public AddProduct()
         {
             InitializeComponent();
@@ -289,6 +291,7 @@ namespace WpfApp1.Views
                 }
 
                 MessageBox.Show("Producto guardado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                ProductoGuardado?.Invoke(); // Dispara el evento
                 this.DialogResult = true;
                 this.Close();
             }

@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Linq;
 using WpfApp1.DTOs;
 
 namespace WpfApp1.Views
@@ -38,11 +39,25 @@ namespace WpfApp1.Views
 
                     var mov = Newtonsoft.Json.JsonConvert.DeserializeObject<MovimientoDto>(body);
                     txtFecha.Text = $"Fecha: {mov.Fecha:dd/MM/yyyy HH:mm}";
-                    txtTipo.Text = $"Tipo: {mov.TipoMovimiento}";
-                    txtProducto.Text = $"Producto: {mov.ProductoNombre}";
+                    txtTipo.Text = $"Tipo: {mov.Tipo}";
+                    if (mov.ProductoID == 0 || mov.ProductoID == null)
+                    {
+                        txtProducto.Text = $"Producto: {mov.ProductoNombre} [Eliminado]";
+                    }
+                    else
+                    {
+                        txtProducto.Text = $"Producto: {mov.ProductoNombre}";
+                    }
                     txtCantidad.Text = $"Cantidad: {mov.Cantidad}";
                     txtUsuario.Text = $"Usuario: {mov.UsuarioNombre}";
                     txtObservaciones.Text = $"Observaciones: {mov.Observaciones}";
+
+                    // Mostrar productos asociados si existen
+                    if (mov.Productos != null && mov.Productos.Count > 0)
+                    {
+                        var productosStr = string.Join("\n", mov.Productos.Select(p => $"- {p.ProductoNombre} (Cantidad: {p.Cantidad})"));
+                        MessageBox.Show($"Productos asociados al movimiento:\n{productosStr}", "Productos del Movimiento", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
             }
             catch (Exception ex)

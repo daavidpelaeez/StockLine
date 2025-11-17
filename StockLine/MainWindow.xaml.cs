@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,6 +53,32 @@ namespace WpfApp1
             temaAlternativo = !temaAlternativo;
         }
 
+        private bool EsEmailValido(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                StringBuilder builder = new StringBuilder();
+                foreach (var b in bytes)
+                    builder.Append(b.ToString("x2"));
+                return builder.ToString();
+            }
+        }
+
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             string email = txtUser.Text.Trim();
@@ -63,14 +91,18 @@ namespace WpfApp1
                 txtUser.Focus();
                 return;
             }
-
+            if (!EsEmailValido(email))
+            {
+                MostrarMensajeError("❌", "El email no tiene un formato válido", "#FFEBEE", "#EF5350", "#C62828");
+                txtUser.Focus();
+                return;
+            }
             if (string.IsNullOrWhiteSpace(password))
             {
                 MostrarMensajeError("❌", "Por favor, ingresa tu contraseña", "#FFEBEE", "#EF5350", "#C62828");
                 txtPassword.Focus();
                 return;
             }
-
             try
             {
                 // Expandir tarjeta con animación
@@ -88,7 +120,7 @@ namespace WpfApp1
                 // Simular un pequeño delay para que se vea la animación (opcional)
                 await Task.Delay(800);
 
-                // Llamar al servicio de login
+                // Enviar la contraseña en texto plano, la API se encarga de hashearla
                 UsuarioDTO usuario = await _personaService.LoginAsync(email, password);
 
                 if (usuario != null)

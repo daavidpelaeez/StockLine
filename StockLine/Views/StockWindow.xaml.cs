@@ -188,12 +188,16 @@ namespace WpfApp1.Views
             }
 
             var ventanaEdicion = new AddProduct(producto);
-            bool? resultado = ventanaEdicion.ShowDialog();
-            if (resultado == true)
+            ventanaEdicion.ProductoGuardado += async () =>
             {
                 await ProductosVM.CargarProductosAsync();
                 ActualizarKPIs();
                 ProductoModificado?.Invoke();
+            };
+            bool? resultado = ventanaEdicion.ShowDialog();
+            if (resultado == true)
+            {
+                // Ya se recarga por el evento ProductoGuardado
             }
         }
 
@@ -236,19 +240,41 @@ namespace WpfApp1.Views
                             MessageBox.Show($"Error activando: {await res.Content.ReadAsStringAsync()}");
                             return;
                         }
+                        MessageBox.Show("Producto activado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         // Desactivar (DELETE)
                         var res = await client.DeleteAsync($"api/productos/{producto.ProductoID}");
+                        var responseContent = await res.Content.ReadAsStringAsync();
                         if (!res.IsSuccessStatusCode)
                         {
-                            MessageBox.Show($"Error desactivando: {await res.Content.ReadAsStringAsync()}");
+                            // Intentar leer el mensaje de error del JSON
+                            try
+                            {
+                                dynamic errorObj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+                                string apiMessage = errorObj?.message ?? responseContent;
+                                MessageBox.Show(apiMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            catch
+                            {
+                                MessageBox.Show(responseContent, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                             return;
+                        }
+                        // Leer el mensaje de éxito del JSON
+                        try
+                        {
+                            dynamic resultObj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+                            string apiMessage = resultObj?.message ?? "Producto desactivado correctamente.";
+                            MessageBox.Show(apiMessage, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Producto desactivado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }
-                MessageBox.Show(producto.Activo == false ? "Producto activado correctamente." : "Producto desactivado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 await ProductosVM.CargarProductosAsync();
                 ActualizarKPIs();
                 ProductoModificado?.Invoke();
@@ -258,7 +284,7 @@ namespace WpfApp1.Views
                 MessageBox.Show($"Error al cambiar estado del producto:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        // ...resto de la clase...
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
