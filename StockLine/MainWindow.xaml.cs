@@ -129,6 +129,9 @@ namespace WpfApp1
                     MostrarCargando(false);
                     MostrarMensajeExito("✅", $"¡Bienvenido {usuario.Nombre}!", "#E8F5E9", "#66BB6A", "#27AE60");
 
+                    // Guardar el usuarioID globalmente para toda la app
+                    App.UsuarioIDActual = usuario.UsuarioID;
+
                     // Esperar un momento para que vea el mensaje de éxito
                     await Task.Delay(1000);
 

@@ -272,6 +272,10 @@ namespace WpfApp1.Views
             if (!ValidarFormulario())
                 return;
 
+            // Validar stock actual antes de guardar
+            if (!await ValidarStockActualAsync())
+                return;
+
             try
             {
                 btnGuardar.IsEnabled = false;
@@ -359,6 +363,25 @@ namespace WpfApp1.Views
             {
                 await RecargarSIMsDisponiblesParaProducto(productoSeleccionado.ProductoID);
             }
+        }
+
+        private async Task<bool> ValidarStockActualAsync()
+        {
+            foreach (var producto in _productosEnvio)
+            {
+                var productoActual = await _productoService.GetByIdAsync(producto.ProductoID);
+                if (productoActual == null)
+                {
+                    MessageBox.Show($"No se pudo obtener el stock actual del producto '{producto.ProductoNombre}'.", "Error de stock", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                if (producto.Cantidad > productoActual.Stock)
+                {
+                    MessageBox.Show($"No hay suficiente stock para el producto '{producto.ProductoNombre}'.\nSolicitado: {producto.Cantidad}, Disponible: {productoActual.Stock}.", "Stock insuficiente", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

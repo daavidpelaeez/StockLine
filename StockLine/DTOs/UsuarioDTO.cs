@@ -14,5 +14,6 @@ namespace WpfApp1.DTOs
         public string Email { get; set; }
         public int RoleID { get; set; }
         public bool Activo { get; set; } = true;
+        public string Password { get; set; } 
     }
 }

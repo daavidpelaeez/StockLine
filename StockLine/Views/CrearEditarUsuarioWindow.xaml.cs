@@ -13,7 +13,6 @@ namespace WpfApp1.Views
         private readonly IPersonaService _personaService;
         private UsuarioViewModel _usuarioEdicion;
         private bool _esEdicion;
-
         public event Action UsuarioGuardado;
 
         public CrearEditarUsuarioWindow()
@@ -21,29 +20,40 @@ namespace WpfApp1.Views
             InitializeComponent();
             _personaService = new PersonaService();
             _esEdicion = false;
-
             cbRol.SelectedIndex = 0;
+            MostrarPasswordSiCreacion();
         }
 
         public CrearEditarUsuarioWindow(UsuarioViewModel usuario) : this()
         {
             _usuarioEdicion = usuario;
             _esEdicion = true;
-
             txtTitulo.Text = "Editar Usuario";
             this.Title = "Editar Usuario";
-
             CargarDatosUsuario();
+            OcultarPasswordSiEdicion();
+        }
+
+        private void MostrarPasswordSiCreacion()
+        {
+            lblPassword.Visibility = Visibility.Visible;
+            borderPassword.Visibility = Visibility.Visible;
+            txtPassword.Visibility = Visibility.Visible;
+        }
+
+        private void OcultarPasswordSiEdicion()
+        {
+            lblPassword.Visibility = Visibility.Collapsed;
+            borderPassword.Visibility = Visibility.Collapsed;
+            txtPassword.Visibility = Visibility.Collapsed;
         }
 
         private void CargarDatosUsuario()
         {
             if (_usuarioEdicion == null) return;
-
             txtNombre.Text = _usuarioEdicion.Nombre;
             txtApellidos.Text = _usuarioEdicion.Apellidos;
             txtEmail.Text = _usuarioEdicion.Email;
-
             switch (_usuarioEdicion.RoleID)
             {
                 case 1:
@@ -62,15 +72,12 @@ namespace WpfApp1.Views
         {
             if (!ValidarFormulario())
                 return;
-
             try
             {
                 btnGuardar.IsEnabled = false;
                 btnCancelar.IsEnabled = false;
-
                 var selectedItem = cbRol.SelectedItem as ComboBoxItem;
                 int roleId = int.Parse(selectedItem.Tag.ToString());
-
                 var usuario = new UsuarioDTO
                 {
                     Nombre = txtNombre.Text.Trim(),
@@ -78,19 +85,30 @@ namespace WpfApp1.Views
                     Email = txtEmail.Text.Trim(),
                     RoleID = roleId
                 };
-
                 bool resultado;
-
                 if (_esEdicion)
                 {
                     usuario.UsuarioID = _usuarioEdicion.UsuarioID;
+                    // No enviar password al editar
                     resultado = await _personaService.UpdateAsync(usuario);
                 }
                 else
                 {
+                    // Enviar password en texto plano al crear
+                    var password = txtPassword.Text.Trim();
+                    if (string.IsNullOrWhiteSpace(password))
+                    {
+                        MessageBox.Show("La contraseña es obligatoria", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        txtPassword.Focus();
+                        btnGuardar.IsEnabled = true;
+                        btnCancelar.IsEnabled = true;
+                        return;
+                    }
+                    // Se asume que la API hashea la password
+                    // Si UsuarioDTO no tiene campo Password, se debe agregar
+                    usuario.GetType().GetProperty("Password")?.SetValue(usuario, password);
                     resultado = await _personaService.CreateAsync(usuario);
                 }
-
                 if (resultado)
                 {
                     MessageBox.Show(
@@ -98,10 +116,8 @@ namespace WpfApp1.Views
                         "Exito",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
-
                     if (UsuarioGuardado != null)
                         UsuarioGuardado();
-
                     this.DialogResult = true;
                     this.Close();
                 }
@@ -128,35 +144,30 @@ namespace WpfApp1.Views
                 txtNombre.Focus();
                 return false;
             }
-
             if (string.IsNullOrWhiteSpace(txtApellidos.Text))
             {
                 MessageBox.Show("Los apellidos son obligatorios", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 txtApellidos.Focus();
                 return false;
             }
-
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
             {
                 MessageBox.Show("El email es obligatorio", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 txtEmail.Focus();
                 return false;
             }
-
             if (!txtEmail.Text.Contains("@") || !txtEmail.Text.Contains("."))
             {
                 MessageBox.Show("El email no tiene un formato valido", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 txtEmail.Focus();
                 return false;
             }
-
             if (cbRol.SelectedIndex == -1)
             {
                 MessageBox.Show("Debes seleccionar un rol", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 cbRol.Focus();
                 return false;
             }
-
             return true;
         }
 
@@ -164,6 +175,12 @@ namespace WpfApp1.Views
         {
             this.DialogResult = false;
             this.Close();
+        }
+
+
+        public static bool PuedeCrearUsuario(int roleId)
+        {
+            return roleId == 3;
         }
     }
 }

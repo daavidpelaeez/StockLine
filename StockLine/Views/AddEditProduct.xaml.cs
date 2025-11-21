@@ -30,6 +30,9 @@ namespace WpfApp1.Views
         private ProductoDto _producto;
         
         public event Action ProductoGuardado;
+
+        // Bandera para evitar registrar movimiento desde edición si viene de envío
+        public static bool MovimientoPorEnvio = false;
         
         public AddProduct()
         {
@@ -95,6 +98,9 @@ namespace WpfApp1.Views
             }
         }
 
+        private int? stockAnterior;
+        // private int usuarioID = 1; // TODO: Obtén el usuarioID real desde la sesión o contexto
+
         private async void Guardar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -118,37 +124,141 @@ namespace WpfApp1.Views
                     return;
                 }
 
-                using (HttpClient client = new HttpClient())
+                // Guardar el stock anterior antes de guardar
+                if (_producto != null && _producto.ProductoID > 0)
                 {
-                    client.BaseAddress = new Uri("http://localhost:5200/");
-                    client.Timeout = TimeSpan.FromMinutes(5);
+                    stockAnterior = _producto.Stock;
+                }
+                else
+                {
+                    stockAnterior = null;
+                }
 
-                    HttpResponseMessage response = null;
-                    int productoId = 0;
+                bool stockModificado = stockAnterior.HasValue && stock != stockAnterior.Value;
+                if (stockModificado)
+                {
+                    string tipoMovimiento = stock > stockAnterior.Value ? "Entrada" : "Salida";
+                    int cantidadMovimiento = Math.Abs(stock - stockAnterior.Value);
+                    var confirmacion = MessageBox.Show(
+                        $"Vas a {(tipoMovimiento == "Entrada" ? "sumar" : "restar")} {cantidadMovimiento} unidades al stock. Esto quedará registrado en movimientos de stock. ¿Deseas continuar?",
+                        "Confirmar movimiento de stock",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+                    if (confirmacion != MessageBoxResult.Yes)
+                        return;
 
-                    bool tieneFotoLocal = !string.IsNullOrEmpty(_producto.Foto) && File.Exists(_producto.Foto);
-
-                    System.Diagnostics.Debug.WriteLine($"Tiene foto local: {tieneFotoLocal}");
-
-                    if (tieneFotoLocal)
+                    // Usar el nuevo endpoint para modificar el stock y registrar el movimiento
+                    using (HttpClient client = new HttpClient())
                     {
-                        // Preparar contenido del archivo
-                        var fileBytes = File.ReadAllBytes(_producto.Foto);
-                        var fileContent = new ByteArrayContent(fileBytes);
-
-                        string extension = System.IO.Path.GetExtension(_producto.Foto).ToLower();
-                        string contentType = "image/jpeg";
-                        if (extension == ".png") contentType = "image/png";
-                        else if (extension == ".webp") contentType = "image/webp";
-                        else if (extension == ".gif") contentType = "image/gif";
-                        else if (extension == ".jpg" || extension == ".jpeg") contentType = "image/jpeg";
-
-                        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
-
-                        if (_producto.ProductoID > 0)
+                        client.BaseAddress = new Uri("http://localhost:5200/");
+                        // El cuerpo debe ser solo el número entero (stock)
+                        var content = new StringContent(stock.ToString(), System.Text.Encoding.UTF8, "application/json");
+                        var url = $"api/productos/{_producto.ProductoID}/stock?usuarioID={App.UsuarioIDActual}";
+                        var response = await client.PutAsync(url, content);
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        if (!response.IsSuccessStatusCode)
                         {
-                            // El servidor puede no soportar PUT multipart. Primero actualizamos los datos sin la foto (JSON PUT)
-                            var productoDataNoFoto = new
+                            MessageBox.Show($"Error al actualizar el stock:\n\nCódigo: {response.StatusCode}\nDetalle: {responseBody}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri("http://localhost:5200/");
+                        client.Timeout = TimeSpan.FromMinutes(5);
+
+                        HttpResponseMessage response = null;
+                        int productoId = 0;
+
+                        bool tieneFotoLocal = !string.IsNullOrEmpty(_producto.Foto) && File.Exists(_producto.Foto);
+
+                        System.Diagnostics.Debug.WriteLine($"Tiene foto local: {tieneFotoLocal}");
+
+                        if (tieneFotoLocal)
+                        {
+                            // Preparar contenido del archivo
+                            var fileBytes = File.ReadAllBytes(_producto.Foto);
+                            var fileContent = new ByteArrayContent(fileBytes);
+
+                            string extension = System.IO.Path.GetExtension(_producto.Foto).ToLower();
+                            string contentType = "image/jpeg";
+                            if (extension == ".png") contentType = "image/png";
+                            else if (extension == ".webp") contentType = "image/webp";
+                            else if (extension == ".gif") contentType = "image/gif";
+                            else if (extension == ".jpg" || extension == ".jpeg") contentType = "image/jpeg";
+
+                            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+                            if (_producto.ProductoID > 0)
+                            {
+                                // El servidor puede no soportar PUT multipart. Primero actualizamos los datos sin la foto (JSON PUT)
+                                var productoDataNoFoto = new
+                                {
+                                    ProductoID = _producto.ProductoID,
+                                    Nombre = NombreBox.Text.Trim(),
+                                    Descripcion = string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim(),
+                                    Stock = stock,
+                                    CategoriaID = (int)CategoriaComboBox.SelectedValue,
+                                    Foto = "default.png"
+                                };
+
+                                var jsonSettings = new Newtonsoft.Json.JsonSerializerSettings
+                                {
+                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                                    NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                                    Formatting = Newtonsoft.Json.Formatting.None
+                                };
+
+                                var jsonNoFoto = Newtonsoft.Json.JsonConvert.SerializeObject(productoDataNoFoto, jsonSettings);
+                                var jsonContent = new StringContent(jsonNoFoto, System.Text.Encoding.UTF8, "application/json");
+
+                                System.Diagnostics.Debug.WriteLine($"Actualizando producto (sin foto) ID: {_producto.ProductoID}");
+                                var putResponse = await client.PutAsync($"api/productos/{_producto.ProductoID}", jsonContent);
+
+                                // Si la actualización falla, retornamos el error
+                                if (!putResponse.IsSuccessStatusCode)
+                                {
+                                    response = putResponse;
+                                }
+                                else
+                                {
+                                    productoId = _producto.ProductoID;
+
+                                    // Luego subimos la foto por separado al endpoint de upload
+                                    using (var uploadForm = new MultipartFormDataContent())
+                                    {
+                                        uploadForm.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
+
+                                        System.Diagnostics.Debug.WriteLine($"Subiendo foto al endpoint: api/productos/upload/{productoId}");
+                                        var uploadResponse = await client.PostAsync($"api/productos/upload/{productoId}", uploadForm);
+                                        response = uploadResponse;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Crear nuevo producto con multipart/form-data (incluye foto en la misma petición)
+                                using (var form = new MultipartFormDataContent())
+                                {
+                                    form.Add(new StringContent(NombreBox.Text.Trim()), "Nombre");
+                                    form.Add(new StringContent(string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim()), "Descripcion");
+                                    form.Add(new StringContent(stock.ToString()), "Stock");
+                                    form.Add(new StringContent(((int)CategoriaComboBox.SelectedValue).ToString()), "CategoriaID");
+
+                                    form.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
+
+                                    System.Diagnostics.Debug.WriteLine("Enviando multipart POST a api/productos");
+                                    response = await client.PostAsync("api/productos", form);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Sin foto: enviar JSON con los campos necesarios
+                            var productoData = new
                             {
                                 ProductoID = _producto.ProductoID,
                                 Nombre = NombreBox.Text.Trim(),
@@ -165,135 +275,74 @@ namespace WpfApp1.Views
                                 Formatting = Newtonsoft.Json.Formatting.None
                             };
 
-                            var jsonNoFoto = Newtonsoft.Json.JsonConvert.SerializeObject(productoDataNoFoto, jsonSettings);
-                            var jsonContent = new StringContent(jsonNoFoto, System.Text.Encoding.UTF8, "application/json");
+                            var json = Newtonsoft.Json.JsonConvert.SerializeObject(productoData, jsonSettings);
+                            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-                            System.Diagnostics.Debug.WriteLine($"Actualizando producto (sin foto) ID: {_producto.ProductoID}");
-                            var putResponse = await client.PutAsync($"api/productos/{_producto.ProductoID}", jsonContent);
-
-                            // Si la actualización falla, retornamos el error
-                            if (!putResponse.IsSuccessStatusCode)
+                            if (_producto.ProductoID > 0)
                             {
-                                response = putResponse;
+                                System.Diagnostics.Debug.WriteLine($"Enviando JSON PUT a api/productos/{_producto.ProductoID}: {json}");
+                                response = await client.PutAsync($"api/productos/{_producto.ProductoID}", content);
+                                productoId = _producto.ProductoID;
                             }
                             else
                             {
-                                productoId = _producto.ProductoID;
+                                System.Diagnostics.Debug.WriteLine($"Enviando JSON POST a api/productos: {json}");
+                                response = await client.PostAsync("api/productos", content);
+                            }
+                        }
 
-                                // Luego subimos la foto por separado al endpoint de upload
-                                using (var uploadForm = new MultipartFormDataContent())
+                        var responseBody = response != null ? await response.Content.ReadAsStringAsync() : string.Empty;
+                        System.Diagnostics.Debug.WriteLine($"Código de respuesta: {response?.StatusCode}");
+                        System.Diagnostics.Debug.WriteLine($"Cuerpo de respuesta: {responseBody}");
+
+                        if (response == null || !response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Error al guardar el producto:\n\nCódigo: {response?.StatusCode}\nDetalle: {responseBody}", 
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        // Intentar obtener el ID del producto guardado
+                        try
+                        {
+                            var jsonSettingsResp = new Newtonsoft.Json.JsonSerializerSettings
+                            {
+                                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                            };
+
+                            var productoGuardado = Newtonsoft.Json.JsonConvert.DeserializeObject<ProductoDto>(responseBody, jsonSettingsResp);
+                            if (productoGuardado != null && productoGuardado.ProductoID > 0)
+                            {
+                                productoId = productoGuardado.ProductoID;
+                            }
+                            else
+                            {
+                                // intentar extraer manualmente
+                                dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                                if (obj != null)
                                 {
-                                    uploadForm.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
-
-                                    System.Diagnostics.Debug.WriteLine($"Subiendo foto al endpoint: api/productos/upload/{productoId}");
-                                    var uploadResponse = await client.PostAsync($"api/productos/upload/{productoId}", uploadForm);
-                                    response = uploadResponse;
+                                    if (obj.ProductoID != null) productoId = (int)obj.ProductoID;
+                                    else if (obj.productoID != null) productoId = (int)obj.productoID;
                                 }
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            // Crear nuevo producto con multipart/form-data (incluye foto en la misma petición)
-                            using (var form = new MultipartFormDataContent())
-                            {
-                                form.Add(new StringContent(NombreBox.Text.Trim()), "Nombre");
-                                form.Add(new StringContent(string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim()), "Descripcion");
-                                form.Add(new StringContent(stock.ToString()), "Stock");
-                                form.Add(new StringContent(((int)CategoriaComboBox.SelectedValue).ToString()), "CategoriaID");
-
-                                form.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
-
-                                System.Diagnostics.Debug.WriteLine("Enviando multipart POST a api/productos");
-                                response = await client.PostAsync("api/productos", form);
-                            }
+                            System.Diagnostics.Debug.WriteLine($"No se pudo obtener ProductoID: {ex.Message}");
                         }
+
+                        System.Diagnostics.Debug.WriteLine($"Producto guardado con ID: {productoId}");
+
+                        // Si enviamos multipart con foto ya se subió en la misma petición; no hacer upload separado
                     }
-                    else
-                    {
-                        // Sin foto: enviar JSON con los campos necesarios
-                        var productoData = new
-                        {
-                            ProductoID = _producto.ProductoID,
-                            Nombre = NombreBox.Text.Trim(),
-                            Descripcion = string.IsNullOrWhiteSpace(DescripcionBox.Text) ? "" : DescripcionBox.Text.Trim(),
-                            Stock = stock,
-                            CategoriaID = (int)CategoriaComboBox.SelectedValue,
-                            Foto = "default.png"
-                        };
-
-                        var jsonSettings = new Newtonsoft.Json.JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
-                            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
-                            Formatting = Newtonsoft.Json.Formatting.None
-                        };
-
-                        var json = Newtonsoft.Json.JsonConvert.SerializeObject(productoData, jsonSettings);
-                        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                        if (_producto.ProductoID > 0)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Enviando JSON PUT a api/productos/{_producto.ProductoID}: {json}");
-                            response = await client.PutAsync($"api/productos/{_producto.ProductoID}", content);
-                            productoId = _producto.ProductoID;
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Enviando JSON POST a api/productos: {json}");
-                            response = await client.PostAsync("api/productos", content);
-                        }
-                    }
-
-                    var responseBody = response != null ? await response.Content.ReadAsStringAsync() : string.Empty;
-                    System.Diagnostics.Debug.WriteLine($"Código de respuesta: {response?.StatusCode}");
-                    System.Diagnostics.Debug.WriteLine($"Cuerpo de respuesta: {responseBody}");
-
-                    if (response == null || !response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show($"Error al guardar el producto:\n\nCódigo: {response?.StatusCode}\nDetalle: {responseBody}", 
-                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    // Intentar obtener el ID del producto guardado
-                    try
-                    {
-                        var jsonSettingsResp = new Newtonsoft.Json.JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
-                            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
-                        };
-
-                        var productoGuardado = Newtonsoft.Json.JsonConvert.DeserializeObject<ProductoDto>(responseBody, jsonSettingsResp);
-                        if (productoGuardado != null && productoGuardado.ProductoID > 0)
-                        {
-                            productoId = productoGuardado.ProductoID;
-                        }
-                        else
-                        {
-                            // intentar extraer manualmente
-                            dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
-                            if (obj != null)
-                            {
-                                if (obj.ProductoID != null) productoId = (int)obj.ProductoID;
-                                else if (obj.productoID != null) productoId = (int)obj.productoID;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"No se pudo obtener ProductoID: {ex.Message}");
-                    }
-
-                    System.Diagnostics.Debug.WriteLine($"Producto guardado con ID: {productoId}");
-
-                    // Si enviamos multipart con foto ya se subió en la misma petición; no hacer upload separado
                 }
 
                 MessageBox.Show("Producto guardado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 ProductoGuardado?.Invoke(); // Dispara el evento
                 this.DialogResult = true;
                 this.Close();
+                MovimientoPorEnvio = false; // Reset bandera tras guardar
             }
             catch (HttpRequestException httpEx)
             {
@@ -418,5 +467,7 @@ namespace WpfApp1.Views
         {
             QuickCantidad.Text = string.IsNullOrWhiteSpace(CantidadBox.Text) ? "—" : CantidadBox.Text;
         }
+
+        
     }
 }

@@ -23,6 +23,7 @@ namespace WpfApp1.Views
         
         private int _usuarioId;
         private bool _esAdmin;
+        private bool _isFinalizandoEnvio = false;
 
         public EnviosPendientesWindow(int usuarioId, bool esAdmin)
         {
@@ -248,51 +249,53 @@ namespace WpfApp1.Views
 
         private async void Finalizar_Click(object sender, RoutedEventArgs args)
         {
-            var envioSeleccionado = EnviosGrid.SelectedItem as EnvioDTO;
-            if (envioSeleccionado == null)
+            if (_isFinalizandoEnvio)
             {
-                MessageBox.Show("Selecciona un envio primero.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("La operación de finalización ya está en curso. Espera a que termine.", "En proceso", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-
-            if (!_esAdmin)
-            {
-                MessageBox.Show("No tienes permisos para finalizar envios.\n\nSolo los administradores pueden realizar esta accion.", 
-                    "Acceso Denegado", 
-                    MessageBoxButton.OK, 
-                    MessageBoxImage.Warning);
-                return;
-            }
-
-            if (envioSeleccionado.Estado == "Enviado")
-            {
-                MessageBox.Show("Este envio ya está marcado como enviado.", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            var confirmacion = MessageBox.Show(
-                $"Estas seguro de marcar el envio #{envioSeleccionado.EnvioID} como Enviado?\n\n" +
-                $"Ayuntamiento: {envioSeleccionado.AyuntamientoNombre}\n" +
-                $"Fecha: {envioSeleccionado.FechaEnvio:dd/MM/yyyy}",
-                "Confirmar Envio",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (confirmacion != MessageBoxResult.Yes)
-                return;
-
+            _isFinalizandoEnvio = true;
             try
             {
+                var envioSeleccionado = EnviosGrid.SelectedItem as EnvioDTO;
+                if (envioSeleccionado == null)
+                {
+                    MessageBox.Show("Selecciona un envio primero.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!_esAdmin)
+                {
+                    MessageBox.Show("No tienes permisos para finalizar envios.\n\nSolo los administradores pueden realizar esta accion.", 
+                        "Acceso Denegado", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (envioSeleccionado.Estado == "Enviado")
+                {
+                    MessageBox.Show("Este envio ya está marcado como enviado.", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var confirmacion = MessageBox.Show(
+                    $"Estas seguro de marcar el envio #{envioSeleccionado.EnvioID} como Enviado?\n\n" +
+                    $"Ayuntamiento: {envioSeleccionado.AyuntamientoNombre}\n" +
+                    $"Fecha: {envioSeleccionado.FechaEnvio:dd/MM/yyyy}",
+                    "Confirmar Envio",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (confirmacion != MessageBoxResult.Yes)
+                    return;
+
+                // SOLO cambiar el estado del envío, el backend se encarga de movimientos y stock
                 var resultado = await _envioService.UpdateEstadoAsync(envioSeleccionado.EnvioID, "Enviado", _usuarioId);
 
                 if (resultado)
                 {
-                    // Recargar datos de SIMs desde el backend
-                    var simService = new SIMService();
-                    var simsActualizadas = await simService.GetAllAsync();
-                    // Aquí puedes actualizar la UI donde se muestran las SIMs, por ejemplo:
-                    // ActualizarSIMsEnUI(simsActualizadas);
-                    MessageBox.Show("Envio marcado como enviado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Envio marcado como enviado correctamente.\nLos movimientos de stock se han registrado automáticamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
                     await CargarDatos();
                 }
                 else
@@ -303,6 +306,10 @@ namespace WpfApp1.Views
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al actualizar el envio:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _isFinalizandoEnvio = false;
             }
         }
 
@@ -429,7 +436,7 @@ namespace WpfApp1.Views
             }
             if (!_esAdmin)
             {
-                MessageBox.Show("No tienes permisos para archivar envios. Solo los administradores pueden realizar esta accion.", "Acceso Denegado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No tienes permisos para archivar envios. Solo los administradores pueden realizar esta acion.", "Acceso Denegado", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             if (envioSeleccionado.Estado == "Archivado")

@@ -617,6 +617,43 @@
                                     </Button.Template>
                                 </Button>
 
+                                <Button x:Name="btnMovimientosStock" 
+       Style="{StaticResource SidebarButtonStyle}"
+       Tag="Movimientos Stock"
+       Click="btnMovimientosStock_Click" Foreground="White">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                    CornerRadius="10"
+                    Margin="5,2">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image x:Name="IconImage" Grid.Column="0" 
+                           Source="/Assets/Icons/controlStock.png"
+                           Width="22" Height="22" 
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Opacity="0.7"/>
+                                                    <TextBlock x:Name="MenuText" Grid.Column="1" 
+                              Text="Movimientos Stock"
+                              VerticalAlignment="Center"
+                              Foreground="{TemplateBinding Foreground}"/>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#1976D2"/>
+                                                    <Setter TargetName="IconImage" Property="Opacity" Value="1"/>
+                                                    <Setter TargetName="MenuText" Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
                                 <Button x:Name="btnReportes" 
                                        Style="{StaticResource SidebarButtonStyle}"
                                        Tag="Reportes"
@@ -783,7 +820,8 @@
                                                   FontSize="13" 
                                                   Foreground="#7F8C8D"
                                                   FontWeight="Medium"/>
-                                        <TextBlock Text="12" 
+                                        <TextBlock x:Name="txtKpiEnviosPendientes"
+                                                  Text="12" 
                                                   FontSize="36" 
                                                   FontWeight="Bold" 
                                                   Foreground="#3498DB"
@@ -799,46 +837,47 @@
                             </Grid>
                         </Border>
 
-                        <!-- Tarjeta 2: Movimientos de Stock -->
-                        <Border Style="{StaticResource StatsCardStyle}" MouseLeftButtonUp="TarjetaPedidos_MouseLeftButtonUp" Cursor="Hand">
+                        <!-- Tarjeta 2: SIMs disponibles -->
+                        <Border Style="{StaticResource StatsCardStyle}" MouseLeftButtonUp="TarjetaSIMs_MouseLeftButtonUp" Cursor="Hand">
                             <Grid>
                                 <StackPanel>
-                                    <TextBlock Text="Movimientos de Stock" 
+                                    <TextBlock Text="SIMs disponibles" 
                                               FontSize="13" 
                                               Foreground="#7F8C8D"
                                               FontWeight="Medium"/>
-                                    <TextBlock Text="7" 
+                                    <TextBlock x:Name="txtKpiSIMsDisponibles"
+                                              Text="0" 
                                               FontSize="36" 
                                               FontWeight="Bold" 
-                                              Foreground="#F39C12"
+                                              Foreground="#42A5F5"
                                               Margin="0,8,0,0"/>
                                 </StackPanel>
-                                <Image Source="/Assets/Icons/movimientos.png" 
+                                <Image Source="/Assets/Icons/sim.png" 
                                        Width="48" Height="48" 
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Top"/>
                             </Grid>
                         </Border>
 
-                        <!-- Tarjeta 3: Tareas pendientes -->
-                        <Border Style="{StaticResource StatsCardStyle}">
+                        <!-- Tarjeta 3: Productos con stock bajo -->
+                        <Border Style="{StaticResource StatsCardStyle}" MouseLeftButtonUp="TarjetaStockBajo_MouseLeftButtonUp" Cursor="Hand">
                             <Grid>
                                 <StackPanel>
-                                    <TextBlock Text="Tareas Pendientes" 
+                                    <TextBlock Text="Stock Bajo" 
                                               FontSize="13" 
                                               Foreground="#7F8C8D"
                                               FontWeight="Medium"/>
-                                    <TextBlock Text="3" 
+                                    <TextBlock x:Name="txtKpiStockBajo"
+                                              Text="0" 
                                               FontSize="36" 
                                               FontWeight="Bold" 
                                               Foreground="#E74C3C"
                                               Margin="0,8,0,0"/>
                                 </StackPanel>
-                                <Image Source="/Assets/Icons/reportes.png" 
+                                <Image Source="/Assets/Icons/stock.png" 
                                        Width="48" Height="48" 
                                        HorizontalAlignment="Right"
-                                       VerticalAlignment="Top"
-                                       />
+                                       VerticalAlignment="Top"/>
                             </Grid>
                         </Border>
                     </UniformGrid>

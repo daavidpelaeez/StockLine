@@ -51,9 +51,10 @@ namespace WpfApp1.Services
 
         public async Task<bool> CreateAsync(UsuarioDTO usuario)
         {
+            // Usar el endpoint correcto para registro
             var json = JsonConvert.SerializeObject(usuario);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("api/usuarios", content);
+            var response = await client.PostAsync("api/Auth/register", content);
             return response.IsSuccessStatusCode;
         }
 

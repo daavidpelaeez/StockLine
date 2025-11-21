@@ -1,6 +1,7 @@
 ﻿<Window x:Class="WpfApp1.Views.UsuariosWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WpfApp1.Views"
         Title="Stockline - Gestión de Usuarios"
         Height="900"
         Width="1600"
@@ -185,6 +186,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
     <Border Background="White" CornerRadius="16">
@@ -314,7 +316,8 @@
                                 Height="32"
                                 Margin="24,0,0,0"
                                 VerticalAlignment="Center"
-                                Click="BtnNuevoUsuario_Click"/>
+                                Click="BtnNuevoUsuario_Click"
+                                Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </Grid>
                 </Border>
 
@@ -418,25 +421,8 @@
                                                    FontWeight="SemiBold"
                                                    Cursor="Hand"
                                                    Tag="{Binding}"
-                                                   Click="BtnVer_Click">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                               CornerRadius="8">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Opacity" Value="0.9"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
+                                                   Click="BtnVer_Click"
+                                                   Visibility="{Binding DataContext.IsAdmin, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                             <Button Content="Editar"
                                                    Width="90"
                                                    Height="36"
@@ -448,25 +434,8 @@
                                                    FontWeight="SemiBold"
                                                    Cursor="Hand"
                                                    Tag="{Binding}"
-                                                   Click="BtnEditar_Click">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                               CornerRadius="8">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Opacity" Value="0.9"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
+                                                   Click="BtnEditar_Click"
+                                                   Visibility="{Binding DataContext.IsAdmin, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                             <Button Content="Eliminar"
                                                    Width="100"
                                                    Height="36"
@@ -478,25 +447,8 @@
                                                    FontWeight="SemiBold"
                                                    Cursor="Hand"
                                                    Tag="{Binding}"
-                                                   Click="BtnEliminar_Click">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                               CornerRadius="8">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Opacity" Value="0.9"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
+                                                   Click="BtnEliminar_Click"
+                                                   Visibility="{Binding DataContext.IsAdmin, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

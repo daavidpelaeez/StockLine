@@ -45,6 +45,8 @@ namespace WpfApp1.Views
             
             // Iniciar timer para actualizar notificaciones automáticamente cada 30 segundos
             InicializarTimerNotificaciones();
+
+            this.Loaded += HomeWindow_Loaded;
         }
 
         #region NOTIFICACIONES
@@ -105,7 +107,11 @@ namespace WpfApp1.Views
 
                 // 2. Verificar envíos pendientes (solo estado "Pendiente")
                 int enviosPendientes = await ObtenerEnviosPendientes();
-                
+
+                // Actualiza el KPI visual principal
+                if (txtKpiEnviosPendientes != null)
+                    txtKpiEnviosPendientes.Text = enviosPendientes.ToString();
+
                 // Verificar si esta notificación fue descartada
                 bool enviosPendientesDescartados = _notificacionService.FueDescartada("EnviosPendientes");
                 
@@ -314,6 +320,8 @@ namespace WpfApp1.Views
         {
             await ProductosVM.CargarProductosAsync();
             MostrarProductosEnStock();
+            await ActualizarKpiStockBajo();
+            await ActualizarKpiSIMsDisponibles();
         }
 
         private void MostrarProductosEnStock()
@@ -491,7 +499,8 @@ namespace WpfApp1.Views
 
         private void btnUsuarios_Click(object sender, RoutedEventArgs e)
         {
-            UsuariosWindow usuariosWindow = new UsuariosWindow();
+            // Abrir ventana de usuarios pasando el rol actual
+            var usuariosWindow = new UsuariosWindow(RoleID == 3);
             usuariosWindow.ShowDialog();
         }
 
@@ -534,6 +543,52 @@ namespace WpfApp1.Views
                 timerNotificaciones = null;
             }
             base.OnClosed(e);
+        }
+
+        private async void HomeWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ActualizarKpiSIMsDisponibles();
+            await ActualizarKpiStockBajo();
+        }
+
+        private async Task ActualizarKpiSIMsDisponibles()
+        {
+            // Simulación: reemplaza con tu lógica real para obtener SIMs disponibles
+            var simService = new GestionSIMsService(); // Debes tener un servicio para SIMs
+            int simsDisponibles = await simService.GetSIMsDisponiblesAsync();
+            if (txtKpiSIMsDisponibles != null)
+                txtKpiSIMsDisponibles.Text = simsDisponibles.ToString();
+        }
+
+        private async Task ActualizarKpiStockBajo()
+        {
+            await ProductosVM.CargarProductosAsync(); // Asegura que los productos estén actualizados
+            int productosStockBajo = ProductosVM.ProductosFiltrados
+                .Where(p => p.Stock < STOCK_MINIMO)
+                .Count();
+            if (txtKpiStockBajo != null)
+                txtKpiStockBajo.Text = productosStockBajo.ToString();
+        }
+
+        private async void TarjetaSIMs_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            GestionSIMsWindow simsWindow = new GestionSIMsWindow();
+            simsWindow.ShowDialog();
+            await ActualizarKpiSIMsDisponibles(); // Actualiza al volver
+        }
+
+        private async void TarjetaStockBajo_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            StockWindow stockWindow = new StockWindow();
+            stockWindow.ShowDialog();
+            await ActualizarKpiStockBajo(); // Actualiza al volver
+        }
+
+        private void btnMovimientosStock_Click(object sender, RoutedEventArgs e)
+        {
+            var mvsWindow = new MovimientosStockWindow();
+            mvsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            mvsWindow.ShowDialog();
         }
     }
 }

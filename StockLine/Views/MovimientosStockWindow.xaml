@@ -61,7 +61,6 @@
                             <Grid>
                                 <ToggleButton x:Name="ToggleButton" Background="Transparent" BorderThickness="0" Focusable="False" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
                                 <ContentPresenter Margin="12,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{TemplateBinding SelectionBoxItem}"/>
-                                <TextBlock Text="?" FontSize="10" Foreground="{StaticResource TextSecondaryColor}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,12,0"/>
                                 <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True">
                                     <Border Background="{StaticResource SurfaceColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="2" CornerRadius="10" Margin="0,4,0,0">
                                         <Border.Effect>
@@ -153,14 +152,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="??" FontSize="32" VerticalAlignment="Center" Foreground="White"/>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
                         <TextBlock Text="Movimientos de Stock" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Historial y detalle de movimientos de productos" FontSize="13" Foreground="#BFD9EA"/>
+                        <TextBlock Text="Solo entradas y salidas de productos" FontSize="13" Foreground="#BFD9EA"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Content="?" Width="40" Height="40" Background="Transparent" BorderThickness="0" FontSize="18" Foreground="White" Cursor="Hand" Click="MinimizeWindow_Click"/>
-                        <Button Content="?" Width="40" Height="40" Background="Transparent" BorderThickness="0" FontSize="18" Foreground="White" Cursor="Hand" Click="CloseWindow_Click"/>
+                        <Button Content="[ ]" FontFamily="Segoe UI Symbol" Width="40" Height="40" Background="Transparent" BorderThickness="0" FontSize="18" Foreground="White" Cursor="Hand" Click="MaximizeWindow_Click"/>
+                        <Button Content="X" FontFamily="Segoe UI Symbol" Width="40" Height="40" Background="Transparent" BorderThickness="0" FontSize="18" Foreground="White" Cursor="Hand" Click="CloseWindow_Click"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -187,14 +185,6 @@
                         <DataGridTextColumn Header="Producto" Binding="{Binding ProductoNombre}" Width="2*"/>
                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
                         <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioNombre}" Width="160"/>
-                        <DataGridTextColumn Header="Observaciones" Binding="{Binding Observaciones}" Width="2*"/>
-                        <DataGridTemplateColumn Header="Acciones" Width="100">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Ver" Click="Ver_Click" Style="{StaticResource PrimaryButton}" Height="32" Width="72" FontSize="13"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

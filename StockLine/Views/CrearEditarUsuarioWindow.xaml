@@ -7,7 +7,7 @@
         ResizeMode="CanResize"
         MinHeight="720"
         MinWidth="850">
-    
+
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#F5F7FA" Offset="0"/>
@@ -19,7 +19,7 @@
         <Border.Effect>
             <DropShadowEffect Color="#1E88E5" Opacity="0.2" BlurRadius="30" ShadowDepth="0"/>
         </Border.Effect>
-        
+
         <Grid Margin="55">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -104,8 +104,7 @@
                                 FontSize="17"
                                 BorderThickness="0"
                                 Background="Transparent"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Stretch"/>
+                                VerticalContentAlignment="Center"/>
                     </Border>
 
                     <!-- Email -->
@@ -128,6 +127,31 @@
                                 Background="Transparent"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Stretch"/>
+                    </Border>
+
+                    <!-- Password -->
+                    <TextBlock x:Name="lblPassword" Text="Password *" 
+                      FontSize="16" 
+                      FontWeight="SemiBold" 
+                      Foreground="#2C3E50"
+                      Margin="0,0,0,14"
+                      Visibility="Visible"/>
+                    <Border x:Name="borderPassword" Background="#F8F9FA"
+                       CornerRadius="12"
+                       Padding="0"
+                       Margin="0,0,0,30"
+                       BorderBrush="#E3F2FD"
+                       BorderThickness="2"
+                       Visibility="Visible"> 
+                        <TextBox x:Name="txtPassword" 
+                            Height="70"
+                            Padding="22"
+                            FontSize="17"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            />
                     </Border>
 
                     <!-- Rol -->

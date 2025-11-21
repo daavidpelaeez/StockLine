@@ -22,7 +22,34 @@ namespace WpfApp1.Views
 
         private async void MovimientosStockWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            await CargarProductosAsync();
             await BuscarAsync();
+        }
+
+        private async Task CargarProductosAsync()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("http://localhost:5200/");
+                    var res = await client.GetAsync("api/productos");
+                    var body = await res.Content.ReadAsStringAsync();
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Error obteniendo productos: " + body);
+                        return;
+                    }
+                    var productos = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductoDto>>(body);
+                    cbProducto.ItemsSource = productos;
+                    cbProducto.DisplayMemberPath = "Nombre";
+                    cbProducto.SelectedValuePath = "ProductoID";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error cargando productos: " + ex.Message);
+            }
         }
 
         // Obtiene el historial de movimientos
@@ -36,21 +63,22 @@ namespace WpfApp1.Views
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5200/");
-                    // Siempre incluir sortBy y sortDir
                     var query = $"api/movimientosstock?page={page}&pageSize={pageSize}&sortBy=Fecha&sortDir=desc";
 
+                    // Filtro de producto
                     if (cbProducto.SelectedValue != null)
                         query += $"&productId={cbProducto.SelectedValue}";
 
+                    // Filtro de tipo
                     string tipo = null;
                     if (cbTipo.SelectedItem is ComboBoxItem tipoItem)
                         tipo = tipoItem.Content.ToString();
                     if (!string.IsNullOrWhiteSpace(tipo) && tipo != "Todos")
                         query += $"&tipo={tipo}";
 
+                    // Filtro de fechas
                     if (dpFrom.SelectedDate.HasValue)
                         query += $"&from={dpFrom.SelectedDate.Value:yyyy-MM-dd}";
-
                     if (dpTo.SelectedDate.HasValue)
                         query += $"&to={dpTo.SelectedDate.Value:yyyy-MM-dd}";
 
@@ -66,13 +94,11 @@ namespace WpfApp1.Views
                     List<MovimientoDto> items = null;
                     if (token.Type == Newtonsoft.Json.Linq.JTokenType.Array)
                     {
-                        // La respuesta es un array directamente
                         items = token.ToObject<List<MovimientoDto>>();
                         total = items.Count;
                     }
                     else
                     {
-                        // La respuesta es un objeto con 'items' y 'total'
                         var itemsToken = token["items"] ?? token["Items"];
                         var totalToken = token["total"] ?? token["Total"];
                         if (itemsToken == null || itemsToken.Type != Newtonsoft.Json.Linq.JTokenType.Array)
@@ -83,6 +109,7 @@ namespace WpfApp1.Views
                         total = (int)(totalToken ?? 0);
                         items = itemsToken.ToObject<List<MovimientoDto>>();
                     }
+                    // Ya no filtramos en frontend, la API devuelve solo lo necesario
                     dgMovimientos.ItemsSource = items;
                     int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)total / pageSize) : 1;
                     txtPaginacion.Text = $"Página {page} / {totalPages} - {total} registros";

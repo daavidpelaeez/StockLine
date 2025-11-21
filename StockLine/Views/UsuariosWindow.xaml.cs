@@ -9,25 +9,22 @@ using WpfApp1.Services;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for UsuariosWindow.xaml
-    /// </summary>
     public partial class UsuariosWindow : Window
     {
         private readonly IPersonaService _personaService = new PersonaService();
         private ObservableCollection<UsuarioViewModel> _usuarios;
         private ObservableCollection<UsuarioViewModel> _usuariosFiltrados;
         private string _filtroEstado = "Activos";
+        public bool IsAdmin { get; set; }
 
-        public UsuariosWindow()
+        public UsuariosWindow(bool isAdmin = false)
         {
             InitializeComponent();
-
+            IsAdmin = isAdmin;
+            DataContext = this;
             _usuarios = new ObservableCollection<UsuarioViewModel>();
             _usuariosFiltrados = new ObservableCollection<UsuarioViewModel>();
-
             dgUsuarios.ItemsSource = _usuariosFiltrados;
-
             this.Loaded += UsuariosWindow_Loaded;
         }
 
@@ -160,6 +157,17 @@ namespace WpfApp1.Views
 
         private void BtnNuevoUsuario_Click(object sender, RoutedEventArgs e)
         {
+            // Obtener el usuario actual y su rol
+            int roleId = 1; // Por defecto Usuario
+            if (Application.Current.Windows.OfType<HomeWindow>().FirstOrDefault() is HomeWindow home)
+            {
+                roleId = home.RoleID;
+            }
+            if (!CrearEditarUsuarioWindow.PuedeCrearUsuario(roleId))
+            {
+                MessageBox.Show("Solo los administradores pueden crear usuarios.", "Acceso Denegado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             var ventana = new CrearEditarUsuarioWindow();
             ventana.UsuarioGuardado += async () => await CargarUsuariosPorFiltro();
             ventana.ShowDialog();
@@ -311,11 +319,103 @@ namespace WpfApp1.Views
             }
             var estado = usuario.Activo ? "Activo" : "Inactivo";
             var colorEstado = usuario.Activo ? "#27AE60" : "#E74C3C";
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical
+            };
+            stackPanel.Children.Add(new TextBlock { Text = "Información del Usuario", FontSize = 20, FontWeight = FontWeights.Bold, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Margin = new Thickness(0, 0, 0, 18) });
+            stackPanel.Children.Add(new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10), Children =
+                {
+                    new Border { Width = 48, Height = 48, CornerRadius = new CornerRadius(24), Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Child = new TextBlock { Text = usuario.InicialNombre, Foreground = Brushes.White, FontWeight = FontWeights.Bold, FontSize = 22, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, VerticalAlignment = VerticalAlignment.Center },
+                    new StackPanel { Margin = new Thickness(12, 0, 0, 0), Children =
+                        {
+                            new TextBlock { Text = usuario.NombreCompleto, FontWeight = FontWeights.Bold, FontSize = 15, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50") },
+                            new TextBlock { Text = usuario.Email, FontSize = 12, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0, 2, 0, 0) }
+                        }
+                    }
+                }
+            });
+            stackPanel.Children.Add(new TextBlock { Text = $"Rol: {usuario.RolNombre}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Margin = new Thickness(0, 8, 0, 0) });
+            stackPanel.Children.Add(new TextBlock { Text = $"Estado: {estado}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString(colorEstado), Margin = new Thickness(0, 8, 0, 0) });
+            stackPanel.Children.Add(new TextBlock { Text = $"ID: {usuario.UsuarioID}", FontSize = 13, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0, 8, 0, 0) });
+            var actionsPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 30, 0, 0), HorizontalAlignment = HorizontalAlignment.Right };
+            var btnToggleUser = new Button { Content = usuario.Activo ? "Desactivar" : "Activar", Width = 120, Height = 38, Margin = new Thickness(0, 0, 12, 0), Background = usuario.Activo ? (Brush)new BrushConverter().ConvertFromString("#E74C3C") : (Brush)new BrushConverter().ConvertFromString("#27AE60"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Tag = usuario };
+            actionsPanel.Children.Add(btnToggleUser);
+            var btnClose = new Button { Content = "Cerrar", Width = 120, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, IsCancel = true };
+            actionsPanel.Children.Add(btnClose);
+            // Botón para modificar contraseña solo si eres admin
+            if (IsAdmin)
+            {
+                var btnPassword = new Button { Content = "Modificar contraseña", Width = 180, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#3498DB"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Margin = new Thickness(0, 0, 12, 0) };
+                btnPassword.Click += async (s, ev) =>
+                {
+                    var inputDialog = new Window
+                    {
+                        Title = "Nueva contraseña",
+                        Width = 600, // Mucho más ancho
+                        Height = 320, // Mucho más alto
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        WindowStyle = WindowStyle.None,
+                        ResizeMode = ResizeMode.NoResize,
+                        Background = Brushes.White,
+                        Owner = this,
+                    };
+                    var inputPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(48) }; // Más margen
+                    inputPanel.Children.Add(new TextBlock { Text = "Ingrese la nueva contraseña:", FontSize = 20, Margin = new Thickness(0, 0, 0, 24) });
+                    var txtPassword = new PasswordBox { Height = 48, FontSize = 18, Margin = new Thickness(0, 0, 0, 32) };
+                    inputPanel.Children.Add(txtPassword);
+                    var btnAceptar = new Button { Content = "Aceptar", Width = 180, Height = 48, Background = (Brush)new BrushConverter().ConvertFromString("#27AE60"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Margin = new Thickness(0, 0, 24, 0) };
+                    var btnCancelar = new Button { Content = "Cancelar", Width = 180, Height = 48, Background = (Brush)new BrushConverter().ConvertFromString("#E74C3C"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand };
+                    var btnsPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+                    btnsPanel.Children.Add(btnAceptar);
+                    btnsPanel.Children.Add(btnCancelar);
+                    inputPanel.Children.Add(btnsPanel);
+                    inputDialog.Content = inputPanel;
+                    btnCancelar.Click += (s2, e2) => inputDialog.Close();
+                    btnAceptar.Click += async (s2, e2) =>
+                    {
+                        var nuevaPassword = txtPassword.Password;
+                        if (string.IsNullOrWhiteSpace(nuevaPassword))
+                        {
+                            MessageBox.Show("La contraseña no puede estar vacía.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        try
+                        {
+                            using (var client = new System.Net.Http.HttpClient())
+                            {
+                                client.BaseAddress = new Uri("http://localhost:5200/");
+                                var json = Newtonsoft.Json.JsonConvert.SerializeObject(nuevaPassword);
+                                var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                                var request = new System.Net.Http.HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), $"api/Usuarios/{usuario.UsuarioID}/password")
+                                {
+                                    Content = content
+                                };
+                                var res = await client.SendAsync(request);
+                                if (!res.IsSuccessStatusCode)
+                                {
+                                    MessageBox.Show("Error modificando contraseña: " + await res.Content.ReadAsStringAsync());
+                                    return;
+                                }
+                                MessageBox.Show("Contraseña modificada correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                                inputDialog.Close();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error al modificar contraseña: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    };
+                    inputDialog.ShowDialog();
+                };
+                actionsPanel.Children.Insert(0, btnPassword);
+            }
+            stackPanel.Children.Add(actionsPanel);
             var dialog = new Window
             {
                 Title = "Detalles del Usuario",
-                Width = 420,
-                Height = 420,
+                Width = 700, // Mucho más ancho
+                Height = 520, // Mucho más alto
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
@@ -325,41 +425,11 @@ namespace WpfApp1.Views
                 {
                     Background = Brushes.White,
                     CornerRadius = new CornerRadius(16),
-                    Padding = new Thickness(32),
+                    Padding = new Thickness(48), // Más margen
                     Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Colors.Black, BlurRadius = 30, Opacity = 0.13, ShadowDepth = 0 },
-                    Child = new StackPanel
-                    {
-                        Orientation = Orientation.Vertical,
-                        Children =
-                        {
-                            new TextBlock { Text = "Información del Usuario", FontSize = 20, FontWeight = FontWeights.Bold, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Margin = new Thickness(0,0,0,18) },
-                            new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,0,0,10), Children =
-                                {
-                                    new Border { Width = 48, Height = 48, CornerRadius = new CornerRadius(24), Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Child = new TextBlock { Text = usuario.InicialNombre, Foreground = Brushes.White, FontWeight = FontWeights.Bold, FontSize = 22, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, VerticalAlignment = VerticalAlignment.Center },
-                                    new StackPanel { Margin = new Thickness(12,0,0,0), Children =
-                                        {
-                                            new TextBlock { Text = usuario.NombreCompleto, FontWeight = FontWeights.Bold, FontSize = 15, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50") },
-                                            new TextBlock { Text = usuario.Email, FontSize = 12, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,2,0,0) }
-                                        }
-                                    }
-                                }
-                            },
-                            new TextBlock { Text = $"Rol: {usuario.RolNombre}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Margin = new Thickness(0,8,0,0) },
-                            new TextBlock { Text = $"Estado: {estado}", FontSize = 14, Foreground = (Brush)new BrushConverter().ConvertFromString(colorEstado), Margin = new Thickness(0,8,0,0) },
-                            new TextBlock { Text = $"ID: {usuario.UsuarioID}", FontSize = 13, Foreground = (Brush)new BrushConverter().ConvertFromString("#7F8C8D"), Margin = new Thickness(0,8,0,0) },
-                            new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,30,0,0), HorizontalAlignment = HorizontalAlignment.Right, Children =
-                                {
-                                    new Button { Content = usuario.Activo ? "Desactivar" : "Activar", Width = 120, Height = 38, Margin = new Thickness(0,0,12,0), Background = usuario.Activo ? (Brush)new BrushConverter().ConvertFromString("#E74C3C") : (Brush)new BrushConverter().ConvertFromString("#27AE60"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Tag = usuario },
-                                    new Button { Content = "Cerrar", Width = 120, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, IsCancel = true }
-                                }
-                            }
-                        }
-                    }
+                    Child = stackPanel
                 }
             };
-            // Activar/desactivar usuario
-            var btnToggle = ((dialog.Content as Border).Child as StackPanel).Children[5] as StackPanel;
-            var btnToggleUser = btnToggle.Children[0] as Button;
             btnToggleUser.Click += async (s, ev) =>
             {
                 try

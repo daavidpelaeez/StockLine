@@ -106,10 +106,12 @@
     <Compile Include="Services\AyuntamientoService.cs" />
     <Compile Include="Services\CategoriaService.cs" />
     <Compile Include="Services\ComercialService.cs" />
+    <Compile Include="Services\GestionSIMsService.cs" />
     <Compile Include="Services\IAyuntamientoService.cs" />
     <Compile Include="Services\ICategoriaService.cs" />
     <Compile Include="Services\IPersonaService.cs" />
     <Compile Include="Services\IProductoService.cs" />
+    <Compile Include="Services\MovimientoService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
     <Compile Include="Services\ProductoService.cs" />
     <Compile Include="Services\SIMService.cs" />
@@ -363,6 +365,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\controlStock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\sim.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

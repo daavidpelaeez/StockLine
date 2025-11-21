@@ -328,7 +328,7 @@ namespace WpfApp1.ViewModels
         private void ActualizarKPI()
         {
             TotalProductos = Productos.Count;
-            Criticos = Productos.Count(p => p.Stock == 0);
+            Criticos = Productos.Count(p => p.Stock < 10); // Ahora cuenta todos los productos críticos (en rojo)
             Unidades = Productos.Sum(p => p.Stock);
         }
         #endregion
