@@ -5,38 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1.Views"
         xmlns:viewModels="clr-namespace:WpfApp1.ViewModels"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Perfil de Usuario" Height="700" Width="1000" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Perfil de Usuario" Height="900" Width="1450" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#FF2C3E50" WindowStyle="None" AllowsTransparency="False">
     <Window.Resources>
-        <!-- Paleta de colores -->
+        <!-- Colores corporativos y estilos base -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#FF2C3E50"/>
-        <SolidColorBrush x:Key="AccentColor" Color="#FF4FC3F7"/>
-        <SolidColorBrush x:Key="CardColor" Color="#FFFDFDFD"/>
-        <SolidColorBrush x:Key="AvatarBg" Color="#FF34495E"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#FFB0BEC5"/>
-        <Color x:Key="ShadowColor">#22000000</Color>
-        <!-- Fondo degradado moderno -->
-        <LinearGradientBrush x:Key="ModernBackground" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FF2C3E50" Offset="0"/>
-            <GradientStop Color="#FF34495E" Offset="1"/>
-        </LinearGradientBrush>
-        <!-- Sombra para la tarjeta -->
-        <DropShadowEffect x:Key="CardShadow" BlurRadius="24" ShadowDepth="0" Color="#22000000"/>
-        <!-- Botón moderno principal -->
+        <SolidColorBrush x:Key="SecondaryColor" Color="#15324F"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#7AB8F5"/>
+        <SolidColorBrush x:Key="CardColor" Color="#22304A"/>
+        <SolidColorBrush x:Key="InputBg" Color="#263445"/>
+        <SolidColorBrush x:Key="InputFg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="LabelFg" Color="#7AB8F5"/>
+        <SolidColorBrush x:Key="TitleFg" Color="#7AB8F5"/>
+        <DropShadowEffect x:Key="CardShadow" BlurRadius="18" ShadowDepth="0" Color="#000000" Opacity="0.18"/>
+        <!-- Card -->
+        <Style x:Key="ProfileCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardColor}"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="32,28"/>
+            <Setter Property="Margin" Value="0,0,24,0"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+        </Style>
+        <!-- Botón principal -->
         <Style x:Key="ModernButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="#22304A"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="0,10"/>
-            <Setter Property="Margin" Value="0,0,14,0"/>
-            <Setter Property="MinWidth" Value="140"/>
-            <Setter Property="FontSize" Value="17"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="0,8"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="MinWidth" Value="120"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -44,27 +49,28 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Background" Value="#B3D9F7"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#B0B8C1"/>
+                    <Setter Property="Background" Value="#3A4A5F"/>
+                    <Setter Property="Foreground" Value="#B0B8C1"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
         <!-- Botón plano -->
         <Style x:Key="FlatButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="0,10"/>
-            <Setter Property="MinWidth" Value="110"/>
-            <Setter Property="FontSize" Value="17"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="0,8"/>
+            <Setter Property="MinWidth" Value="100"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -72,131 +78,207 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Foreground" Value="#B3D9F7"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!-- TextBox moderno -->
+        <!-- TextBox -->
         <Style TargetType="TextBox" x:Key="ModernTextBox">
-            <Setter Property="Background" Value="#FFFDFDFD"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{StaticResource InputBg}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
             <Setter Property="BorderThickness" Value="1.2"/>
             <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Foreground" Value="{StaticResource InputFg}"/>
+            <Setter Property="Opacity" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
                             <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Background" Value="#1a2330"/>
+                    <Setter Property="Foreground" Value="#B0B8C1"/>
+                    <Setter Property="BorderBrush" Value="#3A4A5F"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        <!-- PasswordBox moderno -->
+        <!-- PasswordBox -->
         <Style TargetType="PasswordBox" x:Key="ModernPasswordBox">
-            <Setter Property="Background" Value="#FFFDFDFD"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{StaticResource InputBg}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
             <Setter Property="BorderThickness" Value="1.2"/>
             <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Foreground" Value="{StaticResource InputFg}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
                             <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        <!-- Label -->
+        <Style x:Key="ProfileLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+        <!-- Título -->
+        <Style x:Key="ProfileSectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TitleFg}"/>
+            <Setter Property="Margin" Value="0,0,0,24"/>
+        </Style>
+        <!-- Card historial -->
+        <Style x:Key="ProfileHistoryCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardColor}"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="18,14"/>
+            <Setter Property="Margin" Value="0,24,0,0"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+        </Style>
+        <Style x:Key="ProfileHistoryTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+        <Style x:Key="ProfileHistoryItem" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <!-- TextBox solo lectura -->
+        <Style x:Key="ModernTextBoxReadOnly" TargetType="TextBox" BasedOn="{StaticResource ModernTextBox}">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="#1a2330"/>
+            <Setter Property="Foreground" Value="#B0B8C1"/>
+            <Setter Property="BorderBrush" Value="#3A4A5F"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+            <Setter Property="Opacity" Value="0.6"/>
+        </Style>
     </Window.Resources>
-    <Window.Background>
-        <StaticResource ResourceKey="ModernBackground"/>
-    </Window.Background>
-    <Window.DataContext>
-        <viewModels:UsuarioViewModel />
-    </Window.DataContext>
-    <Grid>
-        <Border CornerRadius="26" Background="{StaticResource CardColor}" Padding="44" Margin="60" Effect="{StaticResource CardShadow}">
+    <Grid Margin="0,24,0,24">
+        <!-- Barra superior personalizada -->
+        <Grid Height="43" VerticalAlignment="Top" Background="#22304A" MouseLeftButtonDown="CustomTitleBar_MouseLeftButtonDown" Margin="0,-25,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <!-- Botón maximizar/restaurar -->
+            <Button Grid.Column="1" Width="38" Height="38" Background="Transparent" BorderThickness="0" ToolTip="Maximizar/Restaurar" Click="BtnMaximizar_Click">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE922;" FontSize="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+            <!-- Botón cerrar -->
+            <Button Grid.Column="2" Width="38" Height="38" Background="Transparent" BorderThickness="0" ToolTip="Cerrar" Click="BtnCerrar_Click">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+        </Grid>
+        <!-- Cuerpo -->
+        <Border Style="{StaticResource ProfileCard}" Margin="25,18,25,0">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <!-- Encabezado con avatar y datos principales -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,36">
-                    <Grid Width="100" Height="100">
-                        <Ellipse Fill="{StaticResource AvatarBg}" Stroke="{StaticResource PrimaryColor}" StrokeThickness="3"/>
-                        <TextBlock Text="{Binding InicialNombre}" FontSize="44" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"/>
-                    </Grid>
-                    <StackPanel Margin="36,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding NombreCompleto}" FontSize="32" FontWeight="Bold" Foreground="#222"/>
-                        <TextBlock Text="{Binding Email}" FontSize="17" Foreground="#888"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                            <Border Background="{Binding RolColor}" CornerRadius="8" Padding="12,4" Margin="0,0,12,0">
-                                <TextBlock Text="{Binding RolNombre}" Foreground="White" FontWeight="SemiBold"/>
-                            </Border>
-                            <Border Background="{Binding EstadoColor}" CornerRadius="8" Padding="12,4">
-                                <TextBlock Text="{Binding EstadoTexto}" Foreground="White" FontWeight="SemiBold"/>
-                            </Border>
-                        </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="0.9*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Panel izquierdo: datos personales y gráfica -->
+                <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                    <!-- Encabezado dentro del card -->
+                    <TextBlock Text="Perfil de Usuario" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource BackgroundBrush}" Margin="0,0,0,24" HorizontalAlignment="Left" FontStyle="Italic"/>
+                    <!-- Foto de perfil -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,18">
+                        <Grid Width="90" Height="90">
+                            <Ellipse Fill="{StaticResource SecondaryColor}" Stroke="{StaticResource AccentColor}" StrokeThickness="4"/>
+                            <TextBlock Text="{Binding InicialNombre}" FontSize="40" FontWeight="Bold" Foreground="#FFF" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        </Grid>
                     </StackPanel>
+                    <!-- Campos personales alineados a la izquierda with lápiz -->
+                    <StackPanel>
+                        <!-- Nombre -->
+                        <TextBlock Text="Nombre:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2"/>
+                        <DockPanel Margin="0,0,0,10">
+                            <TextBox Width="662" Style="{StaticResource ModernTextBox}" Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsNombreReadOnly}"/>
+                            <Button Width="28" Height="28" Margin="-28,0,0,0" Style="{StaticResource FlatButton}" Command="{Binding EditarNombreCommand}" VerticalAlignment="Center">
+                                <TextBlock Text="✏️" FontSize="18"/>
+                            </Button>
+                        </DockPanel>
+                        <!-- Apellidos -->
+                        <TextBlock Text="Apellidos:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2"/>
+                        <DockPanel Margin="0,0,0,10">
+                            <TextBox Width="662" Style="{StaticResource ModernTextBox}" Text="{Binding Apellidos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsApellidosReadOnly}"/>
+                            <Button Width="28" Height="28" Margin="-28,0,0,0" Style="{StaticResource FlatButton}" Command="{Binding EditarApellidosCommand}" VerticalAlignment="Center">
+                                <TextBlock Text="✏️" FontSize="18"/>
+                            </Button>
+                        </DockPanel>
+                        <!-- Email -->
+                        <TextBlock Text="Email:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2"/>
+                        <DockPanel Margin="0,0,0,10">
+                            <TextBox Width="664" Style="{StaticResource ModernTextBox}" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsEmailReadOnly}"/>
+                            <Button Width="28" Height="28" Margin="-28,0,0,0" Style="{StaticResource FlatButton}" Command="{Binding EditarEmailCommand}" VerticalAlignment="Center">
+                                <TextBlock Text="✏️" FontSize="18"/>
+                            </Button>
+                        </DockPanel>
+                    </StackPanel>
+                    <!-- Botones -->
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                        <Button Content="Guardar" Style="{StaticResource ModernButton}" Command="{Binding GuardarCommand}"/>
+                        <Button Content="Cancelar" Style="{StaticResource FlatButton}" Command="{Binding CancelarCommand}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Mensaje}" Foreground="{StaticResource AccentColor}" FontWeight="SemiBold" Margin="0,10,0,0" FontSize="14"/>
+                    <!-- Gráfica de actividad -->
+                    <Border Background="{StaticResource InputBg}" CornerRadius="12" Padding="16" Margin="0,24,0,0" Effect="{StaticResource CardShadow}">
+                        <StackPanel>
+                            <TextBlock Text="Actividad semanal" FontWeight="Bold" FontSize="16" Foreground="{StaticResource AccentColor}" Margin="0,0,0,10"/>
+                            <lvc:CartesianChart Series="{Binding ActividadSemanaSeries}" Height="140" Margin="0,0,0,0">
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis Title="Día" Labels="{Binding DiasSemana}"/>
+                                </lvc:CartesianChart.AxisX>
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis Title="Acciones"/>
+                                </lvc:CartesianChart.AxisY>
+                            </lvc:CartesianChart>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-                <!-- Cuerpo principal -->
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2.2*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Datos personales -->
-                    <StackPanel Grid.Column="0" Margin="0,0,44,0">
-                        <TextBlock Text="Datos personales" FontSize="21" FontWeight="Bold" Margin="0,0,0,20"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <TextBlock Text="Nombre:" Width="120" VerticalAlignment="Center"/>
-                            <TextBox Width="260" Height="36" Style="{StaticResource ModernTextBox}" Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"/>
+                <!-- Panel derecho: cambiar contraseña e historial -->
+                <StackPanel Grid.Column="1" Margin="0,120,0,0">
+                    <TextBlock Text="Cambiar Contraseña" Style="{StaticResource ProfileSectionTitle}" Foreground="White" FontStyle="Italic"/>
+                    <!-- Contraseña actual -->
+                    <TextBlock Text="Contraseña actual:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2" Foreground="White"/>
+                    <PasswordBox Style="{StaticResource ModernPasswordBox}" PasswordChanged="PasswordActualBox_PasswordChanged" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                    <!-- Nueva contraseña -->
+                    <TextBlock Text="Nueva contraseña:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2"/>
+                    <PasswordBox Style="{StaticResource ModernPasswordBox}" PasswordChanged="NuevaPasswordBox_PasswordChanged" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                    <!-- Confirmar nueva contraseña -->
+                    <TextBlock Text="Confirmar nueva contraseña:" Style="{StaticResource ProfileLabel}" Margin="0,0,0,2"/>
+                    <PasswordBox Style="{StaticResource ModernPasswordBox}" PasswordChanged="ConfirmarPasswordBox_PasswordChanged" Margin="0,0,0,18" HorizontalAlignment="Stretch"/>
+                    <Button Content="Cambiar Contraseña" Style="{StaticResource ModernButton}" Height="40" Margin="0,0,0,0" Command="{Binding CambiarPasswordCommand}"/>
+                    <TextBlock Text="{Binding MensajePassword}" Foreground="{StaticResource AccentColor}" FontWeight="SemiBold" Margin="0,10,0,0" FontSize="14"/>
+                    <TextBlock Text="Resumen de tu perfil" Style="{StaticResource ProfileHistoryTitle}" Margin="0,32,0,12"/>
+                    <Border Style="{StaticResource ProfileHistoryCard}">
+                        <StackPanel>
+                            <TextBlock Text="Rol actual:" Foreground="{StaticResource AccentColor}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding Rol}" Style="{StaticResource ProfileHistoryItem}" Margin="0,0,0,10"/>
+                            <TextBlock Text="Estado de cuenta:" Foreground="{StaticResource AccentColor}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding Estado}" Style="{StaticResource ProfileHistoryItem}" Margin="0,0,0,10"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <TextBlock Text="Apellidos:" Width="120" VerticalAlignment="Center"/>
-                            <TextBox Width="260" Height="36" Style="{StaticResource ModernTextBox}" Text="{Binding Apellidos, UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <TextBlock Text="Email:" Width="120" VerticalAlignment="Center"/>
-                            <TextBox Width="260" Height="36" Style="{StaticResource ModernTextBox}" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,32,0,0">
-                            <Button Content="💾 Guardar Cambios" Style="{StaticResource ModernButton}" Height="48"/>
-                            <Button Content="❌ Cancelar" Style="{StaticResource FlatButton}" Height="48"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <!-- Cambiar contraseña y actividad -->
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="Cambiar contraseña" FontSize="21" FontWeight="Bold" Margin="0,0,0,20"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                            <TextBlock Text="Contraseña actual:" Width="150" VerticalAlignment="Center"/>
-                            <PasswordBox Width="220" Height="36" Style="{StaticResource ModernPasswordBox}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                            <TextBlock Text="Nueva contraseña:" Width="150" VerticalAlignment="Center"/>
-                            <PasswordBox Width="220" Height="36" Style="{StaticResource ModernPasswordBox}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                            <TextBlock Text="Confirmar nueva contraseña:" Width="150" VerticalAlignment="Center"/>
-                            <PasswordBox Width="220" Height="36" Style="{StaticResource ModernPasswordBox}"/>
-                        </StackPanel>
-                        <Button Content="🔐 Cambiar Contraseña" Style="{StaticResource ModernButton}" Height="48" Margin="0,22,0,0"/>
-                        <TextBlock Text="Historial de actividad" FontSize="21" FontWeight="Bold" Margin="0,40,0,12"/>
-                        <Border Background="#F4F6FB" CornerRadius="10" Padding="10" Height="150">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ListBox Height="120"/>
-                            </ScrollViewer>
-                        </Border>
-                    </StackPanel>
-                </Grid>
+                    </Border>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

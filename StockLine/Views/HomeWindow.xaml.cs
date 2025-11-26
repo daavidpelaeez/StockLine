@@ -55,6 +55,7 @@ namespace WpfApp1.Views
             InicializarTimerNotificaciones();
 
             this.Loaded += HomeWindow_Loaded;
+            btnInicio.Click += btnInicio_Click;
         }
 
         #region NOTIFICACIONES
@@ -597,6 +598,13 @@ namespace WpfApp1.Views
             var mvsWindow = new MovimientosStockWindow();
             mvsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             mvsWindow.ShowDialog();
+        }
+
+        private void btnInicio_Click(object sender, RoutedEventArgs e)
+        {
+            var perfilWindow = new PerfilWindow();
+            perfilWindow.Owner = this;
+            perfilWindow.ShowDialog();
         }
     }
 }

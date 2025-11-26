@@ -387,5 +387,8 @@
   <ItemGroup>
     <Resource Include="Assets\Icons\5153829.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\perfil.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
