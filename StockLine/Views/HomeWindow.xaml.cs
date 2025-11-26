@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using WpfApp1.ViewModels;
 using WpfApp1.Views;
 using WpfApp1.Services;
+using WpfApp1;
 
 namespace WpfApp1.Views
 {
@@ -36,7 +37,14 @@ namespace WpfApp1.Views
             UsuarioID = usuarioId;
             RoleID = roleId;
             DataContext = this;
-            
+
+            // Guardar en sesión global
+            Session.UsuarioID = usuarioId;
+            Session.RoleID = roleId;
+            Session.NombreUsuario = usuario;
+            // Si tienes ComercialID en el login, asígnalo aquí también
+            // Session.ComercialID = comercialId;
+
             // Inicializar servicio de notificaciones
             _notificacionService = new NotificacionService();
             

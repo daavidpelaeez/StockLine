@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockLine25", "StockLine\StockLine25.csproj", "{EA3636E1-D9FE-4394-852A-6E98F0168117}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StocklineTests", "StocklineTests\StocklineTests.csproj", "{2D0CE299-DD34-4B68-825A-E8780EC1A582}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EA3636E1-D9FE-4394-852A-6E98F0168117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA3636E1-D9FE-4394-852A-6E98F0168117}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA3636E1-D9FE-4394-852A-6E98F0168117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D0CE299-DD34-4B68-825A-E8780EC1A582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D0CE299-DD34-4B68-825A-E8780EC1A582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D0CE299-DD34-4B68-825A-E8780EC1A582}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D0CE299-DD34-4B68-825A-E8780EC1A582}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

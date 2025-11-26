@@ -95,7 +95,7 @@ namespace WpfApp1.Views
                 else
                 {
                     // Enviar password en texto plano al crear
-                    var password = txtPassword.Text.Trim();
+                    var password = txtPassword.Password.Trim();
                     if (string.IsNullOrWhiteSpace(password))
                     {
                         MessageBox.Show("La contraseña es obligatoria", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -104,8 +104,6 @@ namespace WpfApp1.Views
                         btnCancelar.IsEnabled = true;
                         return;
                     }
-                    // Se asume que la API hashea la password
-                    // Si UsuarioDTO no tiene campo Password, se debe agregar
                     usuario.GetType().GetProperty("Password")?.SetValue(usuario, password);
                     resultado = await _personaService.CreateAsync(usuario);
                 }

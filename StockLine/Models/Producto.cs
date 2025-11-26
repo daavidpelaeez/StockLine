@@ -10,7 +10,12 @@ namespace WpfApp1.Models
     {
         public long Id { get; set; }
         public string Nombre { get; set; }
-        public int Cantidad { get; set; }
+        private int _cantidad;
+        public int Cantidad
+        {
+            get => _cantidad;
+            set => _cantidad = value < 0 ? 0 : value;
+        }
         public string Categoria { get; set; }
         public string Ubicacion { get; set; }
         public int StockMin { get; set; }

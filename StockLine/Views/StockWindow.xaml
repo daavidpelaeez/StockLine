@@ -552,10 +552,7 @@
                                    CornerRadius="26"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top">
-                                <TextBlock Text="⚠️" 
-                                          FontSize="24" 
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                <Image Source="/Assets/Icons/advertencia.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                     </Border>
@@ -588,7 +585,7 @@
                                    CornerRadius="26"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top">
-                                <Image Source="/assets/icons/unidades.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="/Assets/Icons/todas.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                     </Border>
@@ -729,7 +726,7 @@
 
                         <!-- Botón Exportar CSV -->
                         <Button Grid.Column="5"
-                               Content="📥 Exportar"
+                               Content="Exportar a CSV"
                                Style="{StaticResource PrimaryButton}"
                                Width="140"
                                Click="BtnExportarExcel_Click"/>

@@ -106,46 +106,66 @@ namespace WpfApp1.Views
 
             try
             {
-                var resultado = await envioService.UpdateEstadoAsync(envio.EnvioID, estadoSeleccionado, usuarioId);
+                var resultado = false;
+                string errorMsg = "No se pudo actualizar el estado.\nVerifica que el estado sea valido en la base de datos.";
+                try
+                {
+                    resultado = await envioService.UpdateEstadoAsync(envio.EnvioID, estadoSeleccionado, usuarioId);
+                }
+                catch (System.Net.Http.HttpRequestException httpEx)
+                {
+                    // Intentar extraer el mensaje de error de la respuesta de la API
+                    if (httpEx.Data["StatusCode"] != null && httpEx.Data["StatusCode"].ToString() == "409")
+                    {
+                        // Si la excepción contiene el mensaje de la API
+                        if (httpEx.Data["ApiMessage"] != null)
+                        {
+                            errorMsg = httpEx.Data["ApiMessage"].ToString();
+                        }
+                    }
+                    else
+                    {
+                        errorMsg = httpEx.Message;
+                    }
+                }
 
                 if (resultado)
                 {
                     MessageBox.Show("Estado actualizado correctamente.", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // Crear movimientos de stock si el estado es 'Enviado'
-                    if (estadoSeleccionado == "Enviado" && envio != null && envio.Detalles != null)
-                    {
-                        using (var client = new System.Net.Http.HttpClient())
-                        {
-                            client.BaseAddress = new Uri("http://localhost:5200/");
-                            foreach (var detalle in envio.Detalles)
-                            {
-                                var movimiento = new
-                                {
-                                    productoID = detalle.ProductoID,
-                                    cantidad = detalle.Cantidad,
-                                    tipoMovimiento = "Salida",
-                                    usuarioID = usuarioId,
-                                    observaciones = $"Salida por Envío #{envio.EnvioID}"
-                                };
-                                var json = Newtonsoft.Json.JsonConvert.SerializeObject(movimiento);
-                                var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                                var resp = await client.PostAsync("api/movimientosstock", content);
-                                if (!resp.IsSuccessStatusCode)
-                                {
-                                    var error = await resp.Content.ReadAsStringAsync();
-                                    System.Diagnostics.Debug.WriteLine($"Error creando movimiento de stock: {error}");
-                                    // Opcional: mostrar error al usuario
-                                }
-                            }
-                        }
-                    }
-                    if (EnvioModificado != null)
-                        EnvioModificado();
+                    EnvioModificado?.Invoke();
                     CargarDetalleEnvio(envio.EnvioID);
                 }
                 else
                 {
-                    MessageBox.Show("No se pudo actualizar el estado.\nVerifica que el estado sea valido en la base de datos.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Si la API responde con 409 Conflict y mensaje, mostrarlo
+                    try
+                    {
+                        using (var client = new System.Net.Http.HttpClient())
+                        {
+                            client.BaseAddress = new Uri("http://localhost:5200/");
+                            var url = $"api/envios/{envio.EnvioID}/estado?usuarioModificadorId={usuarioId}";
+                            var json = Newtonsoft.Json.JsonConvert.SerializeObject(estadoSeleccionado);
+                            var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                            var request = new System.Net.Http.HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), url)
+                            {
+                                Content = content
+                            };
+                            var response = await client.SendAsync(request);
+                            var body = await response.Content.ReadAsStringAsync();
+                            if ((int)response.StatusCode == 409 && !string.IsNullOrWhiteSpace(body))
+                            {
+                                try
+                                {
+                                    var errorObj = Newtonsoft.Json.Linq.JObject.Parse(body);
+                                    if (errorObj["message"] != null)
+                                        errorMsg = errorObj["message"].ToString();
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    catch { }
+                    MessageBox.Show(errorMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)

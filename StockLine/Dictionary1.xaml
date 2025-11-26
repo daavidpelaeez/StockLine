@@ -20,11 +20,12 @@
     <!-- Fuente -->
     <FontFamily x:Key="AppFont">Segoe UI</FontFamily>
 
-    <!-- Estilo para Window -->
+    <!-- Estilo para Window (sin Background por defecto) -->
     <Style TargetType="Window">
-        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <!-- Quitar el Background global para permitir fondos personalizados -->
         <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
         <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <!-- No establecer Background aquí -->
     </Style>
     <DropShadowEffect x:Key="DropShadowEffect" Color="Black" BlurRadius="15" ShadowDepth="5" Opacity="0.3"/>
     <!-- Estilo para Button -->
@@ -91,5 +92,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Fondo de login personalizado -->
+    <ImageBrush x:Key="LoginBackgroundBrush" ImageSource="Assets/Icons/5153829.jpg" Stretch="UniformToFill"/>
 
 </ResourceDictionary>

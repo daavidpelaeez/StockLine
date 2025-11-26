@@ -11,23 +11,19 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using WpfApp1.Views;
+using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {
     /// <summary>
-    /// Lógica de interacción para AddEnvioPendiente.xaml
+    /// Interaction logic for PerfilWindow.xaml
     /// </summary>
-    public partial class AddEnvioPendiente : Window
+    public partial class PerfilWindow : Window
     {
-        private void Guardar_Click(object sender, RoutedEventArgs e)
+        public PerfilWindow()
         {
-
-        }
-
-        private void Cancelar_Click(object sender, RoutedEventArgs e)
-        {
-
+            InitializeComponent();
+            this.DataContext = new PerfilViewModel();
         }
     }
 }

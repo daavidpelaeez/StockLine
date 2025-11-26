@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.10\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -115,17 +121,17 @@
     <Compile Include="Services\NotificacionService.cs" />
     <Compile Include="Services\ProductoService.cs" />
     <Compile Include="Services\SIMService.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="ViewModels\AyuntamientoViewModel.cs" />
+    <Compile Include="ViewModels\PerfilViewModel.cs" />
     <Compile Include="ViewModels\ProductosViewModel.cs" />
+    <Compile Include="ViewModels\ReportesViewModel.cs" />
     <Compile Include="ViewModels\UsuarioViewModel.cs" />
     <Compile Include="Views\AddEditAyuntamientos.xaml.cs">
       <DependentUpon>AddEditAyuntamientos.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddEditProduct.xaml.cs">
       <DependentUpon>AddEditProduct.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AddEnvioPendiente.xaml.cs">
-      <DependentUpon>AddEnvioPendiente.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AjustesWindow.xaml.cs">
       <DependentUpon>AjustesWindow.xaml</DependentUpon>
@@ -178,6 +184,9 @@
     <Compile Include="Views\MovimientosStockWindow.xaml.cs">
       <DependentUpon>MovimientosStockWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PerfilWindow.xaml.cs">
+      <DependentUpon>PerfilWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RecuperarWindow.xaml.cs">
       <DependentUpon>RecuperarWindow.xaml</DependentUpon>
     </Compile>
@@ -198,10 +207,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddEditProduct.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddEnvioPendiente.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -277,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MovimientosStockWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PerfilWindow.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RecuperarWindow.xaml">
@@ -368,6 +377,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\sim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\advertencia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\todas.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\5153829.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

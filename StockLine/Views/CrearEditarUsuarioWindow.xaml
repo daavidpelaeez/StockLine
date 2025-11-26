@@ -143,7 +143,7 @@
                        BorderBrush="#E3F2FD"
                        BorderThickness="2"
                        Visibility="Visible"> 
-                        <TextBox x:Name="txtPassword" 
+                        <PasswordBox x:Name="txtPassword" 
                             Height="70"
                             Padding="22"
                             FontSize="17"

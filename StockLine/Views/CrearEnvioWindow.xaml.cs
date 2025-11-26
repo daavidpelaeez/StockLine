@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfApp1.DTOs;
 using WpfApp1.Services;
+using WpfApp1;
 
 namespace WpfApp1.Views
 {
@@ -30,7 +31,6 @@ namespace WpfApp1.Views
         public CrearEnvioWindow(int usuarioId)
         {
             InitializeComponent();
-            
             _envioService = new EnvioService();
             _ayuntamientoService = new AyuntamientoService();
             _comercialService = new ComercialService();
@@ -44,6 +44,25 @@ namespace WpfApp1.Views
             dpFechaEnvio.SelectedDate = DateTime.Now;
 
             this.Loaded += CrearEnvioWindow_Loaded;
+
+            // Autoselección y bloqueo de comercial si el usuario es Comercial
+            if (Session.RoleID == 2 && Session.ComercialID.HasValue)
+            {
+                this.Loaded += (s, e) =>
+                {
+                    // Buscar el comercial en el ComboBox y seleccionarlo
+                    foreach (var item in cbComercial.Items)
+                    {
+                        var prop = item.GetType().GetProperty("ComercialID");
+                        if (prop != null && (int)prop.GetValue(item) == Session.ComercialID.Value)
+                        {
+                            cbComercial.SelectedItem = item;
+                            cbComercial.IsEnabled = false;
+                            break;
+                        }
+                    }
+                };
+            }
         }
 
         private async void CrearEnvioWindow_Loaded(object sender, RoutedEventArgs e)
@@ -62,8 +81,21 @@ namespace WpfApp1.Views
 
                 var comerciales = await _comercialService.GetAllAsync();
                 cbComercial.ItemsSource = comerciales;
-                if (comerciales.Count > 0)
+
+                // Selección automática del comercial logueado
+                if (Session.RoleID == 2 && Session.ComercialID.HasValue)
+                {
+                    var comercial = comerciales.FirstOrDefault(c => c.ComercialID == Session.ComercialID.Value);
+                    if (comercial != null)
+                    {
+                        cbComercial.SelectedItem = comercial;
+                        cbComercial.IsEnabled = false;
+                    }
+                }
+                else if (comerciales.Count > 0)
+                {
                     cbComercial.SelectedIndex = 0;
+                }
 
                 _productosDisponibles = await _productoService.GetAllAsync();
                 cbProducto.ItemsSource = _productosDisponibles;

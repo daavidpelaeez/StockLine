@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfApp1.DTOs;
 using WpfApp1.Services;
 
 namespace WpfApp1.Views

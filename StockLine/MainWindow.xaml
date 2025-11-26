@@ -5,131 +5,138 @@
         WindowState="Maximized"
         WindowStyle="None"
         ResizeMode="NoResize">
-        
-    <Grid Background="{DynamicResource LoginBackgroundBrush}">
-
-        <!-- Botón para cambiar tema -->
-        <Button Content="Cambiar Tema"
-                Width="120"
-                Height="30"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="10"
-                Click="ToggleTheme_Click"
-                Background="{DynamicResource PrimaryBrush}"
-                Foreground="White"
-                FontWeight="Bold" />
-
-        <!-- Panel de login -->
-        <Border x:Name="loginCard"
-                Background="White" 
-                CornerRadius="15" 
-                Padding="30" 
-                MinWidth="300"
-                MinHeight="320"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center" 
-                Effect="{DynamicResource DropShadowEffect}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0">
-                    <TextBlock Text="Iniciar Sesión" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,0,0,25"/>
-
-                    <!-- Usuario -->
-                    <TextBlock Text="Usuario" FontWeight="SemiBold" Margin="5,0,0,5" Foreground="{DynamicResource TextBrush}"/>
-                    <TextBox x:Name="txtUser" Height="30" FontSize="14" Padding="5" MinWidth="229" HorizontalAlignment="Stretch"/>
-
-                    <!-- Contraseña -->
-                    <TextBlock Text="Contraseña" FontWeight="SemiBold" Margin="5,10,0,5" Foreground="{DynamicResource TextBrush}"/>
-                    <PasswordBox x:Name="txtPassword" Height="30" FontSize="14" Padding="5" MinWidth="229" HorizontalAlignment="Stretch"/>
-
-                    <!-- ¿Olvidó contraseña? -->
-                    <TextBlock Text="¿Olvidó su contraseña?"
-                               Foreground="{DynamicResource PrimaryBrush}"
-                               FontSize="12"
-                               Cursor="Hand"
-                               TextDecorations="Underline"
-                               HorizontalAlignment="Center"
-                               MouseDown="ForgotPassword_Click"
-                               Padding="0,10,0,0"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1">
-                    <!-- Mensaje de error/éxito -->
-                    <Border x:Name="borderMensaje"
-                           Background="#FFEBEE"
-                           BorderBrush="#EF5350"
-                           BorderThickness="2"
-                           CornerRadius="8"
-                           Padding="12,10"
-                           Margin="0,15,0,0"
-                           Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="txtIconoMensaje"
-                                      Text="❌"
-                                      FontSize="16"
-                                      Margin="0,0,10,0"
-                                      VerticalAlignment="Center"/>
-                            <TextBlock x:Name="txtMensaje"
-                                      FontWeight="SemiBold"
-                                      FontSize="13"
-                                      TextWrapping="Wrap"
-                                      VerticalAlignment="Center"
-                                      Foreground="#C62828"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Indicador de carga -->
-                    <Border x:Name="borderCargando"
-                           Background="#E3F2FD"
-                           BorderBrush="#42A5F5"
-                           BorderThickness="2"
-                           CornerRadius="8"
-                           Padding="12,10"
-                           Margin="0,15,0,0"
-                           Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="⏳" 
-                                      FontSize="16" 
-                                      Margin="0,0,10,0"
-                                      VerticalAlignment="Center">
-                                <TextBlock.RenderTransform>
-                                    <RotateTransform x:Name="rotateTransform" CenterX="8" CenterY="8"/>
-                                </TextBlock.RenderTransform>
-                                <TextBlock.Triggers>
-                                    <EventTrigger RoutedEvent="Loaded">
-                                        <BeginStoryboard>
-                                            <Storyboard RepeatBehavior="Forever">
-                                                <DoubleAnimation Storyboard.TargetName="rotateTransform"
-                                                               Storyboard.TargetProperty="Angle"
-                                                               From="0" To="360" Duration="0:0:2"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </TextBlock.Triggers>
-                            </TextBlock>
-                            <TextBlock Text="Iniciando sesión..."
-                                      FontWeight="SemiBold"
-                                      FontSize="13"
-                                      Foreground="#1E88E5"
-                                      VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Botón login -->
-                    <Button x:Name="btnLogin"
-                            Content="Entrar"
-                            Height="35"
-                            Margin="0,15,0,0"
-                            Background="{DynamicResource PrimaryBrush}"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            HorizontalAlignment="Stretch"
-                            Click="BtnLogin_Click"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+    <Grid>
+        <!-- Imagen de fondo -->
+        <Image Source="Assets/Icons/5153829.jpg" Stretch="UniformToFill" Panel.ZIndex="0"/>
+        <!-- Capa de contenido -->
+        <Grid Panel.ZIndex="1">
+            <!-- Botón para cambiar tema -->
+            <Button Content="Cambiar Tema"
+                    Width="120"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="10"
+                    Click="ToggleTheme_Click"
+                    Background="{DynamicResource PrimaryBrush}"
+                    Foreground="White"
+                    FontWeight="Bold" />
+            <!-- Panel de login -->
+            <Border x:Name="loginCard"
+                    Background="White"
+                    CornerRadius="15"
+                    Padding="30"
+                    MinWidth="300"
+                    MinHeight="320"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    BorderBrush="#22000000"
+                    BorderThickness="2">
+                <Border.Effect>
+                    <DropShadowEffect Color="#66000000" BlurRadius="30" ShadowDepth="8" Opacity="0.45"/>
+                </Border.Effect>
+                <Border.RenderTransform>
+                    <TranslateTransform Y="4"/>
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Iniciar Sesión" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,0,0,25"/>
+                        <!-- Usuario -->
+                        <TextBlock Text="Usuario" FontWeight="SemiBold" Margin="5,0,0,5" Foreground="{DynamicResource TextBrush}"/>
+                        <TextBox x:Name="txtUser" Height="30" FontSize="14" Padding="5" MinWidth="229" HorizontalAlignment="Stretch"/>
+                        <!-- Contraseña -->
+                        <TextBlock Text="Contraseña" FontWeight="SemiBold" Margin="5,10,0,5" Foreground="{DynamicResource TextBrush}"/>
+                        <PasswordBox x:Name="txtPassword" Height="30" FontSize="14" Padding="5" MinWidth="229" HorizontalAlignment="Stretch"/>
+                        <!-- ¿Olvidó contraseña? -->
+                        <TextBlock Text="¿Olvidó su contraseña?"
+                                   Foreground="{DynamicResource PrimaryBrush}"
+                                   FontSize="12"
+                                   Cursor="Hand"
+                                   TextDecorations="Underline"
+                                   HorizontalAlignment="Center"
+                                   MouseDown="ForgotPassword_Click"
+                                   Padding="0,10,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1">
+                        <!-- Mensaje de error/éxito -->
+                        <Border x:Name="borderMensaje"
+                               Background="#FFEBEE"
+                               BorderBrush="#EF5350"
+                               BorderThickness="2"
+                               CornerRadius="8"
+                               Padding="12,10"
+                               Margin="0,15,0,0"
+                               Visibility="Collapsed"
+                               MinWidth="220"
+                               MaxWidth="500">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <TextBlock x:Name="txtIconoMensaje"
+                                          Text="❌"
+                                          FontSize="16"
+                                          Margin="0,0,10,0"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtMensaje"
+                                          FontWeight="SemiBold"
+                                          FontSize="13"
+                                          TextWrapping="Wrap"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Center"
+                                          Foreground="#C62828"/>
+                            </StackPanel>
+                        </Border>
+                        <!-- Indicador de carga -->
+                        <Border x:Name="borderCargando"
+                               Background="#E3F2FD"
+                               BorderBrush="#42A5F5"
+                               BorderThickness="2"
+                               CornerRadius="8"
+                               Padding="12,10"
+                               Margin="0,15,0,0"
+                               Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="⏳" 
+                                          FontSize="16" 
+                                          Margin="0,0,10,0"
+                                          VerticalAlignment="Center">
+                                    <TextBlock.RenderTransform>
+                                        <RotateTransform x:Name="rotateTransform" CenterX="8" CenterY="8"/>
+                                    </TextBlock.RenderTransform>
+                                    <TextBlock.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetName="rotateTransform"
+                                                                   Storyboard.TargetProperty="Angle"
+                                                                   From="0" To="360" Duration="0:0:2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </TextBlock.Triggers>
+                                </TextBlock>
+                                <TextBlock Text="Iniciando sesión..."
+                                          FontWeight="SemiBold"
+                                          FontSize="13"
+                                          Foreground="#1E88E5"
+                                          VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <!-- Botón login -->
+                        <Button x:Name="btnLogin"
+                                Content="Entrar"
+                                Height="35"
+                                Margin="0,15,0,0"
+                                Background="{DynamicResource PrimaryBrush}"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Stretch"
+                                Click="BtnLogin_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

@@ -14,6 +14,7 @@ namespace WpfApp1.DTOs
         public string Email { get; set; }
         public int RoleID { get; set; }
         public bool Activo { get; set; } = true;
-        public string Password { get; set; } 
+        public string Password { get; set; }
+        public int? ComercialID { get; set; } // <-- Añadido para login y relación comercial
     }
 }

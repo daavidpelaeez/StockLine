@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.Text;
+using System.IO;
 using WpfApp1.Services;
+using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {
@@ -20,6 +24,7 @@ namespace WpfApp1.Views
         public ReportesWindow()
         {
             InitializeComponent();
+            DataContext = new ReportesViewModel();
 
             _productoService = new ProductoService();
             _envioService = new EnvioService();
@@ -110,8 +115,6 @@ namespace WpfApp1.Views
                         Cantidad = p.Value
                     })
                     .ToList();
-
-                dgTopProductos.ItemsSource = topProductos;
             }
             catch (Exception ex)
             {
@@ -129,9 +132,61 @@ namespace WpfApp1.Views
             MessageBox.Show("Funcionalidad de exportar a PDF en desarrollo", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
+        private async void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Funcionalidad de exportar a Excel en desarrollo", "Informacion", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var productos = await _productoService.GetAllAsync();
+                var envios = await _envioService.GetAllAsync();
+                var sims = await _simService.GetAllAsync();
+                var ayuntamientos = await _ayuntamientoService.GetAllAsync();
+
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Excel Files (*.csv)|*.csv",
+                    FileName = $"Reporte_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                };
+                if (saveFileDialog.ShowDialog() != true)
+                    return;
+
+                var sb = new StringBuilder();
+                sb.AppendLine("==== RESUMEN GENERAL ====");
+                sb.AppendLine($"Total Productos:;{productos.Count}");
+                sb.AppendLine($"Total Envios:;{envios.Count}");
+                sb.AppendLine($"Total SIMs:;{sims.Count}");
+                sb.AppendLine($"Total Ayuntamientos:;{ayuntamientos.Count}");
+                sb.AppendLine();
+
+                sb.AppendLine("==== PRODUCTOS ====");
+                sb.AppendLine("Nombre;Stock");
+                foreach (var p in productos)
+                    sb.AppendLine($"{p.Nombre};{p.Stock}");
+                sb.AppendLine();
+
+                sb.AppendLine("==== ENVIOS ====");
+                sb.AppendLine("ID;Estado;Fecha");
+                foreach (var envio in envios)
+                    sb.AppendLine($"{envio.EnvioID};{envio.Estado};{envio.FechaEnvio:yyyy-MM-dd}");
+                sb.AppendLine();
+
+                sb.AppendLine("==== SIMs ====");
+                sb.AppendLine("ID;Asignada");
+                foreach (var sim in sims)
+                    sb.AppendLine($"{sim.SIMID};{(sim.ProductoID != null && sim.ProductoID > 0 ? "Sí" : "No")}");
+                sb.AppendLine();
+
+                sb.AppendLine("==== AYUNTAMIENTOS ====");
+                sb.AppendLine("Nombre;Activo");
+                foreach (var ayto in ayuntamientos)
+                    sb.AppendLine($"{ayto.Nombre};{(ayto.Activo ? "Sí" : "No")}");
+
+                File.WriteAllText(saveFileDialog.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"Archivo exportado correctamente.\n\nUbicación: {saveFileDialog.FileName}", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al exportar a Excel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void TarjetaProductos_Click(object sender, MouseButtonEventArgs e)

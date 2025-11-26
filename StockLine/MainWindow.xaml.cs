@@ -132,6 +132,12 @@ namespace WpfApp1
                     // Guardar el usuarioID globalmente para toda la app
                     App.UsuarioIDActual = usuario.UsuarioID;
 
+                    // Guardar datos de sesión global
+                    Session.UsuarioID = usuario.UsuarioID;
+                    Session.RoleID = usuario.RoleID;
+                    Session.NombreUsuario = usuario.Nombre;
+                    Session.ComercialID = usuario.ComercialID; // <--- Asegura que se asigna aquí
+
                     // Esperar un momento para que vea el mensaje de éxito
                     await Task.Delay(1000);
 
