@@ -210,7 +210,7 @@
                                                               Foreground="White"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- Flecha indicadora alineada a la derecha -->
                                             <TextBlock x:Name="flechaNotificaciones"
                                                       Text="▼"
@@ -235,7 +235,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    
+
                                                     <!-- Contenido clickeable -->
                                                     <StackPanel Grid.Column="0" 
                                                                Cursor="Hand"
@@ -253,7 +253,7 @@
                                                                   Foreground="#7F8C8D"
                                                                   Margin="0,4,0,0"/>
                                                     </StackPanel>
-                                                    
+
                                                     <!-- Botón descartar -->
                                                     <Button Grid.Column="1"
                                                            Width="24" Height="24"
@@ -301,7 +301,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    
+
                                                     <!-- Contenido clickeable -->
                                                     <StackPanel Grid.Column="0"
                                                                Cursor="Hand"
@@ -319,7 +319,7 @@
                                                                   Foreground="#7F8C8D"
                                                                   Margin="0,4,0,0"/>
                                                     </StackPanel>
-                                                    
+
                                                     <!-- Botón descartar -->
                                                     <Button Grid.Column="1"
                                                            Width="24" Height="24"
@@ -748,7 +748,10 @@
                 </Border>
 
                 <!-- CONTENIDO PRINCIPAL -->
-                <Grid Grid.Column="1" Background="#FFF5F9FD">
+                <Grid Grid.Column="1">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="/assets/icons/fondo.jpg" Stretch="UniformToFill"/>
+                    </Grid.Background>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="80"/>
                         <RowDefinition Height="Auto"/>
@@ -756,7 +759,10 @@
                     </Grid.RowDefinitions>
 
                     <!-- BARRA SUPERIOR CON TÍTULO DE VENTANA -->
-                    <Border Grid.Row="0" Background="White" CornerRadius="0,12,0,0">
+                    <Border Grid.Row="0" CornerRadius="0,12,0,0">
+                        <Border.Background>
+                            <ImageBrush/>
+                        </Border.Background>
                         <Grid Margin="30,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -764,14 +770,14 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock FontSize="28" FontWeight="Bold" Foreground="#2C3E50">
+                                <TextBlock FontSize="28" FontWeight="Bold" Foreground="#2C3E50" FontStyle="Italic">
                                     <Run Text="¡Hola, "/>
                                     <Run Text="{Binding NombreUsuario}"/>
 
                                 </TextBlock>
                                 <TextBlock Text="Aquí está el resumen de hoy" 
                                           FontSize="14" 
-                                          Foreground="#7F8C8D"
+                                          Foreground="Black"
                                           Margin="0,4,0,0"/>
                             </StackPanel>
 

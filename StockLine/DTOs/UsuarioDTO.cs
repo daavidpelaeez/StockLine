@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace WpfApp1.DTOs
 {
@@ -15,6 +11,6 @@ namespace WpfApp1.DTOs
         public int RoleID { get; set; }
         public bool Activo { get; set; } = true;
         public string Password { get; set; }
-        public int? ComercialID { get; set; } // <-- Añadido para login y relación comercial
+        public int? ComercialID { get; set; }
     }
 }

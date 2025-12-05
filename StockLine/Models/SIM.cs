@@ -12,6 +12,6 @@ namespace StockLine.Models
         public string Ubicacion { get; set; }
         public string Estado { get; set; }
         public DateTime? FechaAsignacion { get; set; }
-        // ProductoNombre eliminado, solo debe estar en el DTO
+        
     }
 }

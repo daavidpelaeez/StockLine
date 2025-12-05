@@ -284,7 +284,10 @@
             </Border>
 
             <!-- CONTENIDO PRINCIPAL -->
-            <Grid Grid.Row="1" Background="{StaticResource BackgroundColor}" Margin="0">
+            <Grid Grid.Row="1" Margin="0">
+                <Grid.Background>
+                    <ImageBrush ImageSource="/Assets/Icons/fondo.jpg"/>
+                </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -340,7 +343,7 @@
                             Style="{StaticResource ModernDataGrid}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding AyuntamientoID}" Width="80"/>
-                            
+
                             <DataGridTemplateColumn Header="Ayuntamiento" Width="2*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -372,7 +375,7 @@
 
                             <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="140"/>
                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="1.5*"/>
-                            
+
                             <DataGridTemplateColumn Header="Comercial" Width="200">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

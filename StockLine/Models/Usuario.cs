@@ -20,7 +20,6 @@ namespace WpfApp1.Models
             get => _correo;
             set
             {
-                // Validación simple: debe contener @ y .
                 if (!string.IsNullOrEmpty(value) && value.Contains("@") && value.Contains("."))
                     _correo = value;
                 else
@@ -34,7 +33,7 @@ namespace WpfApp1.Models
             get => _password;
             set
             {
-                // No permitir nulo o vacío
+                
                 if (!string.IsNullOrWhiteSpace(value))
                     _password = value;
                 else

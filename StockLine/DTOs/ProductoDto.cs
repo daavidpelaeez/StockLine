@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace WpfApp1.DTOs
 {
@@ -16,12 +13,12 @@ namespace WpfApp1.DTOs
         public int? CategoriaID { get; set; }             
         public string CategoriaNombre { get; set; } = ""; 
         
-        // Propiedad calculada para determinar si el stock es critico
+       
         public bool EsCritico => Stock < 10;
 
         public bool Activo { get; set; }
 
-        // Propiedad calculada para la URL completa de la foto, forzando recarga con un GUID
+       
         public string FotoUrl => $"http://localhost:5200/api/Productos/photo/{ProductoID}?v={Guid.NewGuid()}";
 
         public override string ToString()

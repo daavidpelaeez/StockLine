@@ -209,5 +209,8 @@
         <Grid.Resources>
             <DropShadowEffect x:Key="DropShadowEffect" Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.12"/>
         </Grid.Resources>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/Icons/fondo.jpg"/>
+        </Grid.Background>
     </Grid>
 </Window>

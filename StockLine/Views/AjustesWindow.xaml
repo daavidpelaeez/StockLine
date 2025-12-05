@@ -75,12 +75,6 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <Border Background="#E3F2FD"
-                           CornerRadius="12"
-                           Padding="15,12"
-                           Margin="0,0,20,0">
-                        <TextBlock Text="⚙️" FontSize="32"/>
-                    </Border>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock FontSize="32" FontWeight="Bold">
                             <TextBlock.Foreground>

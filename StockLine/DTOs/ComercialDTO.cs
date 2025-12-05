@@ -1,4 +1,3 @@
-using System;
 
 namespace WpfApp1.DTOs
 {

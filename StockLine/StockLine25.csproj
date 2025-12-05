@@ -157,9 +157,6 @@
     <Compile Include="Views\CrearEnvioWindow.xaml.cs">
       <DependentUpon>CrearEnvioWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CrearMovimientoWindow.xaml.cs">
-      <DependentUpon>CrearMovimientoWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\DetalleEnvioWindow.xaml.cs">
       <DependentUpon>DetalleEnvioWindow.xaml</DependentUpon>
     </Compile>
@@ -199,9 +196,6 @@
     <Compile Include="Views\UsuariosWindow.xaml.cs">
       <DependentUpon>UsuariosWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VerMovimientoWindow.xaml.cs">
-      <DependentUpon>VerMovimientoWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Views\AddEditAyuntamientos.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -238,9 +232,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CrearEnvioWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\CrearMovimientoWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DetalleEnvioWindow.xaml">
@@ -304,9 +295,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VerMovimientoWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Usuario.cs" />
@@ -366,7 +354,6 @@
     <Resource Include="Assets\Icons\usuarioRol.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Converters\" />
     <Folder Include="Services\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +376,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\perfil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\fondo.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -482,7 +482,10 @@
             </Border>
 
             <!-- CONTENIDO PRINCIPAL -->
-            <Grid Grid.Row="1" Background="{StaticResource BackgroundColor}">
+            <Grid Grid.Row="1">
+                <Grid.Background>
+                    <ImageBrush ImageSource="/Assets/Icons/fondo.jpg"/>
+                </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

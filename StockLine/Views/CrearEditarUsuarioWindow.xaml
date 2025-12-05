@@ -15,7 +15,10 @@
         </LinearGradientBrush>
     </Window.Background>
 
-    <Border Background="White" CornerRadius="20" Margin="30">
+    <Border CornerRadius="20" Margin="30">
+        <Border.Background>
+            <ImageBrush ImageSource="/Assets/Icons/fondo.jpg"/>
+        </Border.Background>
         <Border.Effect>
             <DropShadowEffect Color="#1E88E5" Opacity="0.2" BlurRadius="30" ShadowDepth="0"/>
         </Border.Effect>
@@ -142,7 +145,7 @@
                        Margin="0,0,0,30"
                        BorderBrush="#E3F2FD"
                        BorderThickness="2"
-                       Visibility="Visible"> 
+                       Visibility="Visible">
                         <PasswordBox x:Name="txtPassword" 
                             Height="70"
                             Padding="22"
