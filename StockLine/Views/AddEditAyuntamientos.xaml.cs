@@ -8,9 +8,6 @@ using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for AddEditAyuntamientos.xaml
-    /// </summary>
     public partial class AddEditAyuntamientos : Window
     {
         private readonly IAyuntamientoService _ayuntamientoService;
@@ -66,7 +63,7 @@ namespace WpfApp1.Views
 
                 _comerciales.Clear();
 
-                // Agregar opción "Sin asignar"
+                
                 _comerciales.Add(new ComercialViewModel
                 {
                     ComercialID = 0,
@@ -74,7 +71,7 @@ namespace WpfApp1.Views
                     Email = ""
                 });
 
-                // Agregar comerciales de la base de datos
+                
                 foreach (var comercial in comerciales)
                 {
                     _comerciales.Add(new ComercialViewModel
@@ -89,7 +86,7 @@ namespace WpfApp1.Views
                 }
 
                 cbComercial.ItemsSource = _comerciales;
-                cbComercial.SelectedIndex = 0; // Seleccionar "Sin asignar" por defecto
+                cbComercial.SelectedIndex = 0; 
             }
             catch (Exception ex)
             {
@@ -100,7 +97,7 @@ namespace WpfApp1.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
 
-                // Asegurar que al menos tenga la opción "Sin asignar"
+               
                 _comerciales.Clear();
                 _comerciales.Add(new ComercialViewModel
                 {
@@ -131,7 +128,7 @@ namespace WpfApp1.Views
                 txtTelefono.Text = _ayuntamientoEdicion.Telefono;
                 txtEmail.Text = _ayuntamientoEdicion.Email;
 
-                // Seleccionar el comercial asignado
+                
                 if (_ayuntamientoEdicion.ComercialID.HasValue && _ayuntamientoEdicion.ComercialID.Value > 0)
                 {
                     var comercialSeleccionado = _comerciales.FirstOrDefault(c => c.ComercialID == _ayuntamientoEdicion.ComercialID.Value);
@@ -141,13 +138,13 @@ namespace WpfApp1.Views
                     }
                     else
                     {
-                        // Si no se encuentra el comercial, seleccionar "Sin asignar"
+                       
                         cbComercial.SelectedIndex = 0;
                     }
                 }
                 else
                 {
-                    // Sin comercial asignado
+                    
                     cbComercial.SelectedIndex = 0;
                 }
             }
@@ -179,17 +176,6 @@ namespace WpfApp1.Views
                     comercialID = comercialSeleccionado.ComercialID;
                 }
 
-                // Log para depuración
-                System.Diagnostics.Debug.WriteLine($"=== GUARDANDO AYUNTAMIENTO ===");
-                System.Diagnostics.Debug.WriteLine($"Nombre: {txtNombre.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Dirección: {txtDireccion.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"CP: {txtCP.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Ciudad: {txtCiudad.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Provincia: {txtProvincia.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Teléfono: {txtTelefono.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Email: {txtEmail.Text.Trim()}");
-                System.Diagnostics.Debug.WriteLine($"Comercial ID: {comercialID}");
-                System.Diagnostics.Debug.WriteLine($"Comercial Seleccionado: {comercialSeleccionado?.NombreCompleto}");
 
                 var ayuntamiento = new AyuntamientoDTO
                 {
@@ -202,10 +188,6 @@ namespace WpfApp1.Views
                     Email = txtEmail.Text.Trim(),
                     ComercialID = comercialID
                 };
-
-                // Log del objeto antes de enviarlo
-                var jsonDebug = Newtonsoft.Json.JsonConvert.SerializeObject(ayuntamiento, Newtonsoft.Json.Formatting.Indented);
-                System.Diagnostics.Debug.WriteLine($"JSON a enviar:\n{jsonDebug}");
 
                 bool resultado;
 
@@ -331,24 +313,5 @@ namespace WpfApp1.Views
             this.Close();
         }
 
-        // Métodos vacíos que ya no se usan pero los mantenemos para evitar errores
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-        }
-    }
-
-    // ViewModel para Comercial en el ComboBox
-    public class ComercialViewModel
-    {
-        public int ComercialID { get; set; }
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public string NombreCompleto { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
     }
 }

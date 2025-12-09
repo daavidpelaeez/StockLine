@@ -12,7 +12,7 @@
         ResizeMode="NoResize">
 
     <Window.Resources>
-        <!-- Colores de la aplicación -->
+        <!-- Colores -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#3498DB"/>
         <SolidColorBrush x:Key="PrimaryHover" Color="#2980B9"/>
         <SolidColorBrush x:Key="PrimaryActive" Color="#1E5FA8"/>
@@ -25,7 +25,7 @@
         <SolidColorBrush x:Key="TextSecondaryColor" Color="#64748B"/>
         <SolidColorBrush x:Key="HoverColor" Color="#F1F5F9"/>
 
-        <!-- Botón primario mejorado -->
+        <!-- Botón primario -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -62,7 +62,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón secundario mejorado -->
+        <!-- Botón secundario  -->
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
@@ -94,7 +94,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón rápido mejorado -->
+        <!-- Botón rápido -->
         <Style x:Key="QuickButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
@@ -132,9 +132,9 @@
         </Style>
     </Window.Resources>
 
-    <!-- Overlay semi-transparente -->
+    
     <Grid Background="#00000000">
-        <!-- Card centrada con sombra mejorada -->
+        
         <Border Width="500" 
                 Padding="32" 
                 CornerRadius="16"
@@ -156,7 +156,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header mejorado -->
+                <!-- Header  -->
                 <StackPanel Grid.Row="0" Margin="0,0,0,24">
                     <TextBlock Text="Ajustar Filtros de Progreso" 
                               FontSize="20" 
@@ -237,7 +237,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Ayuda mejorada -->
+                <!-- Ayuda  -->
                 <Border Grid.Row="2" 
                         Background="#E3F2FD"
                         BorderBrush="#BBDEFB"
@@ -262,7 +262,7 @@
                 <!-- Separador visual -->
                 <Rectangle Grid.Row="3" Height="1" Fill="{StaticResource BorderColor}" Margin="0,0,0,16"/>
 
-                <!-- Botones de acción mejorados -->
+                <!-- Botones de acción  -->
                 <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Cancelar" 
                            Click="Cancelar_Click" 

@@ -25,7 +25,7 @@ namespace WpfApp1.Views
 
         private int MaxProductosMostrar = 5;
         private DispatcherTimer timerNotificaciones;
-        private const int STOCK_MINIMO = 10; // Umbral para considerar stock bajo
+        private const int STOCK_MINIMO = 10; 
         private NotificacionService _notificacionService;
 
         public event Action ProductoModificado;
@@ -38,20 +38,19 @@ namespace WpfApp1.Views
             RoleID = roleId;
             DataContext = this;
 
-            // Guardar en sesión global
+           
             Session.UsuarioID = usuarioId;
             Session.RoleID = roleId;
             Session.NombreUsuario = usuario;
-            // Si tienes ComercialID en el login, asígnalo aquí también
-            // Session.ComercialID = comercialId;
+            
 
-            // Inicializar servicio de notificaciones
+           
             _notificacionService = new NotificacionService();
             
-            // Cargar datos iniciales
+            
             CargarProductosHome();
             
-            // Iniciar timer para actualizar notificaciones automáticamente cada 30 segundos
+            
             InicializarTimerNotificaciones();
 
             this.Loaded += HomeWindow_Loaded;
@@ -81,11 +80,11 @@ namespace WpfApp1.Views
         private void InicializarTimerNotificaciones()
         {
             timerNotificaciones = new DispatcherTimer();
-            timerNotificaciones.Interval = TimeSpan.FromSeconds(30); // Actualizar cada 30 segundos
+            timerNotificaciones.Interval = TimeSpan.FromSeconds(30); 
             timerNotificaciones.Tick += async (s, e) => await ActualizarNotificaciones();
             timerNotificaciones.Start();
             
-            // Cargar notificaciones iniciales
+           
             _ = ActualizarNotificaciones();
         }
 
@@ -95,10 +94,10 @@ namespace WpfApp1.Views
             {
                 int totalNotificaciones = 0;
 
-                // 1. Verificar productos con stock bajo
+               
                 int productosStockBajo = await ObtenerProductosStockBajo();
                 
-                // Verificar si esta notificación fue descartada
+                
                 bool stockBajoDescartado = _notificacionService.FueDescartada("StockBajo");
                 
                 if (productosStockBajo > 0 && !stockBajoDescartado)
@@ -114,14 +113,14 @@ namespace WpfApp1.Views
                     notifStockBajo.Visibility = Visibility.Collapsed;
                 }
 
-                // 2. Verificar envíos pendientes (solo estado "Pendiente")
+                
                 int enviosPendientes = await ObtenerEnviosPendientes();
 
-                // Actualiza el KPI visual principal
+               
                 if (txtKpiEnviosPendientes != null)
                     txtKpiEnviosPendientes.Text = enviosPendientes.ToString();
 
-                // Verificar si esta notificación fue descartada
+                
                 bool enviosPendientesDescartados = _notificacionService.FueDescartada("EnviosPendientes");
                 
                 if (enviosPendientes > 0 && !enviosPendientesDescartados)
@@ -130,14 +129,14 @@ namespace WpfApp1.Views
                     txtEnviosPendientes.Text = enviosPendientes == 1 
                         ? "1 envio pendiente" 
                         : $"{enviosPendientes} envios pendientes";
-                    totalNotificaciones += 1; // Contamos como 1 notificación aunque haya varios envíos
+                    totalNotificaciones += 1;
                 }
                 else
                 {
                     notifEnviosPendientes.Visibility = Visibility.Collapsed;
                 }
 
-                // 3. Actualizar badge de notificaciones
+                
                 if (totalNotificaciones > 0)
                 {
                     badgeNotificaciones.Visibility = Visibility.Visible;
@@ -160,13 +159,13 @@ namespace WpfApp1.Views
         {
             try
             {
-                // Asegurarse de que los productos están cargados
+                
                 if (ProductosVM.ProductosFiltrados == null || !ProductosVM.ProductosFiltrados.Any())
                 {
                     await ProductosVM.CargarProductosAsync();
                 }
 
-                // Contar productos con stock por debajo del mínimo
+               
                 var productosStockBajo = ProductosVM.ProductosFiltrados
                     .Where(p => p.Stock < STOCK_MINIMO)
                     .Count();
@@ -184,7 +183,7 @@ namespace WpfApp1.Views
         {
             try
             {
-                // Llamada real a la API para obtener envíos
+                
                 var envioService = new EnvioService();
                 var todosLosEnvios = await envioService.GetAllAsync();
                 
@@ -193,7 +192,7 @@ namespace WpfApp1.Views
                     return 0;
                 }
 
-                // Contar SOLO los envíos que están en estado "Pendiente"
+                
                 var enviosPendientes = todosLosEnvios
                     .Where(e => e.Estado != null && e.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase))
                     .Count();
@@ -219,11 +218,11 @@ namespace WpfApp1.Views
                 button.IsEnabled = false;
                 button.Content = "🔄 Actualizando...";
 
-                // Limpiar notificaciones expiradas (48 horas)
+                
                 _notificacionService.LimpiarNotificacionesExpiradas(48);
 
                 await ActualizarNotificaciones();
-                await Task.Delay(500); // Pequeño delay para feedback visual
+                await Task.Delay(500); 
 
                 button.Content = "✅ Actualizado";
                 await Task.Delay(1000);
@@ -247,17 +246,17 @@ namespace WpfApp1.Views
 
         private async void NotificacionStockBajo_Click(object sender, MouseButtonEventArgs e)
         {
-            // Abrir ventana de stock filtrada por productos con stock bajo
+            
             StockWindow stock = new StockWindow();
 
             stock.ProductoModificado += async () =>
             {
-                // Limpiar notificación de stock bajo cuando se abre la ventana de stock
+               
                 _notificacionService.LimpiarTodasLasNotificaciones();
                 
                 await ProductosVM.CargarProductosAsync();
                 MostrarProductosEnStock();
-                await ActualizarNotificaciones(); // Actualizar notificaciones después de modificar
+                await ActualizarNotificaciones(); 
             };
 
             stock.ShowDialog();
@@ -265,42 +264,42 @@ namespace WpfApp1.Views
 
         private void NotificacionEnviosPendientes_Click(object sender, MouseButtonEventArgs e)
         {
-            // Abrir ventana de envíos pendientes
+            
             bool esAdmin = RoleID == 3;
             EnviosPendientesWindow enviosWindow = new EnviosPendientesWindow(UsuarioID, esAdmin);
             enviosWindow.ShowDialog();
             
-            // Actualizar notificaciones al cerrar la ventana
+            
             _ = ActualizarNotificaciones();
         }
 
         private void DescartarStockBajo_Click(object sender, RoutedEventArgs e)
         {
-            // Marcar la notificación como descartada
+            
             _notificacionService.DescarrarNotificacion("StockBajo");
             
-            // Ocultar la notificación de stock bajo
+            
             notifStockBajo.Visibility = Visibility.Collapsed;
             
-            // Recalcular el número de notificaciones visibles
+            
             ActualizarBadgeNotificaciones();
         }
 
         private void DescartarEnviosPendientes_Click(object sender, RoutedEventArgs e)
         {
-            // Marcar la notificación como descartada
+            
             _notificacionService.DescarrarNotificacion("EnviosPendientes");
             
-            // Ocultar la notificación de envíos pendientes
+            
             notifEnviosPendientes.Visibility = Visibility.Collapsed;
             
-            // Recalcular el número de notificaciones visibles
+           
             ActualizarBadgeNotificaciones();
         }
 
         private void ActualizarBadgeNotificaciones()
         {
-            // Contar notificaciones visibles
+            
             int totalNotificaciones = 0;
             
             if (notifStockBajo.Visibility == Visibility.Visible)
@@ -309,7 +308,7 @@ namespace WpfApp1.Views
             if (notifEnviosPendientes.Visibility == Visibility.Visible)
                 totalNotificaciones++;
             
-            // Actualizar badge
+            
             if (totalNotificaciones > 0)
             {
                 badgeNotificaciones.Visibility = Visibility.Visible;
@@ -337,7 +336,7 @@ namespace WpfApp1.Views
         {
             panelProductos.Items.Clear();
 
-            // Ordenar por cantidad descendente antes de tomar los primeros
+            
             var productosFiltrados = ProductosVM.ProductosFiltrados
                             .OrderByDescending(p => p.Stock)
                             .Take(MaxProductosMostrar)
@@ -355,7 +354,7 @@ namespace WpfApp1.Views
                     Padding = new Thickness(0, 10, 0, 10),
                     Margin = new Thickness(0, 0, 0, 16),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Width = double.NaN // Auto
+                    Width = double.NaN 
                 };
 
                 var stack = new StackPanel { Orientation = Orientation.Vertical };
@@ -406,7 +405,7 @@ namespace WpfApp1.Views
                     Style = (Style)FindResource("ModernProgressBar"),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Width = double.NaN // Auto
+                    Width = double.NaN 
                 };
                 Grid.SetColumn(progress, 0);
                 progressGrid.Children.Add(progress);
@@ -423,12 +422,12 @@ namespace WpfApp1.Views
         {
             StockWindow stock = new StockWindow();
 
-            // Suscribirse al evento
+           
             stock.ProductoModificado += async () =>
             {
                 await ProductosVM.CargarProductosAsync();
                 MostrarProductosEnStock();
-                await ActualizarNotificaciones(); // Actualizar notificaciones
+                await ActualizarNotificaciones(); 
             };
 
             stock.ShowDialog();
@@ -443,15 +442,15 @@ namespace WpfApp1.Views
 
             if (resultado == true)
             {
-                // Actualizamos el límite
+                
                 MaximoProgressBar = filtroWindow.Maximo;
-                MostrarProductosEnStock(); // refrescamos el panel
+                MostrarProductosEnStock(); 
             }
         }
 
         private async void TarjetaEnvios_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // RoleID 3 = Admin, ajusta segun tu logica
+           
             bool esAdmin = RoleID == 3;
             EnviosPendientesWindow enviosWindow = new EnviosPendientesWindow(UsuarioID, esAdmin);
             enviosWindow.ShowDialog();
@@ -471,7 +470,7 @@ namespace WpfApp1.Views
 
         private void btnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
-            // Detener timer de notificaciones
+           
             if (timerNotificaciones != null)
             {
                 timerNotificaciones.Stop();
@@ -508,7 +507,7 @@ namespace WpfApp1.Views
 
         private void btnUsuarios_Click(object sender, RoutedEventArgs e)
         {
-            // Abrir ventana de usuarios pasando el rol actual
+            
             var usuariosWindow = new UsuariosWindow(RoleID == 3);
             usuariosWindow.ShowDialog();
         }
@@ -526,7 +525,7 @@ namespace WpfApp1.Views
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
-            // Detener timer de notificaciones
+           
             if (timerNotificaciones != null)
             {
                 timerNotificaciones.Stop();
@@ -543,7 +542,7 @@ namespace WpfApp1.Views
                 this.WindowState = WindowState.Maximized;
         }
 
-        // Limpiar timer al cerrar ventana
+       
         protected override void OnClosed(EventArgs e)
         {
             if (timerNotificaciones != null)
@@ -562,8 +561,7 @@ namespace WpfApp1.Views
 
         private async Task ActualizarKpiSIMsDisponibles()
         {
-            // Simulación: reemplaza con tu lógica real para obtener SIMs disponibles
-            var simService = new GestionSIMsService(); // Debes tener un servicio para SIMs
+            var simService = new GestionSIMsService(); 
             int simsDisponibles = await simService.GetSIMsDisponiblesAsync();
             if (txtKpiSIMsDisponibles != null)
                 txtKpiSIMsDisponibles.Text = simsDisponibles.ToString();
@@ -571,7 +569,7 @@ namespace WpfApp1.Views
 
         private async Task ActualizarKpiStockBajo()
         {
-            await ProductosVM.CargarProductosAsync(); // Asegura que los productos estén actualizados
+            await ProductosVM.CargarProductosAsync(); 
             int productosStockBajo = ProductosVM.ProductosFiltrados
                 .Where(p => p.Stock < STOCK_MINIMO)
                 .Count();
@@ -583,14 +581,14 @@ namespace WpfApp1.Views
         {
             GestionSIMsWindow simsWindow = new GestionSIMsWindow();
             simsWindow.ShowDialog();
-            await ActualizarKpiSIMsDisponibles(); // Actualiza al volver
+            await ActualizarKpiSIMsDisponibles(); 
         }
 
         private async void TarjetaStockBajo_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             StockWindow stockWindow = new StockWindow();
             stockWindow.ShowDialog();
-            await ActualizarKpiStockBajo(); // Actualiza al volver
+            await ActualizarKpiStockBajo(); 
         }
 
         private void btnMovimientosStock_Click(object sender, RoutedEventArgs e)

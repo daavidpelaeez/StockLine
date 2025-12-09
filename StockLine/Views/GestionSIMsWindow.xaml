@@ -10,7 +10,7 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Modern DataGrid Style -->
+        
         <Style x:Key="ModernDataGrid" TargetType="DataGrid">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -72,7 +72,7 @@
             </Setter>
         </Style>
 
-        <!-- Modern Volver Button Style -->
+        <!--  Volver Button  -->
         <Style x:Key="ModernVolverButton" TargetType="Button">
             <Setter Property="Background" Value="#34495E"/>
             <Setter Property="Foreground" Value="White"/>
@@ -149,7 +149,7 @@
             </Grid>
         </Border>
 
-        <!-- Search & Actions -->
+       
         <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="30,15,30,0" Height="80" Effect="{DynamicResource DropShadowEffect}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -167,7 +167,7 @@
             </Grid>
         </Border>
 
-        <!-- DataGrid Modern -->
+        <!-- DataGrid  -->
         <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="0" Margin="30,15,30,80" Effect="{DynamicResource DropShadowEffect}">
             <DataGrid x:Name="dgSIMs" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" SelectionMode="Single" GridLinesVisibility="None" HeadersVisibility="Column" Background="White" BorderThickness="0" RowHeight="50" FontSize="14" Margin="0" Style="{StaticResource ModernDataGrid}">
                 <DataGrid.Columns>
@@ -191,7 +191,7 @@
             </DataGrid>
         </Border>
 
-        <!-- Footer Modern -->
+        <!-- Footer  -->
         <Grid Grid.Row="3" Margin="30,0,30,30" Height="50" VerticalAlignment="Bottom">
             <Border Background="White" CornerRadius="10" Padding="10" Effect="{DynamicResource DropShadowEffect}">
                 <Grid>
@@ -205,7 +205,7 @@
             </Border>
         </Grid>
 
-        <!-- DropShadow Effect Resource -->
+        
         <Grid.Resources>
             <DropShadowEffect x:Key="DropShadowEffect" Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.12"/>
         </Grid.Resources>

@@ -33,7 +33,7 @@
                                         <ColumnDefinition Width="32"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <!-- Barra/acento visual -->
+                                    
                                     <Border x:Name="AccentBar" Grid.Column="0" Width="8" CornerRadius="4" Background="Transparent"/>
                                     <Image x:Name="IconImage" Grid.Column="1" Width="26" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.8" Source="{TemplateBinding Tag}"/>
                                     <TextBlock x:Name="MenuText" Grid.Column="2" Text="{TemplateBinding Content}" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontWeight="Bold" FontSize="16"/>
@@ -107,7 +107,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Estilo moderno para ProgressBar -->
+        <!-- Estilo  para ProgressBar -->
         <Style x:Key="ModernProgressBar" TargetType="ProgressBar">
             <Setter Property="Height" Value="8"/>
             <Setter Property="Foreground">
@@ -138,7 +138,7 @@
 
     <!-- GRID PRINCIPAL -->
     <Grid>
-        <!-- Borde exterior para simular ventana moderna -->
+        <!-- Borde exterior -->
         <Border Background="White" CornerRadius="12">
             <Border.Effect>
                 <DropShadowEffect Color="#000000" Opacity="0.15" BlurRadius="30" ShadowDepth="0"/>
@@ -211,7 +211,7 @@
                                                 </Border>
                                             </StackPanel>
 
-                                            <!-- Flecha indicadora alineada a la derecha -->
+                                           
                                             <TextBlock x:Name="flechaNotificaciones"
                                                       Text="▼"
                                                       FontSize="10"

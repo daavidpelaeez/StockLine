@@ -52,17 +52,17 @@ namespace WpfApp1.Views
 
         private void TxtBusqueda_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Filtrar productos basado en el texto de búsqueda
+           
             string busqueda = txtBusqueda.Text.ToLower().Trim();
             
             if (string.IsNullOrEmpty(busqueda))
             {
-                // Si el campo está vacío, mostrar todos los productos filtrados
+               
                 ProductosVM.AplicarBusqueda(string.Empty);
             }
             else
             {
-                // Aplicar búsqueda a los productos
+               
                 ProductosVM.AplicarBusqueda(busqueda);
             }
         }
@@ -90,7 +90,6 @@ namespace WpfApp1.Views
             var ventana = new AddProduct();
             ventana.ShowDialog();
             
-            // Recargar después de agregar
             _ = ProductosVM.CargarProductosAsync();
             ActualizarKPIs();
         }
@@ -195,10 +194,7 @@ namespace WpfApp1.Views
                 ProductoModificado?.Invoke();
             };
             bool? resultado = ventanaEdicion.ShowDialog();
-            if (resultado == true)
-            {
-                // Ya se recarga por el evento ProductoGuardado
-            }
+           
         }
 
         private async void EliminarProducto_Click(object sender, RoutedEventArgs e)
@@ -230,7 +226,7 @@ namespace WpfApp1.Views
                     client.BaseAddress = new Uri("http://localhost:5200/");
                     if (producto.Activo == false)
                     {
-                        // Activar (PUT)
+                        
                         var dto = new { ProductoID = producto.ProductoID, Activo = true };
                         var json = Newtonsoft.Json.JsonConvert.SerializeObject(dto);
                         var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -244,12 +240,12 @@ namespace WpfApp1.Views
                     }
                     else
                     {
-                        // Desactivar (DELETE)
+                       
                         var res = await client.DeleteAsync($"api/productos/{producto.ProductoID}");
                         var responseContent = await res.Content.ReadAsStringAsync();
                         if (!res.IsSuccessStatusCode)
                         {
-                            // Intentar leer el mensaje de error del JSON
+                            
                             try
                             {
                                 dynamic errorObj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
@@ -262,7 +258,7 @@ namespace WpfApp1.Views
                             }
                             return;
                         }
-                        // Leer el mensaje de éxito del JSON
+                        
                         try
                         {
                             dynamic resultObj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
@@ -284,7 +280,7 @@ namespace WpfApp1.Views
                 MessageBox.Show($"Error al cambiar estado del producto:\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        // ...resto de la clase...
+        
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

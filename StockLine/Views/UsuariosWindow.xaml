@@ -13,7 +13,7 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Colores y estilos modernos similares a Ayuntamientos -->
+        <!-- Colores y estilos -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
         <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>

@@ -10,20 +10,18 @@ using Newtonsoft.Json;
 using WpfApp1.DTOs;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
-using System.Collections.Generic; // Agregado para compilar correctamente List<>
+using System.Collections.Generic; 
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for AyuntamientosWindow.xaml
-    /// </summary>
+   
     public partial class AyuntamientosWindow : Window
     {
         private readonly IAyuntamientoService _ayuntamientoService;
         private ObservableCollection<AyuntamientoViewModel> _ayuntamientos;
         private ObservableCollection<AyuntamientoViewModel> _ayuntamientosFiltrados;
 
-        private string _filtroEstado = "Todos"; // Nuevo campo para el filtro
+        private string _filtroEstado = "Todos"; 
         private string _textoBusqueda = "";
 
         public AyuntamientosWindow()
@@ -52,7 +50,7 @@ namespace WpfApp1.Views
                 dgAyuntamientos.ItemsSource = _ayuntamientosFiltrados;
                 await CargarAyuntamientos();
             }
-            // Si es null, simplemente no hacer nada
+            
         }
 
         private async System.Threading.Tasks.Task CargarAyuntamientos()
@@ -62,10 +60,10 @@ namespace WpfApp1.Views
                 this.Cursor = System.Windows.Input.Cursors.Wait;
                 if (dgAyuntamientos == null)
                 {
-                    // Si es null, salir silenciosamente
+                   
                     return;
                 }
-                // Eliminadas todas las referencias a txtTotalAyuntamientos y txtBuscar
+                
                 string query = null;
                 if (_filtroEstado == "Activos") query = "?activos=true";
                 else if (_filtroEstado == "Inactivos") query = "?activos=false";
@@ -82,7 +80,7 @@ namespace WpfApp1.Views
                 if (ayuntamientos == null)
                     ayuntamientos = new List<AyuntamientoDTO>();
 
-                // Filtra elementos nulos
+                
                 var validos = ayuntamientos.Where(a => a != null).ToList();
 
                 _ayuntamientos.Clear();
@@ -231,7 +229,7 @@ namespace WpfApp1.Views
                     }
                 }
             };
-            // Buscar el botón "Desactivar/Activar" de forma segura
+            
             StackPanel mainPanel = (dialog.Content as Border)?.Child as StackPanel;
             Button btnToggleButton = null;
             if (mainPanel != null)
@@ -273,17 +271,17 @@ namespace WpfApp1.Views
                         Telefono = ayuntamiento.Telefono,
                         Email = ayuntamiento.Email,
                         ComercialID = ayuntamiento.ComercialID,
-                        Activo = !ayuntamiento.Activo // Cambiar el estado
+                        Activo = !ayuntamiento.Activo 
                     };
 
-                    // Llamada a la API para actualizar el estado
+                   
                     var respuesta = await _ayuntamientoService.UpdateAsync(dto);
 
                     if (respuesta)
                     {
                         dialog.Close();
                         MessageBox.Show("Estado del ayuntamiento actualizado con éxito.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await CargarAyuntamientos(); // Recarga la lista desde la API
+                        await CargarAyuntamientos(); 
                     }
                     else
                     {
@@ -340,7 +338,7 @@ namespace WpfApp1.Views
                 MessageBox.Show("Selecciona un ayuntamiento para editar.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var ventana = new AddEditAyuntamientos(ayuntamiento); // Corregido: se pasa el objeto completo
+            var ventana = new AddEditAyuntamientos(ayuntamiento); 
             ventana.AyuntamientoGuardado += async () => await CargarAyuntamientos();
             ventana.ShowDialog();
         }

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Perfil de Usuario" Height="900" Width="1450" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#FF2C3E50" WindowStyle="None" AllowsTransparency="False">
     <Window.Resources>
-        <!-- Colores corporativos y estilos base -->
+        <!-- Colores -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#FF2C3E50"/>
         <SolidColorBrush x:Key="SecondaryColor" Color="#15324F"/>
         <SolidColorBrush x:Key="AccentColor" Color="#7AB8F5"/>
@@ -110,7 +110,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!-- PasswordBox -->
+        <!-- Password -->
         <Style TargetType="PasswordBox" x:Key="ModernPasswordBox">
             <Setter Property="Background" Value="{StaticResource InputBg}"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>

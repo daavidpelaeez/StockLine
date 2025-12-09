@@ -91,7 +91,6 @@ namespace WpfApp1.ViewModels
             EditarEmailCommand = new RelayCommand(o => { IsEmailReadOnly = !IsEmailReadOnly; });
             CambiarPasswordCommand = new RelayCommand(async o => await CambiarPassword());
             CargarDatosUsuario();
-            CargarHistorial();
             CargarGraficoActividad();
         }
 
@@ -103,26 +102,13 @@ namespace WpfApp1.ViewModels
                 new ColumnSeries
                 {
                     Title = "Acciones",
-                    Values = new ChartValues<int> { 2, 3, 1, 4, 2, 1, 0 }, // Dummy data
+                    Values = new ChartValues<int> { 2, 3, 1, 4, 2, 1, 0 },
                     Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(33, 150, 243)),
                     StrokeThickness = 0
                 }
             };
             OnPropertyChanged(nameof(ActividadSemanaSeries));
             OnPropertyChanged(nameof(DiasSemana));
-        }
-
-        private void CargarHistorial()
-        {
-            // Simulación de historial real
-            Historial = new ObservableCollection<string>
-            {
-                "Inicio de sesión exitoso",
-                "Cambio de contraseña",
-                "Actualización de datos personales",
-                "Cierre de sesión",
-                "Intento de acceso fallido"
-            };
         }
 
         private string _originalNombre, _originalApellidos, _originalEmail;
@@ -159,7 +145,6 @@ namespace WpfApp1.ViewModels
             }
         }
 
-        // Detecta si hay cambios en los campos
         private void CheckChanges()
         {
             PuedeGuardar =
@@ -174,7 +159,7 @@ namespace WpfApp1.ViewModels
             Mensaje = string.Empty;
             try
             {
-                // Validar que el RoleID existe antes de actualizar
+               
                 var usuarios = await _personaService.GetAllAsync();
                 bool rolValido = false;
                 if (usuarios != null)
@@ -188,7 +173,7 @@ namespace WpfApp1.ViewModels
                     return;
                 }
 
-                // Validar que el email no esté en uso por otro usuario
+                
                 if (usuarios.Any(u => u.Email.Equals(Email, StringComparison.OrdinalIgnoreCase) && u.UsuarioID != UsuarioID))
                 {
                     Mensaje = "Error: El email ya está en uso por otro usuario.";
@@ -246,14 +231,14 @@ namespace WpfApp1.ViewModels
             }
             try
             {
-                // Validar contraseña actual
+                
                 var usuario = await _personaService.LoginAsync(Email, PasswordActual);
                 if (usuario == null)
                 {
                     MensajePassword = "Contraseña actual incorrecta.";
                     return;
                 }
-                // PATCH a /api/Usuarios/{id}/password
+                
                 using (var client = new System.Net.Http.HttpClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5200/");

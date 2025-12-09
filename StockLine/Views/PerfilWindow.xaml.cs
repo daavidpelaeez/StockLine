@@ -6,16 +6,13 @@ using WpfApp1;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for PerfilWindow.xaml
-    /// </summary>
+   
     public partial class PerfilWindow : Window
     {
         public PerfilWindow()
         {
             InitializeComponent();
             var vm = new PerfilViewModel();
-            // Pasa el RoleID y NombreUsuario desde la sesión global
             vm.RoleID = Session.RoleID;
             vm.Nombre = Session.NombreUsuario;
             this.DataContext = vm;
@@ -37,7 +34,7 @@ namespace WpfApp1.Views
                 vm.ConfirmarPassword = pb.Password;
         }
 
-        // Barra personalizada: mover ventana
+       
         private void CustomTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -50,7 +47,7 @@ namespace WpfApp1.Views
             }
         }
 
-        // Maximizar/restaurar
+       
         private void BtnMaximizar_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
@@ -59,7 +56,7 @@ namespace WpfApp1.Views
                 WindowState = WindowState.Maximized;
         }
 
-        // Cerrar
+
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
         {
             Close();

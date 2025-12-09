@@ -23,7 +23,7 @@ namespace WpfApp1.Services
             var json = await response.Content.ReadAsStringAsync();
             var sims = JsonConvert.DeserializeObject<List<SIM>>(json);
 
-            // SIM disponible: ProductoID == null o ProductoID == 0
+           
             return sims.Count(s => s.ProductoID == null || s.ProductoID == 0);
         }
     }

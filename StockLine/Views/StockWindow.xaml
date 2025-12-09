@@ -13,30 +13,30 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Paleta de colores azul marino -->
+        <!-- Paleta de colores  -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
-        <!-- Indigo vibrante -->
+        
         <SolidColorBrush x:Key="PrimaryHover" Color="#4F46E5"/>
         <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
-        <!-- Verde esmeralda -->
+        
         <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>
-        <!-- Rojo suave -->
+       
         <SolidColorBrush x:Key="WarningColor" Color="#F39C12"/>
-        <!-- Ámbar -->
+      
         <SolidColorBrush x:Key="SurfaceColor" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="BackgroundColor" Color="#F5F7FA"/>
-        <!-- Gris muy claro -->
+        
         <SolidColorBrush x:Key="BorderColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="TextPrimaryColor" Color="#2C3E50"/>
-        <!-- Slate 800 -->
+     
         <SolidColorBrush x:Key="TextSecondaryColor" Color="#7F8C8D"/>
-        <!-- Slate 500 -->
+       
         <SolidColorBrush x:Key="HoverColor" Color="#D6EAF8"/>
-        <!-- Slate 100 -->
+        
         <SolidColorBrush x:Key="AccentLight" Color="#34495E"/>
-        <!-- Indigo 50 -->
+        
 
-        <!-- Estilo para cards con sombra suave -->
+        <!-- Estilo para cards -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource SurfaceColor}"/>
             <Setter Property="CornerRadius" Value="12"/>
@@ -48,7 +48,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón primario moderno -->
+        <!-- Botón primario -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -85,7 +85,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón secundario outline -->
+        <!-- Botón secundario -->
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
@@ -207,7 +207,7 @@
             </Setter>
         </Style>
 
-        <!-- ComboBox moderno -->
+        <!-- ComboBox  -->
         <Style TargetType="ComboBox">
             <Setter Property="Background" Value="{StaticResource SurfaceColor}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
@@ -336,14 +336,14 @@
             </Setter>
         </Style>
 
-        <!-- CheckBox moderno -->
+        <!-- CheckBox  -->
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Medium"/>
         </Style>
 
-        <!-- DataGrid moderno y minimalista -->
+        <!-- DataGrid  -->
         <Style x:Key="ModernDataGrid" TargetType="DataGrid">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -401,7 +401,7 @@
         </Style>
     </Window.Resources>
 
-    <!-- Borde exterior de la ventana con sombra elegante -->
+    <!-- Borde exterior-->
     <Border Background="{StaticResource BackgroundColor}" 
             CornerRadius="16">
         <Border.Effect>
@@ -427,7 +427,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Logo/Icono minimalista -->
+                    <!-- Logo/Icono  -->
                     <Border Width="48" Height="48" 
                             CornerRadius="12" 
                             Background="{StaticResource PrimaryColor}"
@@ -494,7 +494,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- KPI Cards -->
+                <!-- KPI -->
                 <UniformGrid Grid.Row="0" Columns="3" Margin="24,20,24,16">
                     <!-- Total Productos -->
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,8,0">
@@ -756,7 +756,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <!-- PRODUCTO (nombre) -->
+                            <!-- PRODUCTO  -->
                             <DataGridTemplateColumn Header="PRODUCTO" Width="2*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

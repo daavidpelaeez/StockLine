@@ -29,7 +29,6 @@ namespace WpfApp1.ViewModels
             Categorias = new ObservableCollection<CategoriaDto>();
         }
 
-        // KPI
         private int totalProductos;
         public int TotalProductos
         {
@@ -51,7 +50,7 @@ namespace WpfApp1.ViewModels
             set { unidades = value; OnPropertyChanged("Unidades"); }
         }
 
-        // Filtros
+        
         private CategoriaDto _categoriaSeleccionada;
         public CategoriaDto CategoriaSeleccionada
         {
@@ -112,7 +111,7 @@ namespace WpfApp1.ViewModels
                 List<CategoriaDto> lista = await _client.GetFromJsonAsync<List<CategoriaDto>>(categoriasUrl);
                 Categorias.Clear();
 
-                // Opción "Todas"
+                
                 Categorias.Add(new CategoriaDto { CategoriaID = 0, Nombre = "Todas" });
 
                 if (lista != null)
@@ -154,15 +153,15 @@ namespace WpfApp1.ViewModels
             ProductosFiltrados.Clear();
             IEnumerable<ProductoDto> query = Productos;
 
-            // Aplicar filtro de categoría
+            
             if (CategoriaSeleccionada != null && CategoriaSeleccionada.CategoriaID != 0)
                 query = System.Linq.Enumerable.Where(query, p => p.CategoriaID == CategoriaSeleccionada.CategoriaID);
 
-            // Aplicar filtro de críticos
+            
             if (SoloCriticos)
                 query = System.Linq.Enumerable.Where(query, p => p.Stock < 10);
 
-            // Aplicar búsqueda por texto
+            
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
                 query = System.Linq.Enumerable.Where(query, p =>
@@ -201,7 +200,7 @@ namespace WpfApp1.ViewModels
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCsvLine(lines[i]);
-                    if (values.Length >= 4) // Ajustado a tu DTO
+                    if (values.Length >= 4) 
                     {
                         ProductoDto producto = new ProductoDto();
                         int id;
@@ -328,7 +327,7 @@ namespace WpfApp1.ViewModels
         private void ActualizarKPI()
         {
             TotalProductos = Productos.Count;
-            Criticos = Productos.Count(p => p.Stock < 10); // Ahora cuenta todos los productos críticos (en rojo)
+            Criticos = Productos.Count(p => p.Stock < 10); 
             Unidades = Productos.Sum(p => p.Stock);
         }
         #endregion

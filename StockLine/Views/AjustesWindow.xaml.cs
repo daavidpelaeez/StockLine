@@ -5,35 +5,16 @@ using System.Windows.Input;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for AjustesWindow.xaml
-    /// </summary>
+
     public partial class AjustesWindow : Window
     {
         public AjustesWindow()
         {
             InitializeComponent();
             
-            // Cargar configuraciones guardadas
-            CargarConfiguraciones();
         }
 
-        private void CargarConfiguraciones()
-        {
-            try
-            {
-                // Aquí podrías cargar las preferencias del usuario desde un archivo de configuración
-                // Por ahora las dejamos con los valores por defecto del XAML
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Error al cargar configuraciones: " + ex.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
-        }
+        
 
         private void BtnVolver_Click(object sender, RoutedEventArgs e)
         {
@@ -100,7 +81,7 @@ namespace WpfApp1.Views
         {
             try
             {
-                // Abrir el repositorio en el navegador
+                
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "https://github.com/daavidpelaeez/StockLine",

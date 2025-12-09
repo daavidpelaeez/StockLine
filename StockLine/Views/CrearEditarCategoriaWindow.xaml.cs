@@ -11,7 +11,7 @@ namespace WpfApp1.Views
         private CategoriaDto _categoria;
         private bool _esEdicion;
 
-        // Constructor para CREAR
+        
         public CrearEditarCategoriaWindow()
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace WpfApp1.Views
             btnGuardar.Content = "Crear";
         }
 
-        // Constructor para EDITAR
+        
         public CrearEditarCategoriaWindow(CategoriaDto categoria)
         {
             InitializeComponent();
@@ -40,7 +40,7 @@ namespace WpfApp1.Views
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            // Validar nombre
+            
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
                 txtError.Visibility = Visibility.Visible;
@@ -61,12 +61,12 @@ namespace WpfApp1.Views
 
                 if (_esEdicion)
                 {
-                    // ACTUALIZAR
+                    
                     resultado = await _categoriaService.UpdateAsync(_categoria);
                 }
                 else
                 {
-                    // CREAR
+                   
                     var categoriaCreada = await _categoriaService.CreateAsync(_categoria);
                     resultado = categoriaCreada != null;
                 }

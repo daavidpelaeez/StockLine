@@ -59,7 +59,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER MODERNIZADO -->
+        <!-- HEADER -->
         <Border Grid.Row="0" 
                 Background="White"
                 CornerRadius="16"
@@ -176,10 +176,10 @@
                             <TextBlock Text="Proyecto de 2º DAM" Style="{StaticResource InfoValue}"/>
 
                             <TextBlock Text="Fecha de Desarrollo" Style="{StaticResource InfoLabel}"/>
-                            <TextBlock Text="2024 - 2025" Style="{StaticResource InfoValue}"/>
+                            <TextBlock Text="2025" Style="{StaticResource InfoValue}"/>
 
                             <TextBlock Text="Centro Educativo" Style="{StaticResource InfoLabel}"/>
-                            <TextBlock Text="IES - Desarrollo de Aplicaciones Multiplataforma" 
+                            <TextBlock Text="IES MIGUEL HERRERO - Desarrollo de Aplicaciones Multiplataforma" 
                                       Style="{StaticResource InfoValue}"
                                       TextWrapping="Wrap"/>
                         </StackPanel>

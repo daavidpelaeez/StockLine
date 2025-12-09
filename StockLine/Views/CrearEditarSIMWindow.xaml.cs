@@ -45,7 +45,7 @@ namespace WpfApp1.Views
                     if (sim != null)
                     {
                         txtNumeroSIM.Text = sim.NumeroSIM;
-                        // Mostrar botón desasignar si está asignada a un producto
+                        
                         btnDesasignar.Visibility = (sim.ProductoID.HasValue && sim.ProductoID.Value > 0)
                             ? Visibility.Visible
                             : Visibility.Collapsed;

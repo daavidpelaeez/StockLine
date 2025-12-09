@@ -114,10 +114,10 @@ namespace WpfApp1.Views
                 }
                 catch (System.Net.Http.HttpRequestException httpEx)
                 {
-                    // Intentar extraer el mensaje de error de la respuesta de la API
+                    
                     if (httpEx.Data["StatusCode"] != null && httpEx.Data["StatusCode"].ToString() == "409")
                     {
-                        // Si la excepción contiene el mensaje de la API
+                        
                         if (httpEx.Data["ApiMessage"] != null)
                         {
                             errorMsg = httpEx.Data["ApiMessage"].ToString();
@@ -137,7 +137,7 @@ namespace WpfApp1.Views
                 }
                 else
                 {
-                    // Si la API responde con 409 Conflict y mensaje, mostrarlo
+                    
                     try
                     {
                         using (var client = new System.Net.Http.HttpClient())

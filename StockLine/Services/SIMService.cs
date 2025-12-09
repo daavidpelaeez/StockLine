@@ -92,7 +92,7 @@ namespace WpfApp1.Services
 
         public async Task<(bool, string)> AsignarProductoAsync(int simId, int productoId)
         {
-            var json = JsonConvert.SerializeObject(productoId); // solo el número
+            var json = JsonConvert.SerializeObject(productoId); 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"api/sims/{simId}/asignar-producto")
             {
@@ -105,7 +105,7 @@ namespace WpfApp1.Services
 
         public async Task<(bool, string)> DesasignarProductoAsync(int simId)
         {
-            // Usar PUT, endpoint correcto y body 'null' como texto plano
+
             var json = "null";
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PutAsync($"api/sims/{simId}/desasignar", content);

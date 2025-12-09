@@ -2,27 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WpfApp1.DTOs;
-using WpfApp1.Models;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for AddProduct.xaml
-    /// </summary>
+
     public partial class AddProduct : Window
     {
         private ProductoDto productoEdicion;
@@ -31,7 +20,6 @@ namespace WpfApp1.Views
         
         public event Action ProductoGuardado;
 
-        // Bandera para evitar registrar movimiento desde edición si viene de envío
         public static bool MovimientoPorEnvio = false;
         
         public AddProduct()
@@ -47,7 +35,7 @@ namespace WpfApp1.Views
             InitializeComponent();
             _producto = producto;
 
-            // Cargar campos
+            
             NombreBox.Text = _producto.Nombre;
             DescripcionBox.Text = _producto.Descripcion;
             CantidadBox.Text = _producto.Stock.ToString();
@@ -94,18 +82,18 @@ namespace WpfApp1.Views
             }
             catch
             {
-                // Error silencioso si no hay foto
+                
             }
         }
 
         private int? stockAnterior;
-        // private int usuarioID = 1; // TODO: Obtén el usuarioID real desde la sesión o contexto
 
         private async void Guardar_Click(object sender, RoutedEventArgs e)
         {
+
             try
             {
-                // Validar campos básicos
+               
                 if (string.IsNullOrWhiteSpace(NombreBox.Text))
                 {
                     MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -124,7 +112,6 @@ namespace WpfApp1.Views
                     return;
                 }
 
-                // Guardar el stock anterior antes de guardar
                 if (_producto != null && _producto.ProductoID > 0)
                 {
                     stockAnterior = _producto.Stock;
@@ -147,11 +134,9 @@ namespace WpfApp1.Views
                     if (confirmacion != MessageBoxResult.Yes)
                         return;
 
-                    // Usar el nuevo endpoint para modificar el stock y registrar el movimiento
                     using (HttpClient client = new HttpClient())
                     {
                         client.BaseAddress = new Uri("http://localhost:5200/");
-                        // El cuerpo debe ser solo el número entero (stock)
                         var content = new StringContent(stock.ToString(), System.Text.Encoding.UTF8, "application/json");
                         var url = $"api/productos/{_producto.ProductoID}/stock?usuarioID={App.UsuarioIDActual}";
                         var response = await client.PutAsync(url, content);
@@ -179,7 +164,7 @@ namespace WpfApp1.Views
 
                         if (tieneFotoLocal)
                         {
-                            // Preparar contenido del archivo
+                            
                             var fileBytes = File.ReadAllBytes(_producto.Foto);
                             var fileContent = new ByteArrayContent(fileBytes);
 
@@ -194,7 +179,7 @@ namespace WpfApp1.Views
 
                             if (_producto.ProductoID > 0)
                             {
-                                // El servidor puede no soportar PUT multipart. Primero actualizamos los datos sin la foto (JSON PUT)
+                               
                                 var productoDataNoFoto = new
                                 {
                                     ProductoID = _producto.ProductoID,
@@ -218,7 +203,7 @@ namespace WpfApp1.Views
                                 System.Diagnostics.Debug.WriteLine($"Actualizando producto (sin foto) ID: {_producto.ProductoID}");
                                 var putResponse = await client.PutAsync($"api/productos/{_producto.ProductoID}", jsonContent);
 
-                                // Si la actualización falla, retornamos el error
+                                
                                 if (!putResponse.IsSuccessStatusCode)
                                 {
                                     response = putResponse;
@@ -227,7 +212,7 @@ namespace WpfApp1.Views
                                 {
                                     productoId = _producto.ProductoID;
 
-                                    // Luego subimos la foto por separado al endpoint de upload
+                                   
                                     using (var uploadForm = new MultipartFormDataContent())
                                     {
                                         uploadForm.Add(fileContent, "Foto", System.IO.Path.GetFileName(_producto.Foto));
@@ -240,7 +225,7 @@ namespace WpfApp1.Views
                             }
                             else
                             {
-                                // Crear nuevo producto con multipart/form-data (incluye foto en la misma petición)
+                                
                                 using (var form = new MultipartFormDataContent())
                                 {
                                     form.Add(new StringContent(NombreBox.Text.Trim()), "Nombre");
@@ -257,7 +242,7 @@ namespace WpfApp1.Views
                         }
                         else
                         {
-                            // Sin foto: enviar JSON con los campos necesarios
+                            
                             var productoData = new
                             {
                                 ProductoID = _producto.ProductoID,
@@ -302,7 +287,7 @@ namespace WpfApp1.Views
                             return;
                         }
 
-                        // Intentar obtener el ID del producto guardado
+                       
                         try
                         {
                             var jsonSettingsResp = new Newtonsoft.Json.JsonSerializerSettings
@@ -318,7 +303,7 @@ namespace WpfApp1.Views
                             }
                             else
                             {
-                                // intentar extraer manualmente
+                                
                                 dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
                                 if (obj != null)
                                 {
@@ -334,15 +319,15 @@ namespace WpfApp1.Views
 
                         System.Diagnostics.Debug.WriteLine($"Producto guardado con ID: {productoId}");
 
-                        // Si enviamos multipart con foto ya se subió en la misma petición; no hacer upload separado
+                      
                     }
                 }
 
                 MessageBox.Show("Producto guardado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                ProductoGuardado?.Invoke(); // Dispara el evento
+                ProductoGuardado?.Invoke(); 
                 this.DialogResult = true;
                 this.Close();
-                MovimientoPorEnvio = false; // Reset bandera tras guardar
+                MovimientoPorEnvio = false; 
             }
             catch (HttpRequestException httpEx)
             {
@@ -375,7 +360,7 @@ namespace WpfApp1.Views
                     CategoriaComboBox.DisplayMemberPath = "Nombre";
                     CategoriaComboBox.SelectedValuePath = "CategoriaID";
 
-                    // Seleccionar categoría del producto si existe
+                   
                     if (_producto != null && _producto.CategoriaID.HasValue)
                     {
                         CategoriaComboBox.SelectedValue = _producto.CategoriaID;
@@ -407,7 +392,7 @@ namespace WpfApp1.Views
                 PreviewHint.Visibility = Visibility.Collapsed;
                 FotoNombre.Text = System.IO.Path.GetFileName(ofd.FileName);
 
-                // Guardamos temporalmente la ruta local
+                
                 _producto.Foto = ofd.FileName;
             }
         }
@@ -452,7 +437,6 @@ namespace WpfApp1.Views
             this.Close();
         }
 
-        // Eventos para actualizar vista previa en tiempo real
         private void NombreBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             QuickNombre.Text = string.IsNullOrWhiteSpace(NombreBox.Text) ? "—" : NombreBox.Text;

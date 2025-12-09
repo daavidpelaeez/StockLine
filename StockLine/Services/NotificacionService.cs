@@ -7,10 +7,7 @@ using WpfApp1.Models;
 
 namespace WpfApp1.Services
 {
-    /// <summary>
-    /// Servicio para gestionar las notificaciones descartadas por el usuario
-    /// Persiste el estado en un archivo JSON
-    /// </summary>
+    
     public class NotificacionService
     {
         private readonly string _rutaArchivo;
@@ -19,13 +16,13 @@ namespace WpfApp1.Services
 
         public NotificacionService()
         {
-            // Guardar el archivo en la carpeta de datos de la aplicación
+            
             string carpetaDatos = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "StockLine"
             );
 
-            // Crear la carpeta si no existe
+           
             if (!Directory.Exists(carpetaDatos))
             {
                 Directory.CreateDirectory(carpetaDatos);
@@ -35,9 +32,7 @@ namespace WpfApp1.Services
             CargarNotificacionesDescartadas();
         }
 
-        /// <summary>
-        /// Carga las notificaciones descartadas desde el archivo JSON
-        /// </summary>
+       
         private void CargarNotificacionesDescartadas()
         {
             try
@@ -60,9 +55,7 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Guarda las notificaciones descartadas en el archivo JSON
-        /// </summary>
+        
         private void GuardarNotificacionesDescartadas()
         {
             try
@@ -76,16 +69,12 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Marca una notificación como descartada
-        /// </summary>
-        /// <param name="tipoNotificacion">Tipo de notificación (ej: "StockBajo")</param>
-        /// <param name="identificador">ID opcional para diferencias entre instancias</param>
+       
         public void DescarrarNotificacion(string tipoNotificacion, int? identificador = null)
         {
             try
             {
-                // Buscar si ya existe una notificación descartada de este tipo
+                
                 var notificacionExistente = _notificacionesDescartadas.FirstOrDefault(n =>
                     n.TipoNotificacion == tipoNotificacion &&
                     n.IdentificadorInterno == identificador
@@ -93,13 +82,13 @@ namespace WpfApp1.Services
 
                 if (notificacionExistente != null)
                 {
-                    // Si ya existe, incrementar el contador y actualizar fecha
+                   
                     notificacionExistente.VecesDescartada++;
                     notificacionExistente.FechaDescarte = DateTime.Now;
                 }
                 else
                 {
-                    // Si no existe, crear una nueva
+                    
                     var nuevaNotificacion = new NotificacionDescartada
                     {
                         TipoNotificacion = tipoNotificacion,
@@ -119,13 +108,7 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Verifica si una notificación ha sido descartada y aún está dentro del período de validez
-        /// </summary>
-        /// <param name="tipoNotificacion">Tipo de notificación</param>
-        /// <param name="identificador">ID opcional para diferencias entre instancias</param>
-        /// <param name="horasValidezDescarte">Horas durante las cuales la notificación descartada se mantiene válida (por defecto 24 horas)</param>
-        /// <returns>True si fue descartada y aún está dentro del período válido</returns>
+      
         public bool FueDescartada(string tipoNotificacion, int? identificador = null, int horasValidezDescarte = 24)
         {
             try
@@ -138,7 +121,7 @@ namespace WpfApp1.Services
                 if (notificacion == null)
                     return false;
 
-                // Verificar si aún está dentro del período de validez
+                
                 var tiempoTranscurrido = DateTime.Now - notificacion.FechaDescarte;
                 return tiempoTranscurrido.TotalHours < horasValidezDescarte;
             }
@@ -149,9 +132,7 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Limpia todas las notificaciones descartadas
-        /// </summary>
+      
         public void LimpiarTodasLasNotificaciones()
         {
             try
@@ -165,10 +146,7 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Limpia las notificaciones descartadas que hayan expirado
-        /// </summary>
-        /// <param name="horasMaximas">Horas máximas de antigüedad para mantener</param>
+       
         public void LimpiarNotificacionesExpiradas(int horasMaximas = 48)
         {
             try
@@ -186,9 +164,7 @@ namespace WpfApp1.Services
             }
         }
 
-        /// <summary>
-        /// Obtiene todas las notificaciones descartadas (para propósitos de debug)
-        /// </summary>
+        
         public List<NotificacionDescartada> ObtenerNotificacionesDescartadas()
         {
             return _notificacionesDescartadas?.ToList() ?? new List<NotificacionDescartada>();

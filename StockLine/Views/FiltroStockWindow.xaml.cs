@@ -4,9 +4,7 @@ using System.Windows.Controls;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for FiltroStockWindow.xaml
-    /// </summary>
+  
     public partial class FiltroStockWindow : Window
     {
         public int Maximo { get; private set; } = 2000;
@@ -20,7 +18,7 @@ namespace WpfApp1.Views
 
             sliderMaximo.ValueChanged += SliderMaximo_ValueChanged;
 
-            // Opcional: botones de valores rápidos
+           
             btnRapido500.Click += (s, e) => SetSliderValue(500);
             btnRapido1000.Click += (s, e) => SetSliderValue(1000);
             btnRapido2000.Click += (s, e) => SetSliderValue(2000);
@@ -54,15 +52,15 @@ namespace WpfApp1.Views
         {
             if (sender is Button btn && btn.Name != null)
             {
-                int valor = 2000; // valor por defecto
+                int valor = 2000; 
 
                 if (btn.Name == "btnRapido500") valor = 500;
                 else if (btn.Name == "btnRapido1000") valor = 1000;
                 else if (btn.Name == "btnRapido2000") valor = 2000;
                 else if (btn.Name == "btnRapido5000") valor = 5000;
 
-                sliderMaximo.Value = valor;  // Actualiza el slider
-                txtValor.Text = valor.ToString(); // Actualiza el texto
+                sliderMaximo.Value = valor;  
+                txtValor.Text = valor.ToString(); 
             }
         }
     }

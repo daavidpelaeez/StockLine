@@ -40,11 +40,6 @@ namespace WpfApp1.Views
                 var sims = await _simService.GetAllAsync();
                 _sims = sims ?? new List<SIMDTO>();
 
-                // Depuración: mostrar ubicaciones en Output/Debug
-                foreach (var sim in _sims)
-                {
-                    System.Diagnostics.Debug.WriteLine($"SIM {sim.SIMID} - Ubicacion: {sim.Ubicacion}");
-                }
 
                 AplicarFiltros();
                 dgSIMs.ItemsSource = null;
@@ -74,10 +69,10 @@ namespace WpfApp1.Views
 
             switch (cbFiltroEstado.SelectedIndex)
             {
-                case 1: // Disponibles
+                case 1: 
                     resultado = resultado.Where(s => s.ProductoID == null);
                     break;
-                case 2: // Asignadas
+                case 2: 
                     resultado = resultado.Where(s => s.ProductoID != null);
                     break;
             }

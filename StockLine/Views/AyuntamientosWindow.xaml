@@ -12,7 +12,7 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
-        <!-- Colores modernos actualizados a azul marino #2C3E50 -->
+        <!-- Colores -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#2C3E50"/>
         <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>
         <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>
@@ -49,7 +49,7 @@
             </Setter>
         </Style>
 
-        <!-- Botón primario azul marino -->
+        <!-- Botón primario -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -115,7 +115,7 @@
             <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
         </Style>
 
-        <!-- TextBox moderno -->
+        <!-- TextBox -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Height" Value="42"/>
             <Setter Property="Padding" Value="16,0"/>
@@ -146,7 +146,7 @@
             </Setter>
         </Style>
 
-        <!-- DataGrid moderno -->
+        <!-- DataGrid  -->
         <Style x:Key="ModernDataGrid" TargetType="DataGrid">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -323,7 +323,7 @@
                                        HorizontalAlignment="Left"/>
                             </Grid>
 
-                            <!-- Botón Actualizar -->
+                            
 
                             <!-- Botón Nuevo Ayuntamiento -->
                             <Button Grid.Column="2" 

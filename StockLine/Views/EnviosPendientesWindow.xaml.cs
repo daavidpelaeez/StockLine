@@ -83,7 +83,7 @@ namespace WpfApp1.Views
         {
             var resultado = _envios.AsEnumerable();
 
-            // Filtrar por estado si no es "Todos"
+            
             if (cbEstado != null && cbEstado.SelectedItem is ComboBoxItem estadoItem)
             {
                 var estadoSeleccionado = estadoItem.Content.ToString();
@@ -105,7 +105,7 @@ namespace WpfApp1.Views
                 resultado = resultado.Where(envio => envio.Estado != "Archivado");
             }
 
-            // Filtro de búsqueda
+           
             if (!string.IsNullOrWhiteSpace(txtSearch.Text))
             {
                 var busqueda = txtSearch.Text.ToLower();
@@ -230,22 +230,7 @@ namespace WpfApp1.Views
             ventanaDetalle.ShowDialog();
         }
 
-        private async Task ActualizarSIMsUbicacionPorEnvio(EnvioDTO envio)
-        {
-            var simService = new SIMService();
-            foreach (var detalle in envio.Detalles)
-            {
-                if (detalle.SIMID.HasValue)
-                {
-                    var sim = await simService.GetByIdAsync(detalle.SIMID.Value);
-                    if (sim != null)
-                    {
-                        sim.Ubicacion = envio.AyuntamientoNombre;
-                        await simService.UpdateAsync(sim.SIMID, sim);
-                    }
-                }
-            }
-        }
+        
 
         private async void Finalizar_Click(object sender, RoutedEventArgs args)
         {
@@ -290,7 +275,6 @@ namespace WpfApp1.Views
                 if (confirmacion != MessageBoxResult.Yes)
                     return;
 
-                // SOLO cambiar el estado del envío, el backend se encarga de movimientos y stock
                 var resultado = await _envioService.UpdateEstadoAsync(envioSeleccionado.EnvioID, "Enviado", _usuarioId);
 
                 if (resultado)

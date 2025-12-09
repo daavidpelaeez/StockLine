@@ -11,9 +11,7 @@ using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {
-    /// <summary>
-    /// Interaction logic for ReportesWindow.xaml
-    /// </summary>
+   
     public partial class ReportesWindow : Window
     {
         private readonly IProductoService _productoService;
@@ -232,12 +230,5 @@ namespace WpfApp1.Views
             else
                 this.WindowState = WindowState.Maximized;
         }
-    }
-
-    public class TopProductoViewModel
-    {
-        public int Posicion { get; set; }
-        public string Nombre { get; set; }
-        public int Cantidad { get; set; }
     }
 }

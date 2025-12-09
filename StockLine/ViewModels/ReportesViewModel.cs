@@ -20,7 +20,7 @@ namespace WpfApp1.ViewModels
 
         public ReportesViewModel()
         {
-            // Cargar datos reales de la API
+            
             _ = CargarDatosAsync();
         }
 

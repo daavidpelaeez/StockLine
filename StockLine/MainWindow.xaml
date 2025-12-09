@@ -8,7 +8,7 @@
     <Grid>
         <!-- Imagen de fondo -->
         <Image Source="Assets/Icons/5153829.jpg" Stretch="UniformToFill" Panel.ZIndex="0"/>
-        <!-- Capa de contenido -->
+       
         <Grid Panel.ZIndex="1">
             <!-- Botón para cambiar tema -->
             <Button Content="Cambiar Tema"

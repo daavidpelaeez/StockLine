@@ -53,7 +53,7 @@ namespace WpfApp1.Services
         {
             var json = JsonConvert.SerializeObject(envio);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            // Añadir usuarioModificadorId en la query string
+           
             var url = $"api/envios?usuarioModificadorId={envio.UsuarioID}";
             var response = await client.PostAsync(url, content);
             
@@ -68,11 +68,6 @@ namespace WpfApp1.Services
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"=== ACTUALIZANDO ESTADO ===");
-                System.Diagnostics.Debug.WriteLine($"EnvioID: {id}");
-                System.Diagnostics.Debug.WriteLine($"Estado: '{estado}'");
-                System.Diagnostics.Debug.WriteLine($"UsuarioModificadorID: {usuarioModificadorId}");
-                
                 var json = JsonConvert.SerializeObject(estado);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 

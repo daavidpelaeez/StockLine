@@ -122,7 +122,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER MODERNO CON MINIMIZAR Y CERRAR -->
+        <!-- HEADER -->
         <Border Grid.Row="0" Background="#FF2C3E50" CornerRadius="12,12,0,0" Padding="0,0,0,0" Margin="0,0,0,20">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>

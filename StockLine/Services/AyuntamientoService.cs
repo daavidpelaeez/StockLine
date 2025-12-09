@@ -228,13 +228,10 @@ namespace WpfApp1.Services
                         throw new InvalidOperationException(
                             "Solicitud inválida.\n\n" +
                             "Detalles: " + (string.IsNullOrWhiteSpace(errorContent) ? "Sin detalles adicionales" : errorContent));
-                    case System.Net.HttpStatusCode.Unauthorized:
                     case System.Net.HttpStatusCode.Forbidden:
                         throw new InvalidOperationException(
                             "No tienes permisos para eliminar este ayuntamiento.\n" +
                             "Contacta con el administrador del sistema.");
-                    case System.Net.HttpStatusCode.InternalServerError:
-                    case System.Net.HttpStatusCode.BadGateway:
                     case System.Net.HttpStatusCode.ServiceUnavailable:
                         throw new InvalidOperationException(
                             "Error del servidor al intentar eliminar el ayuntamiento.\n" +

@@ -23,7 +23,7 @@ namespace WpfApp1.Views
         private ObservableCollection<ProductoEnvioTemp> _productosEnvio;
         private List<ProductoDto> _productosDisponibles;
 
-        // ? Constante para la categoría que puede llevar SIM
+        
         private const string CATEGORIA_CON_SIM = "Dispositivos con SIM";
 
         public event Action EnvioCreado;
@@ -45,12 +45,12 @@ namespace WpfApp1.Views
 
             this.Loaded += CrearEnvioWindow_Loaded;
 
-            // Autoselección y bloqueo de comercial si el usuario es Comercial
+            
             if (Session.RoleID == 2 && Session.ComercialID.HasValue)
             {
                 this.Loaded += (s, e) =>
                 {
-                    // Buscar el comercial en el ComboBox y seleccionarlo
+                    
                     foreach (var item in cbComercial.Items)
                     {
                         var prop = item.GetType().GetProperty("ComercialID");
@@ -75,14 +75,16 @@ namespace WpfApp1.Views
             try
             {
                 var ayuntamientos = await _ayuntamientoService.GetAllAsync();
-                cbAyuntamiento.ItemsSource = ayuntamientos;
-                if (ayuntamientos.Count > 0)
+                
+                var ayuntamientosActivos = ayuntamientos.Where(a => a.Activo).ToList();
+                cbAyuntamiento.ItemsSource = ayuntamientosActivos;
+                if (ayuntamientosActivos.Count > 0)
                     cbAyuntamiento.SelectedIndex = 0;
 
                 var comerciales = await _comercialService.GetAllAsync();
                 cbComercial.ItemsSource = comerciales;
 
-                // Selección automática del comercial logueado
+                
                 if (Session.RoleID == 2 && Session.ComercialID.HasValue)
                 {
                     var comercial = comerciales.FirstOrDefault(c => c.ComercialID == Session.ComercialID.Value);
@@ -102,7 +104,7 @@ namespace WpfApp1.Views
                 if (_productosDisponibles.Count > 0)
                     cbProducto.SelectedIndex = 0;
 
-                // Ya no cargamos todas las SIMs aquí
+               
             }
             catch (Exception ex)
             {
@@ -136,31 +138,6 @@ namespace WpfApp1.Views
             }
         }
 
-        private async Task RecargarSIMsAsociadasAProducto(int productoId)
-        {
-            try
-            {
-                var todasLasSIMs = await _simService.GetAllAsync();
-                var simsAsociadas = todasLasSIMs
-                    .Where(s => s.ProductoID == productoId)
-                    .ToList();
-                simsAsociadas.Insert(0, new SIMDTO
-                {
-                    SIMID = 0,
-                    NumeroSIM = "Sin SIM",
-                    ProductoID = productoId
-                });
-                cbSIM.ItemsSource = simsAsociadas;
-                cbSIM.SelectedIndex = 0;
-                cbSIM.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar SIMs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                cbSIM.IsEnabled = false;
-                cbSIM.ItemsSource = null;
-            }
-        }
 
         private async Task RecargarSIMsEnAlmacenParaProducto(int productoId)
         {
@@ -251,7 +228,7 @@ namespace WpfApp1.Views
                 {
                     simId = simSeleccionada.SIMID;
                     simNumero = simSeleccionada.NumeroSIM;
-                    // Solo preguntar si la ubicación NO es 'En almacén'
+                    
                     if (!string.IsNullOrEmpty(simSeleccionada.Ubicacion) && !simSeleccionada.Ubicacion.Trim().Equals("En almacén", StringComparison.OrdinalIgnoreCase))
                     {
                         var confirmacion = MessageBox.Show($"La SIM '{simNumero}' ya está asignada a la ubicación '{simSeleccionada.Ubicacion}'. ¿Deseas modificar la ubicación?", "Confirmar modificación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -304,7 +281,7 @@ namespace WpfApp1.Views
             if (!ValidarFormulario())
                 return;
 
-            // Validar stock actual antes de guardar
+            
             if (!await ValidarStockActualAsync())
                 return;
 
@@ -331,6 +308,9 @@ namespace WpfApp1.Views
 
                 if (resultado != null)
                 {
+                    
+                    await ActualizarSIMsUbicacionPorEnvio(resultado);
+
                     MessageBox.Show("Envio creado correctamente", "Exito", MessageBoxButton.OK, MessageBoxImage.Information);
                     
                     if (EnvioCreado != null)
@@ -352,6 +332,29 @@ namespace WpfApp1.Views
             }
         }
 
+        private async Task ActualizarSIMsUbicacionPorEnvio(EnvioDTO envio)
+        {
+            try
+            {
+                foreach (var detalle in envio.Detalles)
+                {
+                    if (detalle.SIMID.HasValue && detalle.SIMID.Value > 0)
+                    {
+                        var sim = await _simService.GetByIdAsync(detalle.SIMID.Value);
+                        if (sim != null)
+                        {
+                            sim.Ubicacion = envio.AyuntamientoNombre;
+                            await _simService.UpdateAsync(sim.SIMID, sim);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al actualizar ubicación de SIMs: {ex.Message}");
+            }
+        }
+
         private bool ValidarFormulario()
         {
             if (cbAyuntamiento.SelectedValue == null)
@@ -368,7 +371,7 @@ namespace WpfApp1.Views
 
             if (!dpFechaEnvio.SelectedDate.HasValue)
             {
-                MessageBox.Show("Selecciona una fecha de envio", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Selecciona una fecha de envío", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 

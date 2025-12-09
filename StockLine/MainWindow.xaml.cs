@@ -14,9 +14,7 @@ using WpfApp1.Views;
 
 namespace WpfApp1
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
         private bool temaAlternativo = true;
@@ -28,7 +26,7 @@ namespace WpfApp1
             InitializeComponent();
             ApplyTheme("ThemeLight.xaml");
             
-            // Timer para ocultar mensajes automáticamente
+            
             _mensajeTimer = new DispatcherTimer();
             _mensajeTimer.Interval = TimeSpan.FromSeconds(5);
             _mensajeTimer.Tick += MensajeTimer_Tick;
@@ -67,24 +65,13 @@ namespace WpfApp1
             }
         }
 
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                StringBuilder builder = new StringBuilder();
-                foreach (var b in bytes)
-                    builder.Append(b.ToString("x2"));
-                return builder.ToString();
-            }
-        }
 
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             string email = txtUser.Text.Trim();
             string password = txtPassword.Password;
 
-            // Validaciones básicas
+            
             if (string.IsNullOrWhiteSpace(email))
             {
                 MostrarMensajeError("❌", "Por favor, ingresa tu usuario o email", "#FFEBEE", "#EF5350", "#C62828");
@@ -105,58 +92,58 @@ namespace WpfApp1
             }
             try
             {
-                // Expandir tarjeta con animación
+                
                 ExpandirTarjeta();
 
-                // Mostrar indicador de carga
+               
                 MostrarCargando(true);
                 OcultarMensaje();
 
-                // Deshabilitar controles durante el login
+               
                 btnLogin.IsEnabled = false;
                 txtUser.IsEnabled = false;
                 txtPassword.IsEnabled = false;
 
-                // Simular un pequeño delay para que se vea la animación (opcional)
+                
                 await Task.Delay(800);
 
-                // Enviar la contraseña en texto plano, la API se encarga de hashearla
+                
                 UsuarioDTO usuario = await _personaService.LoginAsync(email, password);
 
                 if (usuario != null)
                 {
-                    // Login exitoso
+                    
                     MostrarCargando(false);
                     MostrarMensajeExito("✅", $"¡Bienvenido {usuario.Nombre}!", "#E8F5E9", "#66BB6A", "#27AE60");
 
-                    // Guardar el usuarioID globalmente para toda la app
+                   
                     App.UsuarioIDActual = usuario.UsuarioID;
 
-                    // Guardar datos de sesión global
+                    
                     Session.UsuarioID = usuario.UsuarioID;
                     Session.RoleID = usuario.RoleID;
                     Session.NombreUsuario = usuario.Nombre;
-                    Session.ComercialID = usuario.ComercialID; // <--- Asegura que se asigna aquí
+                    Session.ComercialID = usuario.ComercialID; 
 
-                    // Esperar un momento para que vea el mensaje de éxito
+                   
                     await Task.Delay(1000);
 
-                    // Abrir la ventana principal
+                  
                     HomeWindow hw = new HomeWindow(usuario.Nombre, usuario.UsuarioID, usuario.RoleID);
                     hw.Show();
                     this.Close();
                 }
                 else
                 {
-                    // Login fallido
+                   
                     MostrarCargando(false);
                     MostrarMensajeError("❌", "Usuario o contraseña incorrectos", "#FFEBEE", "#EF5350", "#C62828");
                     
-                    // Limpiar contraseña
+                    
                     txtPassword.Clear();
                     txtPassword.Focus();
 
-                    // Contraer tarjeta de vuelta
+                    
                     ContraerTarjeta();
                 }
             }
@@ -165,12 +152,12 @@ namespace WpfApp1
                 MostrarCargando(false);
                 MostrarMensajeError("⚠️", "Error de conexión: " + ex.Message, "#FFF3E0", "#FFA726", "#F57C00");
                 
-                // Contraer tarjeta de vuelta
+                
                 ContraerTarjeta();
             }
             finally
             {
-                // Re-habilitar controles
+                
                 btnLogin.IsEnabled = true;
                 txtUser.IsEnabled = true;
                 txtPassword.IsEnabled = true;
@@ -191,7 +178,7 @@ namespace WpfApp1
             txtMensaje.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorTexto));
             borderMensaje.Visibility = Visibility.Visible;
             
-            // Reiniciar timer para ocultar mensaje
+            
             _mensajeTimer.Stop();
             _mensajeTimer.Start();
         }
@@ -219,28 +206,18 @@ namespace WpfApp1
 
         private void ForgotPassword_Click(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                // Crear y mostrar la ventana de recuperación de contraseña
-                var recuperarWindow = new RecuperarWindow();
-                recuperarWindow.Owner = this;
-                recuperarWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MostrarMensajeError("⚠️", "Error al abrir recuperacion de contrasena: " + ex.Message, "#FFF3E0", "#FFA726", "#F57C00");
-            }
+            
         }
 
         private void ExpandirTarjeta()
         {
             var storyboard = new Storyboard();
 
-            // Usar Height y Width actuales solo si no son NaN
+            
             double fromHeight = double.IsNaN(loginCard.Height) ? loginCard.ActualHeight : loginCard.Height;
             double fromWidth = double.IsNaN(loginCard.Width) ? loginCard.ActualWidth : loginCard.Width;
 
-            // Animar Height
+            
             var heightAnimation = new DoubleAnimation
             {
                 From = fromHeight,
@@ -252,7 +229,7 @@ namespace WpfApp1
             Storyboard.SetTargetProperty(heightAnimation, new PropertyPath(FrameworkElement.HeightProperty));
             storyboard.Children.Add(heightAnimation);
 
-            // Animar Width
+            
             var widthAnimation = new DoubleAnimation
             {
                 From = fromWidth,
@@ -274,7 +251,7 @@ namespace WpfApp1
             double fromHeight = double.IsNaN(loginCard.Height) ? loginCard.ActualHeight : loginCard.Height;
             double fromWidth = double.IsNaN(loginCard.Width) ? loginCard.ActualWidth : loginCard.Width;
 
-            // Animar Height
+            
             var heightAnimation = new DoubleAnimation
             {
                 From = fromHeight,
@@ -286,7 +263,7 @@ namespace WpfApp1
             Storyboard.SetTargetProperty(heightAnimation, new PropertyPath(FrameworkElement.HeightProperty));
             storyboard.Children.Add(heightAnimation);
 
-            // Animar Width
+            
             var widthAnimation = new DoubleAnimation
             {
                 From = fromWidth,

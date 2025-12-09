@@ -89,12 +89,12 @@ namespace WpfApp1.Views
                 if (_esEdicion)
                 {
                     usuario.UsuarioID = _usuarioEdicion.UsuarioID;
-                    // No enviar password al editar
+                    
                     resultado = await _personaService.UpdateAsync(usuario);
                 }
                 else
                 {
-                    // Enviar password en texto plano al crear
+                    
                     var password = txtPassword.Password.Trim();
                     if (string.IsNullOrWhiteSpace(password))
                     {

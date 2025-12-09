@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfApp1.Services;
+using WpfApp1.ViewModels;
 
 namespace WpfApp1.Views
 {
@@ -37,7 +38,7 @@ namespace WpfApp1.Views
             bool? soloActivos = null;
             if (_filtroEstado == "Activos") soloActivos = true;
             else if (_filtroEstado == "Inactivos") soloActivos = false;
-            // Si es "Todos", soloActivos queda en null
+           
             await CargarUsuarios(soloActivos);
         }
 
@@ -53,7 +54,7 @@ namespace WpfApp1.Views
                 string query = null;
                 if (soloActivos.HasValue)
                     query = soloActivos.Value ? "?activos=true" : "?activos=false";
-                // Si soloActivos es null, query queda en null y se piden todos los usuarios
+                
                 var usuarios = await _personaService.GetAllAsync(query);
                 _usuarios.Clear();
                 if (usuarios != null)
@@ -93,7 +94,7 @@ namespace WpfApp1.Views
         {
             var resultado = _usuarios.AsEnumerable();
 
-            // Comprobación de nulidad para txtBuscar
+           
             if (txtBuscar != null && !string.IsNullOrWhiteSpace(txtBuscar.Text))
             {
                 var busqueda = txtBuscar.Text.ToLower();
@@ -156,8 +157,8 @@ namespace WpfApp1.Views
 
         private void BtnNuevoUsuario_Click(object sender, RoutedEventArgs e)
         {
-            // Obtener el usuario actual y su rol
-            int roleId = 1; // Por defecto Usuario
+            
+            int roleId = 1; 
             if (Application.Current.Windows.OfType<HomeWindow>().FirstOrDefault() is HomeWindow home)
             {
                 roleId = home.RoleID;
@@ -342,7 +343,7 @@ namespace WpfApp1.Views
             actionsPanel.Children.Add(btnToggleUser);
             var btnClose = new Button { Content = "Cerrar", Width = 120, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#2C3E50"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, IsCancel = true };
             actionsPanel.Children.Add(btnClose);
-            // Botón para modificar contraseña solo si eres admin
+           
             if (IsAdmin)
             {
                 var btnPassword = new Button { Content = "Modificar contraseña", Width = 180, Height = 38, Background = (Brush)new BrushConverter().ConvertFromString("#3498DB"), Foreground = Brushes.White, FontWeight = FontWeights.Bold, BorderThickness = new Thickness(0), Cursor = System.Windows.Input.Cursors.Hand, Margin = new Thickness(0, 0, 12, 0) };
@@ -351,15 +352,15 @@ namespace WpfApp1.Views
                     var inputDialog = new Window
                     {
                         Title = "Nueva contraseña",
-                        Width = 600, // Mucho más ancho
-                        Height = 320, // Mucho más alto
+                        Width = 600, 
+                        Height = 320, 
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         WindowStyle = WindowStyle.None,
                         ResizeMode = ResizeMode.NoResize,
                         Background = Brushes.White,
                         Owner = this,
                     };
-                    var inputPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(48) }; // Más margen
+                    var inputPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(48) }; 
                     inputPanel.Children.Add(new TextBlock { Text = "Ingrese la nueva contraseña:", FontSize = 20, Margin = new Thickness(0, 0, 0, 24) });
                     var txtPassword = new PasswordBox { Height = 48, FontSize = 18, Margin = new Thickness(0, 0, 0, 32) };
                     inputPanel.Children.Add(txtPassword);
@@ -413,8 +414,8 @@ namespace WpfApp1.Views
             var dialog = new Window
             {
                 Title = "Detalles del Usuario",
-                Width = 700, // Mucho más ancho
-                Height = 520, // Mucho más alto
+                Width = 700, 
+                Height = 520, 
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
@@ -424,7 +425,7 @@ namespace WpfApp1.Views
                 {
                     Background = Brushes.White,
                     CornerRadius = new CornerRadius(16),
-                    Padding = new Thickness(48), // Más margen
+                    Padding = new Thickness(48), 
                     Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Colors.Black, BlurRadius = 30, Opacity = 0.13, ShadowDepth = 0 },
                     Child = stackPanel
                 }
@@ -463,23 +464,5 @@ namespace WpfApp1.Views
             };
             dialog.ShowDialog();
         }
-    }
-
-    public class UsuarioViewModel
-    {
-        public int UsuarioID { get; set; }
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public string Email { get; set; }
-        public int RoleID { get; set; }
-        public bool Activo { get; set; }
-        public string NombreCompleto { get; set; }
-        public string InicialNombre { get; set; }
-        public string RolNombre { get; set; }
-        public Brush RolColor { get; set; }
-        public string EstadoTexto => Activo ? "Activo" : "Inactivo";
-        public Brush EstadoColor => Activo ? 
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60")) : 
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
     }
 }

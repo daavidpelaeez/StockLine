@@ -123,9 +123,11 @@
     <Compile Include="Services\SIMService.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="ViewModels\AyuntamientoViewModel.cs" />
+    <Compile Include="ViewModels\ComercialViewModel.cs" />
     <Compile Include="ViewModels\PerfilViewModel.cs" />
     <Compile Include="ViewModels\ProductosViewModel.cs" />
     <Compile Include="ViewModels\ReportesViewModel.cs" />
+    <Compile Include="ViewModels\TopProductoViewModel.cs" />
     <Compile Include="ViewModels\UsuarioViewModel.cs" />
     <Compile Include="Views\AddEditAyuntamientos.xaml.cs">
       <DependentUpon>AddEditAyuntamientos.xaml</DependentUpon>
@@ -183,9 +185,6 @@
     </Compile>
     <Compile Include="Views\PerfilWindow.xaml.cs">
       <DependentUpon>PerfilWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RecuperarWindow.xaml.cs">
-      <DependentUpon>RecuperarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportesWindow.xaml.cs">
       <DependentUpon>ReportesWindow.xaml</DependentUpon>
@@ -279,10 +278,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RecuperarWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ReportesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -353,9 +348,7 @@
     <Resource Include="Assets\Icons\usuario.png" />
     <Resource Include="Assets\Icons\usuarioRol.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Assets\Icons\ayuntamiento.png" />
   </ItemGroup>

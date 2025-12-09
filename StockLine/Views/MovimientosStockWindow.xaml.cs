@@ -52,7 +52,7 @@ namespace WpfApp1.Views
             }
         }
 
-        // Obtiene el historial de movimientos
+        
         private async Task BuscarAsync()
         {
             try
@@ -65,18 +65,18 @@ namespace WpfApp1.Views
                     client.BaseAddress = new Uri("http://localhost:5200/");
                     var query = $"api/movimientosstock?page={page}&pageSize={pageSize}&sortBy=Fecha&sortDir=desc";
 
-                    // Filtro de producto
+                    
                     if (cbProducto.SelectedValue != null)
                         query += $"&productId={cbProducto.SelectedValue}";
 
-                    // Filtro de tipo
+                   
                     string tipo = null;
                     if (cbTipo.SelectedItem is ComboBoxItem tipoItem)
                         tipo = tipoItem.Content.ToString();
                     if (!string.IsNullOrWhiteSpace(tipo) && tipo != "Todos")
                         query += $"&tipo={tipo}";
 
-                    // Filtro de fechas
+                   
                     if (dpFrom.SelectedDate.HasValue)
                         query += $"&from={dpFrom.SelectedDate.Value:yyyy-MM-dd}";
                     if (dpTo.SelectedDate.HasValue)
@@ -109,7 +109,7 @@ namespace WpfApp1.Views
                         total = (int)(totalToken ?? 0);
                         items = itemsToken.ToObject<List<MovimientoDto>>();
                     }
-                    // Ya no filtramos en frontend, la API devuelve solo lo necesario
+                   
                     dgMovimientos.ItemsSource = items;
                     int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)total / pageSize) : 1;
                     txtPaginacion.Text = $"Página {page} / {totalPages} - {total} registros";
@@ -125,7 +125,7 @@ namespace WpfApp1.Views
             }
         }
 
-        // Ver detalles de movimiento (incluye productos y cantidades)
+        
         private async void Ver_Click(object sender, RoutedEventArgs e)
         {
             MovimientoDto m = null;
@@ -151,7 +151,7 @@ namespace WpfApp1.Views
                         return;
                     }
                     var detalle = Newtonsoft.Json.JsonConvert.DeserializeObject<MovimientoDto>(body);
-                    // Aquí puedes mostrar los detalles en una ventana o diálogo
+                   
                     MessageBox.Show($"Movimiento: {detalle.MovimientoID}\nTipo: {detalle.Tipo}\nFecha: {detalle.Fecha}\nUsuario: {detalle.UsuarioNombre}\nProductos: {string.Join(", ", detalle.Productos)}");
                 }
             }

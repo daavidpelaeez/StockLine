@@ -129,7 +129,7 @@ namespace WpfApp1.Views
                     return;
                 }
 
-                // Si no hay productos vinculados, proceder con la confirmación
+               
                 var confirmacion = MessageBox.Show(
                     $"¿Estas seguro de desactivar la categoria '{categoria.Nombre}'?\n\n" +
                     "Esta acción no se puede deshacer.",

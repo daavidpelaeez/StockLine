@@ -26,7 +26,7 @@ namespace WpfApp1.Services
                 if (!response.IsSuccessStatusCode) return new List<UsuarioDTO>();
                 var json = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<List<UsuarioDTO>>(json);
-                // Filtra elementos nulos y asegura que Activo se mapea correctamente
+                
                 return (result ?? new List<UsuarioDTO>()).Where(u => u != null).ToList();
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace WpfApp1.Services
 
         public async Task<bool> CreateAsync(UsuarioDTO usuario)
         {
-            // Usar el endpoint correcto para registro
+            
             var json = JsonConvert.SerializeObject(usuario);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("api/Auth/register", content);
